@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "660172613611",
+    "project_id": "fitnessfactory-f7514",
+    "storage_bucket": "fitnessfactory-f7514.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:660172613611:android:20d26438d0db3762315bae",
+        "android_client_info": {
+          "package_name": "com.example.fitnessfactory_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "660172613611-7fsn60sgj3h0453hsifbqap9irrn7sl2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitnessfactory",
+            "certificate_hash": "5f78f548a2fc5f7e0c67ee3e00a49204b091489e"
+          }
+        },
+        {
+          "client_id": "660172613611-o6u1a4c07k1hn4re7loe9k3jvoe6qr99.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-RR4puPgRXR4KOBMMJxGZ96bAKijF70g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "660172613611-o6u1a4c07k1hn4re7loe9k3jvoe6qr99.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
