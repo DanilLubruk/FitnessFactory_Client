@@ -3,6 +3,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://dl.bintray.com/amulyakhare/maven' }
+        maven { url "https://clojars.org/repo/" }
+        maven {   url "https://maven.google.com"  }
         jcenter() // Warning: this repository is going to shut down soon
     }
 }

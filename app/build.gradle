@@ -64,6 +64,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
     implementation("androidx.compose.runtime:runtime-rxjava2:1.0.5")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3'
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
@@ -83,6 +84,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
     implementation("androidx.compose.runtime:runtime-rxjava2:1.0.5")
     implementation 'com.google.firebase:firebase-core:20.0.2'
+    implementation 'com.github.tiromansev:Android-Prefs-Wrapper:0.3.4'
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.5")
