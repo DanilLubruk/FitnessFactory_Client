@@ -8,7 +8,7 @@ class AppUser() {
         const val EMAIL_FIELD = "email"
     }
 
-    private lateinit var id: String get set
-    private lateinit var name: String get set
-    private lateinit var email: String get set
+    lateinit var id: String
+    lateinit var name: String
+    lateinit var email: String
 }

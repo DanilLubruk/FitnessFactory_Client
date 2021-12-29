@@ -2,9 +2,10 @@ package com.example.fitnessfactory_client.data.repositories
 
 import com.example.fitnessfactory_client.data.firestoreCollections.UsersCollection
 import com.example.fitnessfactory_client.data.models.AppUser
-import com.google.firebase.auth.FirebaseAuth
+import com.example.fitnessfactory_client.ui.RegisterUiState
 import com.google.firebase.firestore.Query
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
 
 class UsersRepository: BaseRepository() {
@@ -12,10 +13,30 @@ class UsersRepository: BaseRepository() {
     override fun getRoot(): String =
         UsersCollection.getUsersCollection()
 
+    fun registerUserOperation(usersName: String, usersEmail: String): Flow<Unit> =
+        flow {
+            val isRegistered = checkUserRegistered(usersEmail = usersEmail)
+            if (!isRegistered) {
+                registerUser(name = usersName, email = usersEmail)
+            }
+
+            emit(Unit)
+        }
+
     suspend fun checkUserRegistered(usersEmail: String): Boolean {
         val usersWithEmailAmount = getEntitiesAmount(QueryBuilder().whereEmailEquals(usersEmail).build())
 
         return usersWithEmailAmount > 0
+    }
+
+    suspend fun registerUser(name: String, email: String) {
+        val documentReference = getCollection().document();
+        val appUser = AppUser()
+        appUser.id = documentReference.id
+        appUser.name = name
+        appUser.email = email
+
+        documentReference.set(appUser).await()
     }
 
     private inner class QueryBuilder {

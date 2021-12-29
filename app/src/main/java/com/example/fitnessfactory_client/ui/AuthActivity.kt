@@ -20,7 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnessfactory_client.R
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,15 +56,29 @@ class AuthActivity : AppCompatActivity() {
     @Composable
     fun AuthScreen(viewModel: AuthActivityViewModel) {
         val coroutineScope = rememberCoroutineScope()
-        var text by remember { mutableStateOf<String?>(null)}
+        var text by remember { mutableStateOf("")}
         val signInRequestCode = 1
-
+        LaunchedEffect(key1 = Unit) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.registerUiState.collect { uiState ->
+                    when (uiState) {
+                        is RegisterUiState.Success -> text = "User registered"
+                        is RegisterUiState.Error -> text = uiState.exception.localizedMessage
+                    }
+                }
+            }
+        }
         val authResultLauncher = rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
             text = try {
                 val account = task?.getResult(ApiException::class.java)
                 if (account == null) {
                     "Google sign in failed"
                 } else {
+                    account.displayName?.let { name ->
+                        account.email?.let {
+                                email -> viewModel.registerUser(usersName = name, usersEmail = email)
+                        }
+                    }
                     "Sign in successfully done. Account ${account.displayName}";
                 }
             } catch (e: ApiException) {
@@ -72,7 +89,7 @@ class AuthActivity : AppCompatActivity() {
         AuthView(
             errorText = text,
             onClick = {
-                text = null
+                text = ""
                 authResultLauncher.launch(signInRequestCode)
             })
     }
@@ -131,7 +148,12 @@ class AuthActivity : AppCompatActivity() {
             Row(
                 modifier = Modifier
                     .padding(start = 12.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
-                    .animateContentSize(animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)),
+                    .animateContentSize(
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = LinearOutSlowInEasing
+                        )
+                    ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center) {
                 Icon(painter = icon, contentDescription = "SignInButton", tint = Color.Unspecified)
@@ -141,7 +163,9 @@ class AuthActivity : AppCompatActivity() {
                 if (isLoading) {
                     Spacer(modifier = Modifier.width(16.dp))
                     CircularProgressIndicator(
-                        modifier = Modifier.height(16.dp).width(16.dp),
+                        modifier = Modifier
+                            .height(16.dp)
+                            .width(16.dp),
                         strokeWidth = 2.dp,
                         color = progressIndicatorColor
                     )
