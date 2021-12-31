@@ -1,4 +1,4 @@
-package com.example.fitnessfactory_client.ui
+package com.example.fitnessfactory_client.ui.activities.authActivity
 
 import android.app.Activity
 import android.content.Context

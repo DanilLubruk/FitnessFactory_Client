@@ -1,17 +1,15 @@
 package com.example.fitnessfactory_client.data.repositories
 
-import com.example.fitnessfactory_client.data.firestoreCollections.UsersCollection
+import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.models.AppUser
-import com.example.fitnessfactory_client.ui.RegisterUiState
 import com.google.firebase.firestore.Query
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
 
 class UsersRepository: BaseRepository() {
 
     override fun getRoot(): String =
-        UsersCollection.getUsersCollection()
+        FirestoreCollections.getUsersCollection()
 
     fun registerUserOperation(usersName: String, usersEmail: String): Flow<Unit> =
         flow {

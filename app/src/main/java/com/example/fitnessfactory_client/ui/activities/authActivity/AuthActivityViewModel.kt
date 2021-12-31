@@ -1,4 +1,4 @@
-package com.example.fitnessfactory_client.ui
+package com.example.fitnessfactory_client.ui.activities.authActivity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +10,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AuthActivityViewModel
-@Inject constructor(private val firebaseAuthManager: FirebaseAuthManager,
-                    private val usersRepository: UsersRepository) : ViewModel() {
+@Inject constructor(
+    private val firebaseAuthManager: FirebaseAuthManager,
+    private val usersRepository: UsersRepository
+) : ViewModel() {
 
-    private val mutableRegisterUiState: MutableStateFlow<RegisterUiState> = MutableStateFlow(RegisterUiState.Success())
+    private val mutableRegisterUiState: MutableStateFlow<RegisterUiState> = MutableStateFlow(
+        RegisterUiState.Loading()
+    )
 
     val registerUiState: StateFlow<RegisterUiState> = mutableRegisterUiState
 

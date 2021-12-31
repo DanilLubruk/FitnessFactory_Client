@@ -1,4 +1,4 @@
-package com.example.fitnessfactory_client.ui
+package com.example.fitnessfactory_client.ui.activities.authActivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,21 +22,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.utils.GuiUtils
+import com.example.fitnessfactory_client.utils.ResUtils
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var viewModel: AuthActivityViewModel
+    private val signInFailed: String = ResUtils.getString(R.string.message_error_sign_in_failed)
+    private val signInCaption: String = ResUtils.getString(R.string.caption_sing_in_button)
+    private val signInProcessCaption: String = ResUtils.getString(R.string.caption_sign_in_process)
+    private val signInButtonDescription: String = "SignInButton"
 
+    @ExperimentalAnimationApi
+    @ExperimentalFoundationApi
     @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
-    @ExperimentalFoundationApi
-    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(
@@ -55,34 +59,39 @@ class AuthActivity : AppCompatActivity() {
     @ExperimentalMaterialApi
     @Composable
     fun AuthScreen(viewModel: AuthActivityViewModel) {
-        val coroutineScope = rememberCoroutineScope()
         var text by remember { mutableStateOf("")}
         val signInRequestCode = 1
         LaunchedEffect(key1 = Unit) {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.registerUiState.collect { uiState ->
                     when (uiState) {
-                        is RegisterUiState.Success -> text = "User registered"
-                        is RegisterUiState.Error -> text = uiState.exception.localizedMessage
+                        is RegisterUiState.Success ->
+                            text = "User registered"
+                        is RegisterUiState.Error -> {
+                            text = signInFailed
+                            GuiUtils.showMessage(uiState.exception.localizedMessage)
+                        }
+                        is RegisterUiState.Loading -> {}
                     }
                 }
             }
         }
+
         val authResultLauncher = rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
-            text = try {
+            try {
                 val account = task?.getResult(ApiException::class.java)
                 if (account == null) {
-                    "Google sign in failed"
+                    text = signInFailed
                 } else {
                     account.displayName?.let { name ->
                         account.email?.let {
                                 email -> viewModel.registerUser(usersName = name, usersEmail = email)
                         }
                     }
-                    "Sign in successfully done. Account ${account.displayName}";
                 }
             } catch (e: ApiException) {
-                "Google sign in failed"
+                text = signInFailed
+                GuiUtils.showMessage(e.localizedMessage)
             }
         }
 
@@ -109,8 +118,8 @@ class AuthActivity : AppCompatActivity() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SignInButton(
-                    text = "Sign in with Google",
-                    loadingText = "Singing in...",
+                    captionText = signInCaption,
+                    loadingText = signInProcessCaption,
                     isLoading = isLoading,
                     icon = painterResource(id = R.drawable.ic_google_logo),
                     onClick = {
@@ -131,8 +140,8 @@ class AuthActivity : AppCompatActivity() {
     @ExperimentalMaterialApi
     @Composable
     fun SignInButton(
-        text: String,
-        loadingText: String = "Signing in...",
+        captionText: String,
+        loadingText: String = signInProcessCaption,
         icon: Painter,
         isLoading: Boolean = false,
         borderColor: Color = Color.LightGray,
@@ -156,10 +165,10 @@ class AuthActivity : AppCompatActivity() {
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center) {
-                Icon(painter = icon, contentDescription = "SignInButton", tint = Color.Unspecified)
+                Icon(painter = icon, contentDescription = signInButtonDescription, tint = Color.Unspecified)
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Text(text = if (isLoading) loadingText else text)
+                Text(text = if (isLoading) loadingText else captionText)
                 if (isLoading) {
                     Spacer(modifier = Modifier.width(16.dp))
                     CircularProgressIndicator(
