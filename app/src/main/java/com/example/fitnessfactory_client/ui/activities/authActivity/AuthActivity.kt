@@ -20,12 +20,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.GuiUtils
 import com.example.fitnessfactory_client.utils.ResUtils
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -35,8 +39,10 @@ class AuthActivity : AppCompatActivity() {
     private val signInFailed: String = ResUtils.getString(R.string.message_error_sign_in_failed)
     private val signInCaption: String = ResUtils.getString(R.string.caption_sing_in_button)
     private val signInProcessCaption: String = ResUtils.getString(R.string.caption_sign_in_process)
+    private val ownerPickerDialogTitle: String = ResUtils.getString(R.string.title_owner_picker)
     private val signInButtonDescription: String = "SignInButton"
 
+    @ExperimentalPagerApi
     @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @ExperimentalCoroutinesApi
@@ -53,6 +59,7 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
+    @ExperimentalPagerApi
     @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @ExperimentalCoroutinesApi
@@ -60,13 +67,15 @@ class AuthActivity : AppCompatActivity() {
     @Composable
     fun AuthScreen(viewModel: AuthActivityViewModel) {
         var text by remember { mutableStateOf("")}
+        var showDialog by remember { mutableStateOf(false)}
         val signInRequestCode = 1
+
         LaunchedEffect(key1 = Unit) {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.registerUiState.collect { uiState ->
                     when (uiState) {
                         is RegisterUiState.Success ->
-                            text = "User registered"
+                            showDialog = true
                         is RegisterUiState.Error -> {
                             text = signInFailed
                             GuiUtils.showMessage(uiState.exception.localizedMessage)
@@ -101,6 +110,20 @@ class AuthActivity : AppCompatActivity() {
                 text = ""
                 authResultLauncher.launch(signInRequestCode)
             })
+
+        if (showDialog) {
+            DialogUtils.SingleSelectDialog(
+                title = ownerPickerDialogTitle,
+                optionsList = listOf("Owner1", "Owner2", "Owner3"),
+                onSubmitButtonClick = {item ->
+                    run {
+                        GuiUtils.showMessage(item)
+                        showDialog = false
+                    }
+                },
+                onDismissRequest = {showDialog = false}
+            )
+        }
     }
 
     @ExperimentalMaterialApi

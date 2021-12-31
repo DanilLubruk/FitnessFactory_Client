@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="list_view_three_line_height">72dp</dimen>
+    <dimen name="list_view_one_line_height">48dp</dimen>
+    <dimen name="list_view_two_line_height">64dp</dimen>
+    <dimen name="title_text_size">16sp</dimen>
+    <dimen name="caption_text_size">14sp</dimen>
 </resources>

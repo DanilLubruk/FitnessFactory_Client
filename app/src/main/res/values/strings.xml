@@ -3,4 +3,6 @@
     <string name="message_error_sign_in_failed">Google sign in failed...</string>
     <string name="caption_sing_in_button">Sign in with Google</string>
     <string name="caption_sign_in_process">Singing in...</string>
+    <string name="title_owner_picker">Pick your gyms chain</string>
+    <string name="caption_search_by_name">Search by name</string>
 </resources>
