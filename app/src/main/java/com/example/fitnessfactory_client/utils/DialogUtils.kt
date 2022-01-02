@@ -18,21 +18,24 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.fitnessfactory_client.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import androidx.annotation.*
 import androidx.compose.ui.Alignment
+import com.example.fitnessfactory_client.data.beans.OwnersData
+import com.example.fitnessfactory_client.data.models.Owner
 import com.google.accompanist.pager.HorizontalPager
+import kotlinx.coroutines.launch
 
 object DialogUtils {
 
     @ExperimentalPagerApi
     @Composable
-    fun SingleSelectDialog(
+    fun SingleGymOwnerSelectDialog(
         title: String,
-        optionsList: List<String>,
-        onSubmitButtonClick: (String) -> Unit,
+        ownersData: OwnersData,
+        onSubmitButtonClick: (Owner) -> Unit,
         onDismissRequest: () -> Unit
     ) {
-
+        val allOwnersList = ownersData.allOwnersList
+        val invitedOwnersList = ownersData.invitedOwnersList
 
         Dialog(
             onDismissRequest = { onDismissRequest.invoke() },
@@ -52,8 +55,6 @@ object DialogUtils {
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    var tabIndex by remember { mutableStateOf(0) }
-
                     val searchTabIndex = 0
                     val invitedTabIndex = 1
                     val tabData = listOf(
@@ -66,10 +67,15 @@ object DialogUtils {
                         initialOffscreenLimit = 2,
                     )
 
+                    val tabIndex = pagerState.currentPage
+                    val coroutineScope = rememberCoroutineScope()
+
                     TabRow(selectedTabIndex = tabIndex) {
                         tabData.forEachIndexed { index, text ->
                             Tab(selected = tabIndex == index, onClick = {
-                                tabIndex = index
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
                             }, text = {
                                 Text(text = text)
                             })
@@ -84,11 +90,14 @@ object DialogUtils {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             when (index) {
-                                searchTabIndex -> searchOwnerTab(
-                                    optionsList = optionsList,
+                                searchTabIndex -> SearchOwnerTab(
+                                    optionsList = allOwnersList,
                                     onSubmitButtonClick = onSubmitButtonClick
                                 )
-                                invitedTabIndex -> Text("invited tab")
+                                invitedTabIndex -> SearchOwnerTab(
+                                    optionsList = invitedOwnersList,
+                                    onSubmitButtonClick = onSubmitButtonClick
+                                )
                             }
                         }
                     }
@@ -116,32 +125,35 @@ object DialogUtils {
     }
 
     @Composable
-    private fun searchOwnerTab(optionsList: List<String>,
-                               onSubmitButtonClick: (String) -> Unit) {
+    private fun SearchOwnerTab(optionsList: List<Owner>,
+                               onSubmitButtonClick: (Owner) -> Unit) {
         var text by remember { mutableStateOf("")}
         var optionsListValues by remember { mutableStateOf(optionsList) }
 
-        TextField(
-            value = text,
-            onValueChange = { value ->
-                run {
-                    text = value
-                    optionsListValues =  optionsList.filter { it.contains(value) }
-                }
-            },
-            label = { Text(ResUtils.getString(R.string.caption_search_by_name)) }
-        )
+        Column(verticalArrangement = Arrangement.Top) {
+            TextField(
+                value = text,
+                onValueChange = { value ->
+                    run {
+                        text = value
+                        optionsListValues =  optionsList.filter { it.organisationName.contains(value) }
+                    }
+                },
+                label = { Text(ResUtils.getString(R.string.caption_search_by_name)) }
+            )
+        }
+
 
         Spacer(modifier = Modifier.height(10.dp))
 
         LazyColumn(verticalArrangement = Arrangement.Center) {
-            itemsIndexed(optionsListValues) { index, item ->
+            itemsIndexed(optionsListValues) { index, owner ->
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .height(SizeUtils.dialogListItemHeight)
-                    .clickable { onSubmitButtonClick(item) }) {
+                    .clickable { onSubmitButtonClick(owner) }) {
                     Text(
-                        text = item,
+                        text = owner.organisationName,
                         textAlign = TextAlign.Start,
                         fontSize = SizeUtils.captionTextSize
                     )

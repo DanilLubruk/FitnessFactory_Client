@@ -2,11 +2,12 @@ package com.example.fitnessfactory_client.data.repositories
 
 import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.models.AppUser
+import com.example.fitnessfactory_client.data.models.Owner
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.tasks.await
 
-class UsersRepository: BaseRepository() {
+class UsersRepository : BaseRepository() {
 
     override fun getRoot(): String =
         FirestoreCollections.getUsersCollection()
@@ -21,13 +22,14 @@ class UsersRepository: BaseRepository() {
             emit(Unit)
         }
 
-    suspend fun checkUserRegistered(usersEmail: String): Boolean {
-        val usersWithEmailAmount = getEntitiesAmount(QueryBuilder().whereEmailEquals(usersEmail).build())
+    private suspend fun checkUserRegistered(usersEmail: String): Boolean {
+        val usersWithEmailAmount =
+            getEntitiesAmount(QueryBuilder().whereEmailEquals(usersEmail).build())
 
         return usersWithEmailAmount > 0
     }
 
-    suspend fun registerUser(name: String, email: String) {
+    private suspend fun registerUser(name: String, email: String) {
         val documentReference = getCollection().document();
         val appUser = AppUser()
         appUser.id = documentReference.id

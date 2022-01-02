@@ -20,12 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.OwnersData
+import com.example.fitnessfactory_client.data.models.Owner
 import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.GuiUtils
 import com.example.fitnessfactory_client.utils.ResUtils
@@ -72,15 +72,32 @@ class AuthActivity : AppCompatActivity() {
 
         LaunchedEffect(key1 = Unit) {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.registerUiState.collect { uiState ->
+                viewModel.getRegisterUiState().collect { uiState ->
                     when (uiState) {
                         is RegisterUiState.Success ->
-                            showDialog = true
+                            viewModel.pickOwner(uiState.usersEmail)
                         is RegisterUiState.Error -> {
                             text = signInFailed
-                            GuiUtils.showMessage(uiState.exception.localizedMessage)
+                            viewModel.signOut()
                         }
-                        is RegisterUiState.Loading -> {}
+                    }
+                }
+            }
+        }
+
+        var ownersData by remember { mutableStateOf(OwnersData())}
+        LaunchedEffect(key1 = Unit) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getOwnersData().collect { uiState ->
+                    when (uiState) {
+                        is PickOwnerUiState.Success -> {
+                            ownersData = uiState.ownersData
+                            showDialog = true
+                        }
+                        is PickOwnerUiState.Error -> {
+                            text = signInFailed
+                            viewModel.signOut()
+                        }
                     }
                 }
             }
@@ -100,6 +117,7 @@ class AuthActivity : AppCompatActivity() {
                 }
             } catch (e: ApiException) {
                 text = signInFailed
+                viewModel.signOut()
                 GuiUtils.showMessage(e.localizedMessage)
             }
         }
@@ -112,12 +130,12 @@ class AuthActivity : AppCompatActivity() {
             })
 
         if (showDialog) {
-            DialogUtils.SingleSelectDialog(
+            DialogUtils.SingleGymOwnerSelectDialog(
                 title = ownerPickerDialogTitle,
-                optionsList = listOf("Owner1", "Owner2", "Owner3"),
-                onSubmitButtonClick = {item ->
+                ownersData = ownersData,
+                onSubmitButtonClick = {owner ->
                     run {
-                        GuiUtils.showMessage(item)
+                        GuiUtils.showMessage(owner.organisationName)
                         showDialog = false
                     }
                 },
