@@ -7,8 +7,8 @@ import androidx.compose.ui.unit.sp
 
 object SizeUtils {
 
-    val titleTextSize: TextUnit = 16.sp
-    val captionTextSize: TextUnit = 14.sp
+    val titleTextSize: TextUnit = 18.sp
+    val captionTextSize: TextUnit = 16.sp
     val dialogPadding: Dp = 16.dp
     val dialogListItemHeight: Dp = 40.dp
 }

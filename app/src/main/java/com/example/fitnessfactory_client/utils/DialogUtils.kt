@@ -1,6 +1,9 @@
 package com.example.fitnessfactory_client.utils
 
+import androidx.compose.ui.*
 import androidx.annotation.FloatRange
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,10 +22,12 @@ import com.example.fitnessfactory_client.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import com.example.fitnessfactory_client.data.beans.OwnersData
 import com.example.fitnessfactory_client.data.models.Owner
 import com.google.accompanist.pager.HorizontalPager
 import kotlinx.coroutines.launch
+import java.util.*
 
 object DialogUtils {
 
@@ -42,7 +47,9 @@ object DialogUtils {
             DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = false)
         ) {
             Surface(
-                modifier = Modifier.width(300.dp),
+                modifier = Modifier
+                    .width(300.dp)
+                    .wrapContentHeight(),
                 shape = RoundedCornerShape(10.dp)
             ) {
                 Column(modifier = Modifier.padding(SizeUtils.dialogPadding)) {
@@ -53,7 +60,7 @@ object DialogUtils {
                         fontWeight = FontWeight.Bold
                     )
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     val searchTabIndex = 0
                     val invitedTabIndex = 1
@@ -83,6 +90,10 @@ object DialogUtils {
                     }
 
                     HorizontalPager(
+                        verticalAlignment = Alignment.Top,
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth(),
                         state = pagerState
                     ) { index ->
                         Column(
@@ -125,32 +136,37 @@ object DialogUtils {
     }
 
     @Composable
-    private fun SearchOwnerTab(optionsList: List<Owner>,
-                               onSubmitButtonClick: (Owner) -> Unit) {
-        var text by remember { mutableStateOf("")}
+    private fun SearchOwnerTab(
+        optionsList: List<Owner>,
+        onSubmitButtonClick: (Owner) -> Unit
+    ) {
+        var text by remember { mutableStateOf("") }
         var optionsListValues by remember { mutableStateOf(optionsList) }
 
-        Column(verticalArrangement = Arrangement.Top) {
-            TextField(
-                value = text,
-                onValueChange = { value ->
-                    run {
-                        text = value
-                        optionsListValues =  optionsList.filter { it.organisationName.contains(value) }
-                    }
-                },
-                label = { Text(ResUtils.getString(R.string.caption_search_by_name)) }
-            )
-        }
 
+        TextField(
+            value = text,
+            onValueChange = { value ->
+                run {
+                    text = value
+                    optionsListValues =
+                        optionsList.filter {
+                            it.organisationName.lowercase(Locale.getDefault())
+                                .contains(value.lowercase(Locale.getDefault()))
+                        }
+                }
+            },
+            label = { Text(ResUtils.getString(R.string.caption_search_by_name)) }
+        )
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        LazyColumn(verticalArrangement = Arrangement.Center) {
+        LazyColumn {
             itemsIndexed(optionsListValues) { index, owner ->
                 Row(modifier = Modifier
                     .fillMaxWidth()
                     .height(SizeUtils.dialogListItemHeight)
+                    .padding(8.dp)
                     .clickable { onSubmitButtonClick(owner) }) {
                     Text(
                         text = owner.organisationName,

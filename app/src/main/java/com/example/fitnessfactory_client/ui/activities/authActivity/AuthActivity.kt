@@ -25,7 +25,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.OwnersData
-import com.example.fitnessfactory_client.data.models.Owner
 import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.GuiUtils
 import com.example.fitnessfactory_client.utils.ResUtils
@@ -68,6 +67,7 @@ class AuthActivity : AppCompatActivity() {
     fun AuthScreen(viewModel: AuthActivityViewModel) {
         var text by remember { mutableStateOf("")}
         var showDialog by remember { mutableStateOf(false)}
+        var isLoading by remember { mutableStateOf(false)}
         val signInRequestCode = 1
 
         LaunchedEffect(key1 = Unit) {
@@ -78,6 +78,7 @@ class AuthActivity : AppCompatActivity() {
                             viewModel.pickOwner(uiState.usersEmail)
                         is RegisterUiState.Error -> {
                             text = signInFailed
+                            isLoading = false
                             viewModel.signOut()
                         }
                     }
@@ -96,6 +97,7 @@ class AuthActivity : AppCompatActivity() {
                         }
                         is PickOwnerUiState.Error -> {
                             text = signInFailed
+                            isLoading = false
                             viewModel.signOut()
                         }
                     }
@@ -108,6 +110,7 @@ class AuthActivity : AppCompatActivity() {
                 val account = task?.getResult(ApiException::class.java)
                 if (account == null) {
                     text = signInFailed
+                    isLoading = false
                 } else {
                     account.displayName?.let { name ->
                         account.email?.let {
@@ -117,14 +120,17 @@ class AuthActivity : AppCompatActivity() {
                 }
             } catch (e: ApiException) {
                 text = signInFailed
+                isLoading = false
                 viewModel.signOut()
                 GuiUtils.showMessage(e.localizedMessage)
             }
         }
 
         AuthView(
+            isLoading = isLoading,
             errorText = text,
             onClick = {
+                isLoading = true
                 text = ""
                 authResultLauncher.launch(signInRequestCode)
             })
@@ -137,9 +143,15 @@ class AuthActivity : AppCompatActivity() {
                     run {
                         GuiUtils.showMessage(owner.organisationName)
                         showDialog = false
+                        isLoading = false
                     }
                 },
-                onDismissRequest = {showDialog = false}
+                onDismissRequest = {
+                    showDialog = false
+                    isLoading = false
+                    text = signInFailed
+                    viewModel.signOut()
+                }
             )
         }
     }
@@ -147,11 +159,10 @@ class AuthActivity : AppCompatActivity() {
     @ExperimentalMaterialApi
     @Composable
     fun AuthView(
+        isLoading: Boolean = false,
         errorText: String?,
         onClick: () -> Unit
     ) {
-        var isLoading by remember { mutableStateOf(false)}
-
         Scaffold {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -164,13 +175,11 @@ class AuthActivity : AppCompatActivity() {
                     isLoading = isLoading,
                     icon = painterResource(id = R.drawable.ic_google_logo),
                     onClick = {
-                        isLoading = true
                         onClick()
                     }
                 )
 
                 errorText?.let { errorMessage ->
-                    isLoading = false
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(text = errorMessage)
                 }
