@@ -4,10 +4,10 @@ import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.models.UsersAccessEntry
 import com.google.firebase.firestore.Query
 
-class UsersAccessRepository : BaseRepository() {
+class ClientsAccessRepository : BaseRepository() {
 
     override fun getRoot(): String =
-        FirestoreCollections.getUsersAccessCollection()
+        FirestoreCollections.getClientsAccessCollection()
 
     suspend fun getInvitedOwnersIds(usersEmail: String): List<String> {
         val ownersIds: ArrayList<String> = ArrayList()

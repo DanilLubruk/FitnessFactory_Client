@@ -2,7 +2,7 @@ package com.example.fitnessfactory_client.di
 
 import com.example.fitnessfactory_client.data.managers.AuthManager
 import com.example.fitnessfactory_client.data.repositories.OwnersRepository
-import com.example.fitnessfactory_client.data.repositories.UsersAccessRepository
+import com.example.fitnessfactory_client.data.repositories.ClientsAccessRepository
 import com.example.fitnessfactory_client.data.repositories.UsersRepository
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import dagger.Module
@@ -23,8 +23,8 @@ class AppModule {
 
     @AppScope
     @Provides
-    fun provideUsersAccessRepository(): UsersAccessRepository =
-        UsersAccessRepository()
+    fun provideUsersAccessRepository(): ClientsAccessRepository =
+        ClientsAccessRepository()
 
     @AppScope
     @Provides
@@ -34,11 +34,11 @@ class AppModule {
     @AppScope
     @Provides
     fun provideAuthManager(
-        usersAccessRepository: UsersAccessRepository,
+        clientsAccessRepository: ClientsAccessRepository,
         ownersRepository: OwnersRepository
     ): AuthManager =
         AuthManager(
-            usersAccessRepository = usersAccessRepository,
+            clientsAccessRepository = clientsAccessRepository,
             ownersRepository = ownersRepository
         )
 }

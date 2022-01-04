@@ -1,9 +1,6 @@
 package com.example.fitnessfactory_client.utils
 
-import androidx.compose.ui.*
 import androidx.annotation.FloatRange
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +19,6 @@ import com.example.fitnessfactory_client.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import com.example.fitnessfactory_client.data.beans.OwnersData
 import com.example.fitnessfactory_client.data.models.Owner
 import com.google.accompanist.pager.HorizontalPager

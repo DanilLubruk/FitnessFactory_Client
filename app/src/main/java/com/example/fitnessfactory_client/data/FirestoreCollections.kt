@@ -5,7 +5,7 @@ object FirestoreCollections {
     const val organisationDataCollectionValue: String = "organisationData"
     const val appDataCollectionValue: String = "appData"
     private const val usersCollection: String = "users"
-    private const val usersAccessCollection: String = "usersAccess"
+    private const val clientsAccessCollection: String = "clientsAccess"
     private const val ownersCollection: String = "owners"
 
     fun getBaseCollection(): String =
@@ -25,10 +25,10 @@ object FirestoreCollections {
                 "/" +
                 usersCollection
 
-    fun getUsersAccessCollection(): String =
+    fun getClientsAccessCollection(): String =
         appDataCollectionValue +
                 "/" +
-                usersAccessCollection +
+                clientsAccessCollection +
                 "/" +
-                usersCollection
+                clientsAccessCollection
 }
