@@ -97,11 +97,7 @@ object AuthScreen {
                         text = signInFailed
                         isLoading = false
                     } else {
-                        account.displayName?.let { name ->
-                            account.email?.let { email ->
-                                viewModel.registerUser(usersName = name, usersEmail = email)
-                            }
-                        }
+                        viewModel.registerUser(googleSignInAccount = account)
                     }
                 } catch (e: ApiException) {
                     text = signInFailed

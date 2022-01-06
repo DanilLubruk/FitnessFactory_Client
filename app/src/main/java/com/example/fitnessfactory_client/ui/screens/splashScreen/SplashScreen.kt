@@ -2,12 +2,18 @@ package com.example.fitnessfactory_client.ui.screens.splashScreen
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.utils.ResUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -37,6 +43,26 @@ object SplashScreen {
             }
         }
 
-        viewModel.checkLoggedIn()
+        LaunchedEffect(key1 = Unit) {
+            viewModel.checkLoggedIn()
+        }
+
+        Scaffold {
+            Surface {
+                Column {
+                    Text(text = ResUtils.getString(R.string.caption_greetings))
+                    Spacer(modifier = Modifier.height(5.dp))
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .height(16.dp)
+                            .width(16.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colors.primary
+                    )
+                }
+            }
+        }
+
+
     }
 }

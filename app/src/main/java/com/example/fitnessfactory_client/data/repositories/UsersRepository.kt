@@ -12,15 +12,12 @@ class UsersRepository : BaseRepository() {
     override fun getRoot(): String =
         FirestoreCollections.getUsersCollection()
 
-    fun registerUserOperation(usersName: String, usersEmail: String): Flow<Unit> =
-        flow {
-            val isRegistered = checkUserRegistered(usersEmail = usersEmail)
-            if (!isRegistered) {
-                registerUser(name = usersName, email = usersEmail)
-            }
-
-            emit(Unit)
+    suspend fun registerUserAsync(appUser: AppUser)  {
+        val isRegistered = checkUserRegistered(usersEmail = appUser.email)
+        if (!isRegistered) {
+            registerUser(appUser = appUser)
         }
+    }
 
     private suspend fun checkUserRegistered(usersEmail: String): Boolean {
         val usersWithEmailAmount =
@@ -29,12 +26,9 @@ class UsersRepository : BaseRepository() {
         return usersWithEmailAmount > 0
     }
 
-    private suspend fun registerUser(name: String, email: String) {
+    private suspend fun registerUser(appUser: AppUser) {
         val documentReference = getCollection().document();
-        val appUser = AppUser()
         appUser.id = documentReference.id
-        appUser.name = name
-        appUser.email = email
 
         documentReference.set(appUser).await()
     }

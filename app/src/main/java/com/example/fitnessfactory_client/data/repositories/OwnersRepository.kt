@@ -3,8 +3,6 @@ package com.example.fitnessfactory_client.data.repositories
 import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.models.OrganisationData
 import com.example.fitnessfactory_client.data.models.Owner
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 
@@ -23,7 +21,7 @@ class OwnersRepository: BaseRepository() {
         getQuerySnapshot(QueryBuilder().whereIdInArray(ownersIds = ownersIds).build()).documents
             .forEach { document ->
                 document.toObject(Owner::class.java)?.let {
-                    val owner = Owner()
+                    val owner = it
                     owner.organisationName =
                         getCollection()
                             .document(document.id)

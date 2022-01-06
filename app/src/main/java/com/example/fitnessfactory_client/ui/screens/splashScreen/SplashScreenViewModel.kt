@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.splashScreen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
@@ -19,7 +20,7 @@ class SplashScreenViewModel
 
     fun checkLoggedIn() {
         viewModelScope.launch {
-            firebaseAuthManager.isLoggedInFlow()
+            firebaseAuthManager.authStatusListenerFLow()
                 .flowOn(Dispatchers.IO)
                 .catch { throwable ->
                     throwable.printStackTrace()
@@ -27,6 +28,7 @@ class SplashScreenViewModel
                     mutableIsAuthState.emit(IsAuthState.Error(throwable = throwable))
                 }
                 .collect { isLoggedIn ->
+                    Log.d("TAG", "received result")
                     val authState =
                         if (isLoggedIn)
                             IsAuthState.LoggedIn()

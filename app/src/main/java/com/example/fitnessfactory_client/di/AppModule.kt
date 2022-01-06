@@ -34,10 +34,14 @@ class AppModule {
     @AppScope
     @Provides
     fun provideAuthManager(
+        firebaseAuthManager: FirebaseAuthManager,
+        usersRepository: UsersRepository,
         clientsAccessRepository: ClientsAccessRepository,
         ownersRepository: OwnersRepository
     ): AuthManager =
         AuthManager(
+            firebaseAuthManager = firebaseAuthManager,
+            usersRepository = usersRepository,
             clientsAccessRepository = clientsAccessRepository,
             ownersRepository = ownersRepository
         )

@@ -2,6 +2,7 @@ package com.example.fitnessfactory_client.ui.screens.appScreen
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -18,7 +19,10 @@ import com.example.fitnessfactory_client.ui.Components
 import com.example.fitnessfactory_client.ui.screens.Screens
 import com.example.fitnessfactory_client.ui.screens.authScreen.*
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreen
+import com.example.fitnessfactory_client.ui.screens.splashScreen.IsAuthState
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreen
+import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModel
+import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModelFactory
 import com.example.fitnessfactory_client.utils.GuiUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,6 +37,7 @@ class AppScreen : AppCompatActivity() {
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("TAG", "main screen init")
 
         setContent {
             val navController = rememberNavController()
@@ -58,8 +63,14 @@ class AppScreen : AppCompatActivity() {
                 drawerState.open()
             }
         }
+        val closeDrawer = {
+            scope.launch {
+                drawerState.close()
+            }
+        }
         val logout = {
             navController.navigate(Screens.AUTH_SCREEN)
+            closeDrawer()
         }
         LaunchedEffect(key1 = Unit) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -78,9 +89,7 @@ class AppScreen : AppCompatActivity() {
             drawerContent = {
                 Components.Drawer(
                     onDestinationClicked = { route ->
-                        scope.launch {
-                            drawerState.close()
-                        }
+                        closeDrawer()
 
                         navController.navigate(route)
                     },

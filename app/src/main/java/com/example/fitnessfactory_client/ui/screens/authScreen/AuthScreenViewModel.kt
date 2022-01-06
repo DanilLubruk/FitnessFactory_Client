@@ -6,6 +6,7 @@ import com.example.fitnessfactory_client.data.managers.AuthManager
 import com.example.fitnessfactory_client.data.repositories.UsersRepository
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import com.example.fitnessfactory_client.utils.GuiUtils
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -27,9 +28,9 @@ class AuthScreenViewModel
     fun getOwnersData(): Flow<PickOwnerUiState> =
         ownersDataChannel.consumeAsFlow()
 
-    fun registerUser(usersName: String, usersEmail: String) {
+    fun registerUser(googleSignInAccount: GoogleSignInAccount) {
         viewModelScope.launch {
-            usersRepository.registerUserOperation(usersName = usersName, usersEmail = usersEmail)
+            authManager.handleSignInResult(googleSignInAccount = googleSignInAccount)
                 .flowOn(Dispatchers.IO)
                 .catch { throwable ->
                     throwable.printStackTrace()
@@ -37,7 +38,7 @@ class AuthScreenViewModel
                     registerUiStateChannel.send(RegisterUiState.Error(throwable))
                 }
                 .collect {
-                    registerUiStateChannel.send(RegisterUiState.Success(usersEmail = usersEmail))
+                    registerUiStateChannel.send(RegisterUiState.Success(usersEmail = it.email))
                 }
         }
     }

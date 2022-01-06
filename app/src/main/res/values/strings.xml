@@ -10,4 +10,5 @@
     <string name="title_coaches_screen">Coaches</string>
     <string name="title_session_types_screen">Session types</string>
     <string name="message_error_signout">Couldn\'t sign out properly!</string>
+    <string name="caption_greetings">Welcome to FitnessFactory!</string>
 </resources>
