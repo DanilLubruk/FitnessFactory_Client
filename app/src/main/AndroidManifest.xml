@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FitnessFactory_Client">
         <activity
-            android:name=".ui.activities.authActivity.AuthActivity"
+            android:name=".ui.screens.appScreen.AppScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

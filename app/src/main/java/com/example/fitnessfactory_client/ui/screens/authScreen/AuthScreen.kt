@@ -1,9 +1,6 @@
-package com.example.fitnessfactory_client.ui.activities.authActivity
+package com.example.fitnessfactory_client.ui.screens.authScreen
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -21,9 +18,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.AppPrefs
 import com.example.fitnessfactory_client.data.beans.OwnersData
 import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.GuiUtils
@@ -32,31 +30,13 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class AuthActivity : AppCompatActivity() {
+object AuthScreen {
 
-    private lateinit var viewModel: AuthActivityViewModel
     private val signInFailed: String = ResUtils.getString(R.string.message_error_sign_in_failed)
     private val signInCaption: String = ResUtils.getString(R.string.caption_sing_in_button)
     private val signInProcessCaption: String = ResUtils.getString(R.string.caption_sign_in_process)
     private val ownerPickerDialogTitle: String = ResUtils.getString(R.string.title_owner_picker)
-    private val signInButtonDescription: String = "SignInButton"
-
-    @ExperimentalPagerApi
-    @ExperimentalAnimationApi
-    @ExperimentalFoundationApi
-    @ExperimentalCoroutinesApi
-    @ExperimentalMaterialApi
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            AuthActivityViewModelFactory()
-        ).get(AuthActivityViewModel::class.java)
-
-        setContent {
-            AuthScreen(viewModel)
-        }
-    }
+    private const val signInButtonDescription: String = "SignInButton"
 
     @ExperimentalPagerApi
     @ExperimentalAnimationApi
@@ -64,14 +44,18 @@ class AuthActivity : AppCompatActivity() {
     @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
     @Composable
-    fun AuthScreen(viewModel: AuthActivityViewModel) {
-        var text by remember { mutableStateOf("")}
-        var showDialog by remember { mutableStateOf(false)}
-        var isLoading by remember { mutableStateOf(false)}
+    fun AuthScreen(
+        lifecycle: Lifecycle,
+        openHomeScreen: () -> Unit
+    ) {
+        val viewModel: AuthScreenViewModel = viewModel(factory = AuthScreenViewModelFactory())
+        var text by remember { mutableStateOf("") }
+        var showDialog by remember { mutableStateOf(false) }
+        var isLoading by remember { mutableStateOf(false) }
         val signInRequestCode = 1
 
         LaunchedEffect(key1 = Unit) {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getRegisterUiState().collect { uiState ->
                     when (uiState) {
                         is RegisterUiState.Success ->
@@ -86,9 +70,9 @@ class AuthActivity : AppCompatActivity() {
             }
         }
 
-        var ownersData by remember { mutableStateOf(OwnersData())}
+        var ownersData by remember { mutableStateOf(OwnersData()) }
         LaunchedEffect(key1 = Unit) {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getOwnersData().collect { uiState ->
                     when (uiState) {
                         is PickOwnerUiState.Success -> {
@@ -105,26 +89,27 @@ class AuthActivity : AppCompatActivity() {
             }
         }
 
-        val authResultLauncher = rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
-            try {
-                val account = task?.getResult(ApiException::class.java)
-                if (account == null) {
-                    text = signInFailed
-                    isLoading = false
-                } else {
-                    account.displayName?.let { name ->
-                        account.email?.let {
-                                email -> viewModel.registerUser(usersName = name, usersEmail = email)
+        val authResultLauncher =
+            rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
+                try {
+                    val account = task?.getResult(ApiException::class.java)
+                    if (account == null) {
+                        text = signInFailed
+                        isLoading = false
+                    } else {
+                        account.displayName?.let { name ->
+                            account.email?.let { email ->
+                                viewModel.registerUser(usersName = name, usersEmail = email)
+                            }
                         }
                     }
+                } catch (e: ApiException) {
+                    text = signInFailed
+                    isLoading = false
+                    viewModel.signOut()
+                    GuiUtils.showMessage(e.localizedMessage)
                 }
-            } catch (e: ApiException) {
-                text = signInFailed
-                isLoading = false
-                viewModel.signOut()
-                GuiUtils.showMessage(e.localizedMessage)
             }
-        }
 
         AuthView(
             isLoading = isLoading,
@@ -139,11 +124,12 @@ class AuthActivity : AppCompatActivity() {
             DialogUtils.SingleGymOwnerSelectDialog(
                 title = ownerPickerDialogTitle,
                 ownersData = ownersData,
-                onSubmitButtonClick = {owner ->
+                onSubmitButtonClick = { owner ->
                     run {
-                        GuiUtils.showMessage(owner.organisationName)
+                        AppPrefs.gymOwnerId().value = owner.id
                         showDialog = false
                         isLoading = false
+                        openHomeScreen()
                     }
                 },
                 onDismissRequest = {
@@ -214,8 +200,13 @@ class AuthActivity : AppCompatActivity() {
                         )
                     ),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center) {
-                Icon(painter = icon, contentDescription = signInButtonDescription, tint = Color.Unspecified)
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    painter = icon,
+                    contentDescription = signInButtonDescription,
+                    tint = Color.Unspecified
+                )
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(text = if (isLoading) loadingText else captionText)

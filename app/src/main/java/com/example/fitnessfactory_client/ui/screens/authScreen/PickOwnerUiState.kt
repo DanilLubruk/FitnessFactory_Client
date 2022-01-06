@@ -1,7 +1,6 @@
-package com.example.fitnessfactory_client.ui.activities.authActivity
+package com.example.fitnessfactory_client.ui.screens.authScreen
 
 import com.example.fitnessfactory_client.data.beans.OwnersData
-import com.example.fitnessfactory_client.data.models.Owner
 
 sealed class PickOwnerUiState {
     data class Success(val ownersData: OwnersData): PickOwnerUiState()

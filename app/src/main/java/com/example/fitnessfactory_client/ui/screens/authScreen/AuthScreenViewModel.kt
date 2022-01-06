@@ -1,4 +1,4 @@
-package com.example.fitnessfactory_client.ui.activities.authActivity
+package com.example.fitnessfactory_client.ui.screens.authScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AuthActivityViewModel
+class AuthScreenViewModel
 @Inject constructor(
     private val firebaseAuthManager: FirebaseAuthManager,
     private val authManager: AuthManager,

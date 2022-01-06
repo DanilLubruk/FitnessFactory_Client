@@ -1,8 +1,13 @@
 <resources>
-    <string name="app_name">FitnessFactory_Client</string>
+    <string name="app_name">FitnessFactory</string>
     <string name="message_error_sign_in_failed">Google sign in failed...</string>
     <string name="caption_sing_in_button">Sign in with Google</string>
     <string name="caption_sign_in_process">Singing in...</string>
     <string name="title_owner_picker">Pick your gyms chain</string>
     <string name="caption_search_by_name">Search by name</string>
+    <string name="title_home_screen">Home</string>
+    <string name="title_sessions_screen">My sessions</string>
+    <string name="title_coaches_screen">Coaches</string>
+    <string name="title_session_types_screen">Session types</string>
+    <string name="message_error_signout">Couldn\'t sign out properly!</string>
 </resources>

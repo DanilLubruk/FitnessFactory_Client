@@ -12,15 +12,25 @@ import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthManager(private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()) {
 
-    fun signOutFlow(): Flow<Unit> =
+    fun isLoggedInFlow(): Flow<Boolean> =
         flow {
-            signOut()
-            emit(Unit)
+            emit(isLoggedIn())
         }
 
-    private suspend fun signOut() {
+    private fun isLoggedIn(): Boolean =
+        mAuth.currentUser != null
+
+    fun signOutFlow(): Flow<Boolean> =
+        flow {
+            emit(signOut())
+        }
+
+    private suspend fun signOut(): Boolean {
         mAuth.signOut()
-        signOutGoogle()
+        val isFirebaseSignedOut = mAuth.currentUser == null
+        val isGoogleSignedOut = signOutGoogle()
+
+        return isFirebaseSignedOut && isGoogleSignedOut
     }
 
     private suspend fun signOutGoogle(): Boolean {

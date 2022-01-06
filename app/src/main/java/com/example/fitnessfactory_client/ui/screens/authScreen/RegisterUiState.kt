@@ -1,4 +1,4 @@
-package com.example.fitnessfactory_client.ui.activities.authActivity
+package com.example.fitnessfactory_client.ui.screens.authScreen
 
 sealed class RegisterUiState {
     data class Success(var usersEmail: String): RegisterUiState()

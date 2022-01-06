@@ -52,8 +52,7 @@ object DialogUtils {
 
                     Text(
                         text = title,
-                        fontSize = SizeUtils.titleTextSize,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.h4
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -167,7 +166,7 @@ object DialogUtils {
                     Text(
                         text = owner.organisationName,
                         textAlign = TextAlign.Start,
-                        fontSize = SizeUtils.captionTextSize
+                        style = MaterialTheme.typography.body1
                     )
                 }
             }
