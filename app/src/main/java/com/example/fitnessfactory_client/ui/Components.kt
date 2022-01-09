@@ -35,14 +35,14 @@ object Components {
             .padding(start = 24.dp, top = 48.dp)) {
             Text(
                 text = ResUtils.getString(R.string.app_name),
-                style = MaterialTheme.typography.h3
+                style = MaterialTheme.typography.h4
             )
 
             DrawerScreens.getDrawerScreens().forEach { screen ->
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     text = screen.title,
-                    style = MaterialTheme.typography.h4,
+                    style = MaterialTheme.typography.body1,
                     modifier = Modifier.clickable {
                         onDestinationClicked(screen.navRoute)
                     }
@@ -50,6 +50,7 @@ object Components {
             }
 
             Column(
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.Start) {
                 IconButton(onClick = { logout() } ) {

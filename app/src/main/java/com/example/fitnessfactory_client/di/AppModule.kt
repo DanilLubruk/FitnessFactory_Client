@@ -1,8 +1,10 @@
 package com.example.fitnessfactory_client.di
 
+import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
 import com.example.fitnessfactory_client.data.managers.AuthManager
 import com.example.fitnessfactory_client.data.repositories.OwnersRepository
 import com.example.fitnessfactory_client.data.repositories.ClientsAccessRepository
+import com.example.fitnessfactory_client.data.repositories.SessionViewRepository
 import com.example.fitnessfactory_client.data.repositories.UsersRepository
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import dagger.Module
@@ -45,4 +47,14 @@ class AppModule {
             clientsAccessRepository = clientsAccessRepository,
             ownersRepository = ownersRepository
         )
+
+    @AppScope
+    @Provides
+    fun provideSessionViewRepository() =
+        SessionViewRepository()
+
+    @AppScope
+    @Provides
+    fun provideDaysSessionsListListener() =
+        DaysSessionsListListener()
 }

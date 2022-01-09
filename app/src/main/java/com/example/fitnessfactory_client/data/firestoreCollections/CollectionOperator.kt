@@ -17,4 +17,7 @@ abstract class CollectionOperator {
     }
 
     protected abstract fun getRoot(): String
+
+    protected fun getFirestore(): FirebaseFirestore =
+        FirebaseFirestore.getInstance()
 }

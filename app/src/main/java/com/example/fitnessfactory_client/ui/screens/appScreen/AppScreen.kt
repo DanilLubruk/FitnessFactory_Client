@@ -19,6 +19,7 @@ import com.example.fitnessfactory_client.ui.Components
 import com.example.fitnessfactory_client.ui.screens.Screens
 import com.example.fitnessfactory_client.ui.screens.authScreen.*
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreen
+import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsListScreen
 import com.example.fitnessfactory_client.ui.screens.splashScreen.IsAuthState
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreen
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModel
@@ -117,6 +118,12 @@ class AppScreen : AppCompatActivity() {
                     HomeScreen.HomeScreen(
                         openDrawer = { openDrawer() },
                         logout = { viewModel.logout() }
+                    )
+                }
+                composable(Screens.MY_SESSIONS_SCREEN) {
+                    MySessionsListScreen.MySessionsListScreen(
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() }
                     )
                 }
             }
