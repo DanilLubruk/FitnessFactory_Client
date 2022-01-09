@@ -9,6 +9,8 @@ import java.util.*
 
 object TimeUtils {
 
+    const val MEDIUM_DATE_FORMAT = "d MMM YYYY"
+
     fun getStartOfDayDate(date: Date?): Date {
         if (date != null) {
             val calendar = Calendar.getInstance()

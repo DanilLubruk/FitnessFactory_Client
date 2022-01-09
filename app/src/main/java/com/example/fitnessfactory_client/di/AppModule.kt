@@ -2,10 +2,8 @@ package com.example.fitnessfactory_client.di
 
 import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
 import com.example.fitnessfactory_client.data.managers.AuthManager
-import com.example.fitnessfactory_client.data.repositories.OwnersRepository
-import com.example.fitnessfactory_client.data.repositories.ClientsAccessRepository
-import com.example.fitnessfactory_client.data.repositories.SessionViewRepository
-import com.example.fitnessfactory_client.data.repositories.UsersRepository
+import com.example.fitnessfactory_client.data.managers.SessionsDataManager
+import com.example.fitnessfactory_client.data.repositories.*
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import dagger.Module
 import dagger.Provides
@@ -57,4 +55,34 @@ class AppModule {
     @Provides
     fun provideDaysSessionsListListener() =
         DaysSessionsListListener()
+
+    @AppScope
+    @Provides
+    fun provideSessionsDataManager(
+        firebaseAuthManager: FirebaseAuthManager,
+        ownerClientRepository: OwnerClientRepository,
+        sessionsRepository: SessionsRepository,
+        clientSessionsRepository: ClientSessionsRepository
+    ) =
+        SessionsDataManager(
+            firebaseAuthManager = firebaseAuthManager,
+            ownerClientRepository = ownerClientRepository,
+            sessionsRepository = sessionsRepository,
+            clientSessionsRepository = clientSessionsRepository
+        )
+
+    @AppScope
+    @Provides
+    fun provideOwnerClientRepository() =
+        OwnerClientRepository()
+
+    @AppScope
+    @Provides
+    fun provideSessionsRepository() =
+        SessionsRepository()
+
+    @AppScope
+    @Provides
+    fun provideClientSessionsRepository() =
+        ClientSessionsRepository()
 }

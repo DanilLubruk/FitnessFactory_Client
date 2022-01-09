@@ -10,6 +10,7 @@ object FirestoreCollections {
     private const val sessionsCollection: String = "sessions"
     private const val sessionTypesCollection: String = "sessionTypes"
     private const val gymsCollection: String = "gyms"
+    private const val clientsCollection: String = "clients"
 
     fun getBaseCollection(): String =
         ownersCollection +
@@ -55,4 +56,18 @@ object FirestoreCollections {
                 gymsCollection +
                 "/" +
                 gymsCollection
+
+    fun getOwnerClientsCollection(): String =
+        getBaseCollection() +
+                "/" +
+                clientsCollection +
+                "/" +
+                clientsCollection
+
+    fun getClientSessionsCollection(clientId: String): String =
+        getOwnerClientsCollection() +
+                "/" +
+                clientId +
+                "/" +
+                sessionsCollection
 }
