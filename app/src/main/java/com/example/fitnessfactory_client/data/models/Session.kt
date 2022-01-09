@@ -13,7 +13,7 @@ class Session() {
         const val GYM_ID_FIELD = "gymId"
         const val SESSION_TYPE_ID_FIELD = "sessionTypeId"
         const val COACHES_IDS_FIELD = "coachesIds"
-        const val CLIENTS_IDS_FIELD = "clientsIds"
+        const val CLIENTS_EMAILS_FIELD = "clientsEmails"
     }
 
     lateinit var id: String
@@ -47,7 +47,7 @@ class Session() {
     lateinit var gymId: String
     lateinit var sessionTypeId: String
     var coachesIds: List<String>? = null
-    var clientsIds: List<String>? = null
+    var clientsEmails: List<String>? = null
 
     private fun correctStartEndTimeDay() {
         if (!TimeUtils.isTheSameDay(date, startTime)) {

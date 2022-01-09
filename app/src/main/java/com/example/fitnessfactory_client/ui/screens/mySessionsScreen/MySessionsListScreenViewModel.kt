@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
 import com.example.fitnessfactory_client.data.repositories.SessionViewRepository
+import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import com.example.fitnessfactory_client.utils.GuiUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 class MySessionsListScreenViewModel
 @Inject constructor(
+    private val firebaseAuthManager: FirebaseAuthManager,
     private val sessionViewRepository: SessionViewRepository,
     private val daysSessionsListListener: DaysSessionsListListener
 ) : ViewModel() {
@@ -22,17 +24,19 @@ class MySessionsListScreenViewModel
 
     fun startDataListener(date: Date) {
         viewModelScope.launch {
-            daysSessionsListListener.startDataListener(date = date)
-                .flowOn(Dispatchers.IO)
-                .catch { throwable ->
-                    throwable.printStackTrace()
-                    GuiUtils.showMessage(throwable.localizedMessage)
-                    mutableSessionsListState.emit(SessionsListState.Error(throwable = throwable))
-                }
-                .collect { sessions ->
-                    val sessionViews = sessionViewRepository.getSessionViewsList(sessionsList = sessions)
-                    mutableSessionsListState.emit(SessionsListState.Loaded(sessionViews))
-                }
+            firebaseAuthManager.getCurrentUserEmail()?.let { usersEmail ->
+                daysSessionsListListener.startDataListener(date = date, usersEmail = usersEmail)
+                    .flowOn(Dispatchers.IO)
+                    .catch { throwable ->
+                        throwable.printStackTrace()
+                        GuiUtils.showMessage(throwable.localizedMessage)
+                        mutableSessionsListState.emit(SessionsListState.Error(throwable = throwable))
+                    }
+                    .collect { sessions ->
+                        val sessionViews = sessionViewRepository.getSessionViewsList(sessionsList = sessions)
+                        mutableSessionsListState.emit(SessionsListState.Loaded(sessionViews))
+                    }
+            }
         }
     }
 }

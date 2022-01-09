@@ -20,6 +20,9 @@ import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthManager(private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()) {
 
+    suspend fun getCurrentUserEmail(): String? =
+        mAuth.currentUser?.email
+
     suspend fun handleSignIn(googleSignInAccount: GoogleSignInAccount): AppUser {
         val authCredentials = getCredentials(googleSignInAccount)
         mAuth.signInWithCredential(authCredentials).await()
@@ -37,7 +40,6 @@ class FirebaseAuthManager(private val mAuth: FirebaseAuth = FirebaseAuth.getInst
 
     private fun getCredentials(signInAccount: GoogleSignInAccount): AuthCredential =
         GoogleAuthProvider.getCredential(signInAccount.idToken, null)
-
 
     fun authStatusListenerFLow(): Flow<Boolean> =
         callbackFlow {
