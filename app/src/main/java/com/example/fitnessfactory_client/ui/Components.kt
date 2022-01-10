@@ -43,7 +43,9 @@ object Components {
                 Text(
                     text = screen.title,
                     style = MaterialTheme.typography.body1,
-                    modifier = Modifier.clickable {
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
                         onDestinationClicked(screen.navRoute)
                     }
                 )

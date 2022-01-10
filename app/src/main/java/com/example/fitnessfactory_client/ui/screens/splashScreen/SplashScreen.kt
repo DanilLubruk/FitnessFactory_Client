@@ -28,7 +28,8 @@ object SplashScreen {
     fun SplashScreen(
         lifecycle: Lifecycle,
         openAuthScreen: () -> Unit,
-        openHomeScreen: () -> Unit) {
+        openHomeScreen: () -> Unit
+    ) {
         val viewModel: SplashScreenViewModel = viewModel(factory = SplashScreenViewModelFactory())
 
         LaunchedEffect(key1 = Unit) {
@@ -49,7 +50,11 @@ object SplashScreen {
 
         Scaffold {
             Surface {
-                Column {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(text = ResUtils.getString(R.string.caption_greetings))
                     Spacer(modifier = Modifier.height(5.dp))
                     CircularProgressIndicator(

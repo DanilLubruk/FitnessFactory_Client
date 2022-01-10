@@ -36,6 +36,11 @@ class Session() {
             field = value
             correctStartEndTimeDay()
         }
+    var startTimeString: String = ""
+        get() {
+            return TimeUtils.dateTo24HoursTime(date = startTime)
+        }
+        set
 
     var endTime: Date? = null
         get
@@ -43,6 +48,11 @@ class Session() {
             field = value
             correctStartEndTimeDay()
         }
+    var endTimeString: String = ""
+        get() {
+            return TimeUtils.dateTo24HoursTime(date = endTime)
+        }
+        set
 
     lateinit var gymId: String
     lateinit var sessionTypeId: String

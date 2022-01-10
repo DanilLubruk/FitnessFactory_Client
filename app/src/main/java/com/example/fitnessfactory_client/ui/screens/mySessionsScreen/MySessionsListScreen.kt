@@ -11,15 +11,19 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -88,7 +92,7 @@ object MySessionsListScreen {
                 }
             }
 
-            var date by remember { mutableStateOf(Date()) }
+            var date by rememberSaveable { mutableStateOf(Date()) }
             val setDate: (Date) -> Unit = {
                 date = it
             }
@@ -181,7 +185,28 @@ object MySessionsListScreen {
         sessionsList: List<SessionView>,
         unsubscribeSession: (String) -> Unit
     ) {
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
+        var showDialog by remember { mutableStateOf(false) }
+        var sessionId by remember { mutableStateOf("") }
+        if (showDialog) {
+            DialogUtils.YesNoDialog(
+                onOkPress = {
+                    unsubscribeSession(sessionId)
+                    showDialog = false
+                },
+                onDismissRequest = { showDialog = false },
+                questionText = ResUtils.getString(R.string.message_unsubscribe_from_session)
+            )
+        }
+
+        LazyColumn(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .background(
+                    color = colorResource(id = R.color.royalBlue),
+                    shape = RoundedCornerShape(10.dp)
+                )
+        ) {
             itemsIndexed(sessionsList) { index, item ->
                 Column(modifier = Modifier
                     .fillMaxWidth()
@@ -189,14 +214,81 @@ object MySessionsListScreen {
                         detectTapGestures(
                             onPress = { },
                             onDoubleTap = { },
-                            onLongPress = { unsubscribeSession(item.session.id) },
+                            onLongPress = {
+                                sessionId = item.session.id
+                                showDialog = true
+                            },
                             onTap = { }
                         )
                     }) {
-
-                    Text(text = item.session.dateString, style = MaterialTheme.typography.body1)
-                    Text(text = item.gymName, style = MaterialTheme.typography.body1)
-                    Text(text = item.sessionTypeName, style = MaterialTheme.typography.body1)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 4.dp)
+                    ) {
+                        Column(horizontalAlignment = Alignment.Start) {
+                            Text(
+                                text = item.gymName,
+                                color = Color.White,
+                                style = MaterialTheme.typography.body1,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Row {
+                                Text(
+                                    text = "from",
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.body1
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(
+                                    color = Color.White,
+                                    text = item.session.startTimeString,
+                                    style = MaterialTheme.typography.body1,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                    ) {
+                        Column(horizontalAlignment = Alignment.Start) {
+                            Text(
+                                color = Color.White,
+                                text = item.sessionTypeName,
+                                style = MaterialTheme.typography.body1
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Row {
+                                Text(
+                                    text = "until",
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.body1
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(
+                                    text = item.session.endTimeString,
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.body1,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }

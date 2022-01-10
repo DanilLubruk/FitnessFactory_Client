@@ -21,6 +21,7 @@ import com.example.fitnessfactory_client.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.fitnessfactory_client.data.beans.OwnersData
 import com.example.fitnessfactory_client.data.models.Owner
@@ -292,15 +293,14 @@ object DialogUtils {
                         .defaultMinSize(minHeight = 72.dp)
                         .fillMaxWidth()
                         .background(
-                            color = MaterialTheme.colors.primary,
+                            color = Color.White,
                             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                         )
                         .padding(16.dp)
                 ) {
                     Text(
                         text = questionText,
-                        style = MaterialTheme.typography.h4,
-                        color = MaterialTheme.colors.onPrimary
+                        style = MaterialTheme.typography.body1
                     )
                 }
 
