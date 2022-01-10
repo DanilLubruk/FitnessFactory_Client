@@ -241,7 +241,7 @@ object MySessionsListScreen {
                         ) {
                             Row {
                                 Text(
-                                    text = "from",
+                                    text = ResUtils.getString(R.string.caption_from),
                                     color = Color.White,
                                     style = MaterialTheme.typography.body1
                                 )
@@ -275,7 +275,7 @@ object MySessionsListScreen {
                         ) {
                             Row {
                                 Text(
-                                    text = "until",
+                                    text = ResUtils.getString(R.string.caption_until),
                                     color = Color.White,
                                     style = MaterialTheme.typography.body1
                                 )
