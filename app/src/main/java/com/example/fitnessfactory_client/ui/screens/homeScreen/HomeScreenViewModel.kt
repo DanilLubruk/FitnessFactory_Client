@@ -14,7 +14,6 @@ import java.util.*
 import javax.inject.Inject
 
 class HomeScreenViewModel @Inject constructor(
-    private val firebaseAuthManager: FirebaseAuthManager,
     private val sessionViewRepository: SessionViewRepository,
     private val daysSessionsListListener: DaysSessionsListListener
 ) : ViewModel() {
@@ -25,21 +24,19 @@ class HomeScreenViewModel @Inject constructor(
 
     fun startDataListener(date: Date) {
         viewModelScope.launch {
-            firebaseAuthManager.getCurrentUserEmail()?.let { usersEmail ->
-                daysSessionsListListener.startDataListener(date = date, usersEmail = usersEmail)
-                    .map { sessions ->
-                        sessionViewRepository.getSessionViewsList(sessionsList = sessions)
-                    }
-                    .flowOn(Dispatchers.IO)
-                    .catch { throwable ->
-                        throwable.printStackTrace()
-                        GuiUtils.showMessage(throwable.localizedMessage)
-                        mutableSessionsListState.emit(SessionViewsListState.Error(throwable = throwable))
-                    }
-                    .collect { sessionViews ->
-                        mutableSessionsListState.emit(SessionViewsListState.Loaded(sessionViews))
-                    }
-            }
+            daysSessionsListListener.startDataListener(date = date)
+                .map { sessions ->
+                    sessionViewRepository.getSessionViewsList(sessionsList = sessions)
+                }
+                .flowOn(Dispatchers.IO)
+                .catch { throwable ->
+                    throwable.printStackTrace()
+                    GuiUtils.showMessage(throwable.localizedMessage)
+                    mutableSessionsListState.emit(SessionViewsListState.Error(throwable = throwable))
+                }
+                .collect { sessionViews ->
+                    mutableSessionsListState.emit(SessionViewsListState.Loaded(sessionViews))
+                }
         }
     }
 }

@@ -11,16 +11,17 @@ import kotlinx.coroutines.flow.callbackFlow
 import java.lang.Exception
 import java.util.*
 
-class DaysSessionsListListener: BaseDataListener() {
+class DaysUsersSessionsListListener : BaseDataListener() {
 
     override fun getRoot(): String =
         FirestoreCollections.getSessionsCollection()
 
-    fun startDataListener(date: Date): Flow<List<Session>> =
+    fun startDataListener(date: Date, usersEmail: String): Flow<List<Session>> =
         callbackFlow {
             listenerRegistration = getCollection()
                 .whereGreaterThan(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(date = date))
                 .whereLessThan(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(date = date))
+                .whereArrayContains(Session.CLIENTS_EMAILS_FIELD, usersEmail)
                 .addSnapshotListener { value, error ->
                     if (error != null) {
                         throw error

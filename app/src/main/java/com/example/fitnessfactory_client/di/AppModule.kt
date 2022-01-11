@@ -1,6 +1,7 @@
 package com.example.fitnessfactory_client.di
 
 import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
+import com.example.fitnessfactory_client.data.dataListeners.DaysUsersSessionsListListener
 import com.example.fitnessfactory_client.data.dataListeners.SessionsCalendarListListener
 import com.example.fitnessfactory_client.data.managers.AuthManager
 import com.example.fitnessfactory_client.data.managers.SessionsDataManager
@@ -56,6 +57,11 @@ class AppModule {
     @Provides
     fun provideDaysSessionsListListener() =
         DaysSessionsListListener()
+
+    @AppScope
+    @Provides
+    fun provideDaysUsersSessionsListListener() =
+        DaysUsersSessionsListListener()
 
     @AppScope
     @Provides

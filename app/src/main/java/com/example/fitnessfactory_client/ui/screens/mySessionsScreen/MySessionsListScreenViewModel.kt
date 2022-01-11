@@ -2,7 +2,7 @@ package com.example.fitnessfactory_client.ui.screens.mySessionsScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
+import com.example.fitnessfactory_client.data.dataListeners.DaysUsersSessionsListListener
 import com.example.fitnessfactory_client.data.managers.SessionsDataManager
 import com.example.fitnessfactory_client.data.repositories.SessionViewRepository
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
@@ -17,7 +17,7 @@ class MySessionsListScreenViewModel
 @Inject constructor(
     private val firebaseAuthManager: FirebaseAuthManager,
     private val sessionViewRepository: SessionViewRepository,
-    private val daysSessionsListListener: DaysSessionsListListener,
+    private val daysUsersSessionsListListener: DaysUsersSessionsListListener,
     private val sessionsDataManager: SessionsDataManager
 ) : ViewModel() {
 
@@ -27,7 +27,7 @@ class MySessionsListScreenViewModel
     fun startDataListener(date: Date) {
         viewModelScope.launch {
             firebaseAuthManager.getCurrentUserEmail()?.let { usersEmail ->
-                daysSessionsListListener.startDataListener(date = date, usersEmail = usersEmail)
+                daysUsersSessionsListListener.startDataListener(date = date, usersEmail = usersEmail)
                     .map { sessions ->
                         sessionViewRepository.getSessionViewsList(sessionsList = sessions)
                     }
