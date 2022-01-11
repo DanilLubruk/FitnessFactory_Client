@@ -15,7 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.fitnessfactory_client.ui.Components
+import com.example.fitnessfactory_client.ui.components.Drawer
 import com.example.fitnessfactory_client.ui.screens.Screens
 import com.example.fitnessfactory_client.ui.screens.authScreen.*
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreen
@@ -88,7 +88,7 @@ class AppScreen : AppCompatActivity() {
             drawerState = drawerState,
             gesturesEnabled = drawerState.isOpen,
             drawerContent = {
-                Components.Drawer(
+                Drawer.Drawer(
                     onDestinationClicked = { route ->
                         closeDrawer()
 

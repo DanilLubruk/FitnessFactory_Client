@@ -3,10 +3,12 @@ package com.example.fitnessfactory_client.ui.screens.homeScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
+import com.example.fitnessfactory_client.data.managers.CoachesAccessManager
 import com.example.fitnessfactory_client.data.managers.SessionsDataManager
 import com.example.fitnessfactory_client.data.repositories.SessionViewRepository
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.SessionViewsListState
+import com.example.fitnessfactory_client.ui.uiState.UsersListState
 import com.example.fitnessfactory_client.utils.GuiUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -17,12 +19,16 @@ import javax.inject.Inject
 class HomeScreenViewModel @Inject constructor(
     private val sessionsDataManager: SessionsDataManager,
     private val sessionViewRepository: SessionViewRepository,
-    private val daysSessionsListListener: DaysSessionsListListener
+    private val daysSessionsListListener: DaysSessionsListListener,
+    private val coachesAccessManager: CoachesAccessManager
 ) : ViewModel() {
 
     private val mutableSessionsListState =
         MutableStateFlow<SessionViewsListState>(SessionViewsListState.Loading)
     val sessionViewsListState: StateFlow<SessionViewsListState> = mutableSessionsListState
+
+    private val mutableCoachesListState = MutableSharedFlow<UsersListState>()
+    val coachesListState: SharedFlow<UsersListState> = mutableCoachesListState
 
     fun startDataListener(date: Date) {
         viewModelScope.launch {
@@ -51,6 +57,21 @@ class HomeScreenViewModel @Inject constructor(
                     GuiUtils.showMessage(throwable.localizedMessage)
                 }
                 .collect()
+        }
+    }
+
+    fun fetchCoachUsers(coachesIds: List<String>) {
+        viewModelScope.launch {
+            coachesAccessManager.getCoachesUsers(coachesIds = coachesIds)
+                .flowOn(Dispatchers.IO)
+                .catch { throwable ->
+                    throwable.printStackTrace()
+                    GuiUtils.showMessage(throwable.localizedMessage)
+                    mutableCoachesListState.emit(UsersListState.Error(throwable = throwable))
+                }
+                .collect {
+                    mutableCoachesListState.emit(UsersListState.Loaded(it))
+                }
         }
     }
 }

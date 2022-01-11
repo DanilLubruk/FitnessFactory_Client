@@ -4,6 +4,7 @@ import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListList
 import com.example.fitnessfactory_client.data.dataListeners.DaysUsersSessionsListListener
 import com.example.fitnessfactory_client.data.dataListeners.SessionsCalendarListListener
 import com.example.fitnessfactory_client.data.managers.AuthManager
+import com.example.fitnessfactory_client.data.managers.CoachesAccessManager
 import com.example.fitnessfactory_client.data.managers.SessionsDataManager
 import com.example.fitnessfactory_client.data.repositories.*
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
@@ -97,4 +98,20 @@ class AppModule {
     @Provides
     fun provideSessionsCalendarListListener() =
         SessionsCalendarListListener()
+
+    @AppScope
+    @Provides
+    fun provideCoachesAccessManager(
+        ownerCoachRepository: OwnerCoachRepository,
+        usersRepository: UsersRepository
+    ) =
+        CoachesAccessManager(
+            ownerCoachRepository = ownerCoachRepository,
+            usersRepository = usersRepository
+        )
+
+    @AppScope
+    @Provides
+    fun provideOwnerCoachRepository() =
+        OwnerCoachRepository()
 }

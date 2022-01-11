@@ -15,24 +15,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
-import com.example.fitnessfactory_client.data.models.Session
-import com.example.fitnessfactory_client.data.views.SessionView
-import com.example.fitnessfactory_client.ui.Components
+import com.example.fitnessfactory_client.ui.components.HomeScreenCalendarView
 import com.example.fitnessfactory_client.ui.components.SessionsListView
-import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsListScreen
-import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.SessionViewsListState
-import com.example.fitnessfactory_client.ui.uiState.ListState
-import com.example.fitnessfactory_client.ui.uiState.ListStateOperator
-import com.example.fitnessfactory_client.utils.GuiUtils
+import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
-import kotlin.collections.ArrayList
 
 object HomeScreen {
 
@@ -58,7 +50,7 @@ object HomeScreen {
         }
 
         Column(modifier = Modifier.fillMaxSize()) {
-            Components.TopBar(
+            TopBar.TopBar(
                 title = ResUtils.getString(R.string.title_home_screen),
                 buttonIcon = Icons.Filled.Menu,
                 onButtonClicked = { openDrawer() })
@@ -67,7 +59,7 @@ object HomeScreen {
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Components.HomeScreenCalendarView(
+                HomeScreenCalendarView.HomeScreenCalendarView(
                     setListenerDate = setListenerDate
                 )
             }
@@ -79,7 +71,10 @@ object HomeScreen {
                     listStateFlow = viewModel.sessionViewsListState,
                     startDataListener = { listenerDate -> viewModel.startDataListener(date = listenerDate)},
                     onItemClickAction = subscribeToSession,
-                    StringUtils.getMessageSubscribeToSession()
+                    onItemActionName = ResUtils.getString(R.string.caption_subscribe),
+                    askActionMessage = StringUtils.getMessageSubscribeToSession(),
+                    fetchCoachUsers = { coachesIds -> viewModel.fetchCoachUsers(coachesIds = coachesIds)},
+                    coachUsersFlow = viewModel.coachesListState
                 )
             }
         }

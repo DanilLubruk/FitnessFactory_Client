@@ -2,34 +2,20 @@ package com.example.fitnessfactory_client.ui.screens.mySessionsScreen
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
-import com.example.fitnessfactory_client.data.views.SessionView
-import com.example.fitnessfactory_client.ui.Components
 import com.example.fitnessfactory_client.ui.components.SessionsListView
-import com.example.fitnessfactory_client.ui.uiState.ListState
-import com.example.fitnessfactory_client.ui.uiState.ListStateOperator
+import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
@@ -37,7 +23,6 @@ import com.example.fitnessfactory_client.utils.TimeUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
-import kotlin.collections.ArrayList
 
 object MySessionsListScreen {
 
@@ -49,7 +34,7 @@ object MySessionsListScreen {
     @Composable
     fun MySessionsListScreen(lifecycle: Lifecycle, openDrawer: () -> Unit) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Components.TopBar(
+            TopBar.TopBar(
                 title = ResUtils.getString(R.string.title_sessions_screen),
                 buttonIcon = Icons.Filled.Menu,
                 onButtonClicked = { openDrawer() })
@@ -73,7 +58,10 @@ object MySessionsListScreen {
                 listStateFlow = viewModel.sessionViewsListState,
                 startDataListener = { listenerDate -> viewModel.startDataListener(listenerDate)},
                 onItemClickAction = unsubscribeSession,
-                StringUtils.getMessageUnsubscribeFromSession()
+                onItemActionName = ResUtils.getString(R.string.caption_unsubscribe),
+                askActionMessage = StringUtils.getMessageUnsubscribeFromSession(),
+                fetchCoachUsers = { coachesIds -> viewModel.fetchCoachUsers(coachesIds = coachesIds)},
+                coachUsersFlow = viewModel.coachesListState
             )
         }
     }

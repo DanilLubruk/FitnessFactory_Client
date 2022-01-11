@@ -15,4 +15,16 @@ object StringUtils {
             ResUtils.getString(R.string.message_session_subscription),
             ResUtils.getString(R.string.message_subscribe_to_session)
         )
+
+    fun getMessageErrorClientsSameEmail() =
+        String.format(
+            ResUtils.getString(R.string.message_error_same_email),
+            ResUtils.getString(R.string.caption_clients)
+        )
+
+    fun getMessageErrorCoachesSameEmail() =
+        String.format(
+            ResUtils.getString(R.string.message_error_same_email),
+            ResUtils.getString(R.string.title_coaches_screen)
+        )
 }

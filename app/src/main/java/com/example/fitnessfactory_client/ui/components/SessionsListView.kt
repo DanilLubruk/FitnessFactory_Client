@@ -21,12 +21,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.models.AppUser
+import com.example.fitnessfactory_client.data.models.Session
 import com.example.fitnessfactory_client.data.views.SessionView
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.SessionViewsListState
 import com.example.fitnessfactory_client.ui.uiState.ListState
-import com.example.fitnessfactory_client.ui.uiState.ListStateOperator
+import com.example.fitnessfactory_client.ui.uiState.UsersListState
 import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.ResUtils
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,7 +44,10 @@ object SessionsListView {
         listStateFlow: StateFlow<SessionViewsListState>,
         startDataListener: (Date) -> Unit,
         onItemClickAction: (String) -> Unit,
-        askActionMessage: String
+        onItemActionName: String,
+        askActionMessage: String,
+        fetchCoachUsers: (List<String>) -> Unit,
+        coachUsersFlow: SharedFlow<UsersListState>
     ) {
         var sessionsList: List<SessionView> by remember { mutableStateOf(ArrayList()) }
 
@@ -76,9 +82,13 @@ object SessionsListView {
             is ListState.Loading -> ListLoadingView()
             is ListState.Empty -> ListEmptyView()
             is ListState.Loaded -> SessionsListView(
+                lifecycle = lifecycle,
                 sessionsList = sessionsList,
                 onItemClickAction = onItemClickAction,
-                askActionMessage = askActionMessage
+                onItemActionName = onItemActionName,
+                askActionMessage = askActionMessage,
+                fetchCoachUsers = fetchCoachUsers,
+                coachUsersFlow = coachUsersFlow
             )
         }
     }
@@ -117,21 +127,56 @@ object SessionsListView {
     @ExperimentalMaterialApi
     @Composable
     private fun SessionsListView(
+        lifecycle: Lifecycle,
         sessionsList: List<SessionView>,
         onItemClickAction: (String) -> Unit,
-        askActionMessage: String
+        onItemActionName: String,
+        askActionMessage: String,
+        fetchCoachUsers: (List<String>) -> Unit,
+        coachUsersFlow: SharedFlow<UsersListState>
     ) {
-        var showDialog by remember { mutableStateOf(false) }
-        var sessionId by remember { mutableStateOf("") }
-        if (showDialog) {
+        var sessionData: SessionView by remember { mutableStateOf(SessionView(Session())) }
+
+        var showActionDialog by remember { mutableStateOf(false) }
+        if (showActionDialog) {
             DialogUtils.YesNoDialog(
                 onOkPress = {
-                    onItemClickAction(sessionId)
-                    showDialog = false
+                    onItemClickAction(sessionData.session.id)
+                    showActionDialog = false
                 },
-                onDismissRequest = { showDialog = false },
+                onDismissRequest = { showActionDialog = false },
                 questionText = askActionMessage
             )
+        }
+
+        var coaches: List<AppUser> by remember { mutableStateOf(ArrayList())}
+        var showDataDialog by remember { mutableStateOf(false) }
+        if (showDataDialog) {
+            SessionDataScreen.SessionDataScreen(
+                sessionData = sessionData,
+                coachUsers = coaches,
+                onDismissRequest = { showDataDialog = false },
+                onItemAction = { sessionId ->
+                    onItemClickAction(sessionId)
+                    showDataDialog = false
+                },
+                itemActionName = onItemActionName
+            )
+        }
+
+
+        LaunchedEffect(key1 = Unit) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                coachUsersFlow.collect { usersListState ->
+                    when (usersListState) {
+                        is UsersListState.Loaded -> {
+                            coaches = usersListState.usersList
+                            showDataDialog = true
+                        }
+                        is UsersListState.Error -> {}
+                    }
+                }
+            }
         }
 
         LazyColumn(
@@ -144,7 +189,7 @@ object SessionsListView {
                 Column(modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = colorResource(id = R.color.royalBlue),
+                        color = colorResource(id = R.color.transparent_royal_blue),
                         shape = RoundedCornerShape(10.dp)
                     )
                     .pointerInput(Unit) {
@@ -152,10 +197,17 @@ object SessionsListView {
                             onPress = { },
                             onDoubleTap = { },
                             onLongPress = {
-                                sessionId = item.session.id
-                                showDialog = true
+                                sessionData = item
+                                showActionDialog = true
                             },
-                            onTap = { }
+                            onTap = {
+                                sessionData= item
+                                if (item.session.coachesIds == null) {
+                                    fetchCoachUsers(ArrayList<String>())
+                                } else {
+                                    fetchCoachUsers(item.session.coachesIds!!)
+                                }
+                            }
                         )
                     }) {
                     Row(

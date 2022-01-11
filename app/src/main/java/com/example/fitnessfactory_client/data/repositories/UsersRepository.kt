@@ -12,7 +12,20 @@ class UsersRepository : BaseRepository() {
     override fun getRoot(): String =
         FirestoreCollections.getUsersCollection()
 
-    suspend fun registerUserAsync(appUser: AppUser)  {
+    suspend fun getAppUsersByEmails(usersEmails: List<String>): List<AppUser> {
+        if (usersEmails.isEmpty()) {
+            return ArrayList()
+        }
+
+        return getQuerySnapshot(
+            getCollection()
+                .whereIn(AppUser.EMAIL_FIELD, usersEmails)
+        )
+            .toObjects(AppUser::class.java)
+    }
+
+
+    suspend fun registerUserAsync(appUser: AppUser) {
         val isRegistered = checkUserRegistered(usersEmail = appUser.email)
         if (!isRegistered) {
             registerUser(appUser = appUser)
