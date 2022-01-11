@@ -116,8 +116,8 @@ class AppScreen : AppCompatActivity() {
                 }
                 composable(Screens.HOME_SCREEN) {
                     HomeScreen.HomeScreen(
-                        openDrawer = { openDrawer() },
-                        logout = { viewModel.logout() }
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() }
                     )
                 }
                 composable(Screens.MY_SESSIONS_SCREEN) {

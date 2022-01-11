@@ -9,7 +9,21 @@ import java.util.*
 
 object TimeUtils {
 
-    const val MEDIUM_DATE_FORMAT = "d MMM YYYY"
+    fun getStartDate(date: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = date.time
+        val startDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH)
+        calendar[Calendar.DAY_OF_MONTH] = startDay
+        return calendar.time
+    }
+
+    fun getEndDate(date: Date): Date {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = date.time
+        val endDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        calendar[Calendar.DAY_OF_MONTH] = endDay
+        return calendar.time
+    }
 
     fun getStartOfDayDate(date: Date?): Date {
         if (date != null) {

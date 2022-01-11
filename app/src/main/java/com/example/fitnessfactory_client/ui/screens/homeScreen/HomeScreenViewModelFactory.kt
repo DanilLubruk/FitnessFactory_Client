@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class HomeScreenViewModelFactory: ViewModelProvider.Factory {
 
-    //@Inject
+    @Inject
     lateinit var homeScreenViewModel: HomeScreenViewModel
 
     init {

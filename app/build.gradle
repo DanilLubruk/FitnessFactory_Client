@@ -87,6 +87,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:20.0.2'
     implementation 'com.github.tiromansev:Android-Prefs-Wrapper:0.3.4'
     implementation("androidx.navigation:navigation-compose:2.4.0-rc01")
+    implementation "com.github.prolificinteractive:material-calendarview:2.0.0"
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.5")

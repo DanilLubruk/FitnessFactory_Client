@@ -21,22 +21,24 @@ class MySessionsListScreenViewModel
     private val sessionsDataManager: SessionsDataManager
 ) : ViewModel() {
 
-    private val mutableSessionsListState = MutableStateFlow<SessionsListState>(SessionsListState.Loading)
-    val sessionsListState: StateFlow<SessionsListState> = mutableSessionsListState
+    private val mutableSessionsListState = MutableStateFlow<SessionViewsListState>(SessionViewsListState.Loading)
+    val sessionViewsListState: StateFlow<SessionViewsListState> = mutableSessionsListState
 
     fun startDataListener(date: Date) {
         viewModelScope.launch {
             firebaseAuthManager.getCurrentUserEmail()?.let { usersEmail ->
                 daysSessionsListListener.startDataListener(date = date, usersEmail = usersEmail)
+                    .map { sessions ->
+                        sessionViewRepository.getSessionViewsList(sessionsList = sessions)
+                    }
                     .flowOn(Dispatchers.IO)
                     .catch { throwable ->
                         throwable.printStackTrace()
                         GuiUtils.showMessage(throwable.localizedMessage)
-                        mutableSessionsListState.emit(SessionsListState.Error(throwable = throwable))
+                        mutableSessionsListState.emit(SessionViewsListState.Error(throwable = throwable))
                     }
-                    .collect { sessions ->
-                        val sessionViews = sessionViewRepository.getSessionViewsList(sessionsList = sessions)
-                        mutableSessionsListState.emit(SessionsListState.Loaded(sessionViews))
+                    .collect { sessionViews ->
+                        mutableSessionsListState.emit(SessionViewsListState.Loaded(sessionViews))
                     }
             }
         }
