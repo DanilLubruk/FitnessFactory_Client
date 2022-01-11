@@ -17,5 +17,12 @@ class SessionsRepository: BaseRepository() {
                 Session.CLIENTS_EMAILS_FIELD,
                 FieldValue.arrayRemove(clientEmail))
 
+    suspend fun getAddClientBatch(sessionId: String, clientEmail: String) =
+        getFirestore()
+            .batch()
+            .update(getCollection().document(sessionId),
+                Session.CLIENTS_EMAILS_FIELD,
+                FieldValue.arrayUnion(clientEmail))
+
 
 }

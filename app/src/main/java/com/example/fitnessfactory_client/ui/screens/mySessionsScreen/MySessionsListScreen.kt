@@ -32,6 +32,7 @@ import com.example.fitnessfactory_client.ui.uiState.ListState
 import com.example.fitnessfactory_client.ui.uiState.ListStateOperator
 import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.ResUtils
+import com.example.fitnessfactory_client.utils.StringUtils
 import com.example.fitnessfactory_client.utils.TimeUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -71,7 +72,8 @@ object MySessionsListScreen {
                 date = date,
                 listStateFlow = viewModel.sessionViewsListState,
                 startDataListener = { listenerDate -> viewModel.startDataListener(listenerDate)},
-                onItemClickAction = unsubscribeSession
+                onItemClickAction = unsubscribeSession,
+                StringUtils.getMessageUnsubscribeFromSession()
             )
         }
     }

@@ -34,4 +34,23 @@ class SessionsDataManager
                 emit(Unit)
             }
         }
+
+    fun addClientToSession(sessionId: String): Flow<Unit> =
+        flow {
+            firebaseAuthManager.getCurrentUserEmail()?.let { clientEmail ->
+                var clientId= ownerClientRepository.getPersonnelIdByEmail(clientEmail)
+                var writeBatch = sessionsRepository.getAddClientBatch(
+                    sessionId = sessionId,
+                    clientEmail = clientEmail
+                )
+                writeBatch = clientSessionsRepository.getAddSessionBatch(
+                    writeBatch = writeBatch,
+                    sessionId = sessionId,
+                    clientId = clientId
+                )
+                writeBatch.commit()
+
+                emit(Unit)
+            }
+        }
 }

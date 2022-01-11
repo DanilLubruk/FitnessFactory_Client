@@ -19,7 +19,9 @@
     <string name="caption_select_date">Select date</string>
     <string name="caption_no_sessions_for_date">No sessions for this date...</string>
     <string name="message_error_clients_same_email">Clients with the same email exist!</string>
-    <string name="message_unsubscribe_from_session">Are you sure you want to unsubscribe from this session?</string>
+    <string name="message_session_subscription">Are you sure you want to %1$s this session?</string>
+    <string name="message_unsubscribe_from_session">unsubscribe from</string>
+    <string name="message_subscribe_to_session">subscribe to</string>
     <string name="caption_until">until</string>
     <string name="caption_from">from</string>
 </resources>

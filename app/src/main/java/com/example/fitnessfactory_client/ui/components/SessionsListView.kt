@@ -40,7 +40,8 @@ object SessionsListView {
         date: Date,
         listStateFlow: StateFlow<SessionViewsListState>,
         startDataListener: (Date) -> Unit,
-        onItemClickAction: (String) -> Unit
+        onItemClickAction: (String) -> Unit,
+        askActionMessage: String
     ) {
         var sessionsList: List<SessionView> by remember { mutableStateOf(ArrayList()) }
 
@@ -76,7 +77,8 @@ object SessionsListView {
             is ListState.Empty -> ListEmptyView()
             is ListState.Loaded -> SessionsListView(
                 sessionsList = sessionsList,
-                onItemClickAction = onItemClickAction
+                onItemClickAction = onItemClickAction,
+                askActionMessage = askActionMessage
             )
         }
     }
@@ -116,7 +118,8 @@ object SessionsListView {
     @Composable
     private fun SessionsListView(
         sessionsList: List<SessionView>,
-        onItemClickAction: (String) -> Unit
+        onItemClickAction: (String) -> Unit,
+        askActionMessage: String
     ) {
         var showDialog by remember { mutableStateOf(false) }
         var sessionId by remember { mutableStateOf("") }
@@ -127,7 +130,7 @@ object SessionsListView {
                     showDialog = false
                 },
                 onDismissRequest = { showDialog = false },
-                questionText = ResUtils.getString(R.string.message_unsubscribe_from_session)
+                questionText = askActionMessage
             )
         }
 
