@@ -158,7 +158,6 @@ object SessionsListView {
                 onDismissRequest = { showDataDialog = false },
                 onItemAction = { sessionId ->
                     onItemClickAction(sessionId)
-                    showDataDialog = false
                 },
                 itemActionName = onItemActionName
             )

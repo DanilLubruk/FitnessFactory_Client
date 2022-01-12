@@ -11,4 +11,7 @@ class AppUser() {
     lateinit var id: String
     lateinit var name: String
     lateinit var email: String
+
+    override fun toString(): String =
+        name
 }

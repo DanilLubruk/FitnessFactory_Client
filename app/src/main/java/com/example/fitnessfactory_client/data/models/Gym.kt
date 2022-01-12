@@ -11,4 +11,7 @@ class Gym {
     lateinit var id: String
     lateinit var name: String
     lateinit var address: String
+
+    override fun toString(): String =
+        name
 }

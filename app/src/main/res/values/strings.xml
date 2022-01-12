@@ -31,4 +31,5 @@
     <string name="caption_end_time">End time</string>
     <string name="caption_gym">Gym</string>
     <string name="caption_session_type">Session type</string>
+    <string name="caption_filter">Filter</string>
 </resources>

@@ -10,14 +10,17 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.models.Session
+import com.example.fitnessfactory_client.ui.components.FilterScreen
 import com.example.fitnessfactory_client.ui.components.HomeScreenCalendarView
 import com.example.fitnessfactory_client.ui.components.SessionsListView
 import com.example.fitnessfactory_client.ui.components.TopBar
+import com.example.fitnessfactory_client.utils.GuiUtils
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
 import com.example.fitnessfactory_client.utils.TimeUtils
@@ -66,11 +69,24 @@ object HomeScreen {
             viewModel.subscribeToSession(sessionId = sessionId)
         }
 
+        var showFilterDialog by remember { mutableStateOf(false) }
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar.TopBar(
                 title = ResUtils.getString(R.string.title_home_screen),
                 buttonIcon = Icons.Filled.Menu,
-                onButtonClicked = { openDrawer() })
+                onButtonClicked = { openDrawer() },
+                actionName = stringResource(id = R.string.caption_filter),
+                action = { showFilterDialog = true })
+
+            if (showFilterDialog) {
+                FilterScreen.FilterScreen(
+                    onDismissRequest = { showFilterDialog = false },
+                    gyms = ArrayList(),
+                    sessionTypes = ArrayList(),
+                    coaches = ArrayList(),
+                    setFilter = { sessionsFilter ->  GuiUtils.showMessage("${sessionsFilter.gym.name} ${sessionsFilter.sessionType.name} ${sessionsFilter.coach.name}")}
+                )
+            }
 
             Column(
                 modifier = Modifier.fillMaxWidth(),

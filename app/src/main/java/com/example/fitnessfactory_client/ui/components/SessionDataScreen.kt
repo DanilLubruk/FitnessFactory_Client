@@ -159,7 +159,12 @@ object SessionDataScreen {
                             textStyle = MaterialTheme.typography.body1,
                             colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
                         )
-
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .alpha(0f)
+                                .clickable(onClick = {})
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -192,7 +197,6 @@ object SessionDataScreen {
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
-
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -201,7 +205,10 @@ object SessionDataScreen {
                             contentColor = Color.White,
                             backgroundColor = colorResource(id = R.color.royalBlue)
                         ),
-                        onClick = { onItemAction(sessionData.session.id) }) {
+                        onClick = {
+                            onItemAction(sessionData.session.id)
+                            onDismissRequest()
+                        }) {
                         Text(text = itemActionName, style = MaterialTheme.typography.body1)
                     }
                 }
