@@ -13,7 +13,7 @@ class CoachesAccessManager
     private val usersRepository: UsersRepository
 ) {
 
-    fun getCoachesUsers(coachesIds: List<String>): Flow<List<AppUser>> =
+    fun getCoachesUsersByIds(coachesIds: List<String>): Flow<List<AppUser>> =
         flow {
             val coachesEmails = ownerCoachRepository.getPersonnelEmailsByIds(coachesIds)
             val coachUsers = usersRepository.getAppUsersByEmails(coachesEmails)

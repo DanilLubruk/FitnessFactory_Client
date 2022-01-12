@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.GymsChainData
 import com.example.fitnessfactory_client.data.models.Session
 import com.example.fitnessfactory_client.ui.components.FilterScreen
 import com.example.fitnessfactory_client.ui.components.HomeScreenCalendarView
@@ -40,20 +41,6 @@ object HomeScreen {
     fun HomeScreen(lifecycle: Lifecycle, openDrawer: () -> Unit) {
         val viewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModelFactory())
 
-        var sessionsList by remember { mutableStateOf(ArrayList<Session>()) }
-        LaunchedEffect(key1 = Unit) {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.calendarSessionsListState.collect { calendarListState ->
-                    when (calendarListState) {
-                        is SessionsListState.Loaded -> {
-                            sessionsList = calendarListState.sessionsList
-                        }
-                        is SessionsListState.Error -> {}
-                    }
-                }
-            }
-        }
-
         var date by rememberSaveable { mutableStateOf(Date()) }
         var showSessionsList by rememberSaveable { mutableStateOf(false) }
         val setListenerDate: (Date) -> Unit = {
@@ -76,18 +63,39 @@ object HomeScreen {
                 buttonIcon = Icons.Filled.Menu,
                 onButtonClicked = { openDrawer() },
                 actionName = stringResource(id = R.string.caption_filter),
-                action = { showFilterDialog = true })
+                action = { viewModel.fetchGymsChainData() })
 
+
+            var gymsChainData: GymsChainData by remember { mutableStateOf(GymsChainData.getBlankObject()) }
+            LaunchedEffect(key1 = Unit) {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.gymsChainDataState.collect { chainData ->
+                        gymsChainData = chainData
+                        showFilterDialog = true
+                    }
+                }
+            }
             if (showFilterDialog) {
                 FilterScreen.FilterScreen(
                     onDismissRequest = { showFilterDialog = false },
-                    gyms = ArrayList(),
-                    sessionTypes = ArrayList(),
-                    coaches = ArrayList(),
+                    chainData = gymsChainData,
                     setFilter = { sessionsFilter ->  GuiUtils.showMessage("${sessionsFilter.gym.name} ${sessionsFilter.sessionType.name} ${sessionsFilter.coach.name}")}
                 )
             }
 
+            var sessionsList by remember { mutableStateOf(ArrayList<Session>()) }
+            LaunchedEffect(key1 = Unit) {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.calendarSessionsListState.collect { calendarListState ->
+                        when (calendarListState) {
+                            is SessionsListState.Loaded -> {
+                                sessionsList = calendarListState.sessionsList
+                            }
+                            is SessionsListState.Error -> {}
+                        }
+                    }
+                }
+            }
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Top,

@@ -8,6 +8,17 @@ abstract class OwnerPersonnelRepository : BaseRepository() {
 
     protected abstract fun getNotUniqueEmailMessage(): String
 
+    suspend fun getPersonnelEmails(): List<String> {
+        val personnelList = getQuerySnapshot(getCollection()).toObjects(Personnel::class.java)
+        val personnelEmails = ArrayList<String>()
+
+        personnelList.forEach {
+            personnelEmails.add(it.userEmail)
+        }
+
+        return personnelEmails
+    }
+
     suspend fun getPersonnelIdByEmail(personnelEmail: String): String {
         val documents =
             getQuerySnapshot(

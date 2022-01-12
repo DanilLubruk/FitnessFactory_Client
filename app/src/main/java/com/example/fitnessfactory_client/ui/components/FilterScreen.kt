@@ -11,23 +11,21 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.GymsChainData
 import com.example.fitnessfactory_client.data.beans.SessionsFilter
-import com.example.fitnessfactory_client.data.models.AppUser
-import com.example.fitnessfactory_client.data.models.Gym
-import com.example.fitnessfactory_client.data.models.SessionType
 import com.example.fitnessfactory_client.utils.ResUtils
+import java.util.*
 
 object FilterScreen {
 
     @Composable
     fun FilterScreen(
         onDismissRequest: () -> Unit,
-        gyms: List<Gym>,
-        sessionTypes: List<SessionType>,
-        coaches: List<AppUser>,
+        chainData: GymsChainData,
         setFilter: (SessionsFilter) -> Unit
     ) {
         Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -41,21 +39,28 @@ object FilterScreen {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
 
-                    var selectedGym by remember { mutableStateOf(gyms[0]) }
+                    Text(
+                        text = stringResource(id = R.string.title_set_filters).uppercase(Locale.getDefault()),
+                        style = MaterialTheme.typography.h5
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    var selectedGym by remember { mutableStateOf(chainData.gyms[0]) }
                     DropDownItem(
-                        items = gyms,
+                        items = chainData.gyms,
                         selectedItem = selectedGym,
                         setSelectedItem = { gym -> selectedGym = gym })
 
-                    var selectedSessionType by remember { mutableStateOf(sessionTypes[0]) }
+                    var selectedSessionType by remember { mutableStateOf(chainData.sessionTypes[0]) }
                     DropDownItem(
-                        items = sessionTypes,
+                        items = chainData.sessionTypes,
                         selectedItem = selectedSessionType,
                         setSelectedItem = { sessionType -> selectedSessionType = sessionType })
 
-                    var selectedCoach by remember { mutableStateOf(coaches[0]) }
+                    var selectedCoach by remember { mutableStateOf(chainData.coaches[0]) }
                     DropDownItem(
-                        items = coaches,
+                        items = chainData.coaches,
                         selectedItem = selectedCoach,
                         setSelectedItem = { coach -> selectedCoach = coach })
 
@@ -120,5 +125,6 @@ object FilterScreen {
                 setToogle = { toogled -> toogle = toogled }
             )
         }
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }

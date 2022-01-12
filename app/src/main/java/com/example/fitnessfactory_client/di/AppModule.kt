@@ -5,6 +5,7 @@ import com.example.fitnessfactory_client.data.dataListeners.DaysUsersSessionsLis
 import com.example.fitnessfactory_client.data.dataListeners.SessionsCalendarListListener
 import com.example.fitnessfactory_client.data.managers.AuthManager
 import com.example.fitnessfactory_client.data.managers.CoachesAccessManager
+import com.example.fitnessfactory_client.data.managers.GymsChainDataManager
 import com.example.fitnessfactory_client.data.managers.SessionsDataManager
 import com.example.fitnessfactory_client.data.repositories.*
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
@@ -114,4 +115,29 @@ class AppModule {
     @Provides
     fun provideOwnerCoachRepository() =
         OwnerCoachRepository()
+
+    @AppScope
+    @Provides
+    fun provideGymsChainData(
+        ownerGymsRepository: OwnerGymsRepository,
+        sessionTypesRepository: SessionTypesRepository,
+        ownerCoachRepository: OwnerCoachRepository,
+        usersRepository: UsersRepository
+    ) =
+        GymsChainDataManager(
+            ownerGymsRepository = ownerGymsRepository,
+            sessionTypesRepository = sessionTypesRepository,
+            ownerCoachRepository = ownerCoachRepository,
+            usersRepository = usersRepository
+        )
+
+    @AppScope
+    @Provides
+    fun provideOwnerGymsRepository() =
+        OwnerGymsRepository()
+
+    @AppScope
+    @Provides
+    fun provideSessionTypesRepository() =
+        SessionTypesRepository()
 }

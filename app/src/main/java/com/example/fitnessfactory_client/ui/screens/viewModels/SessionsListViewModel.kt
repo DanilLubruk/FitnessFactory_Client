@@ -25,7 +25,7 @@ open class SessionsListViewModel
 
     fun fetchCoachUsers(coachesIds: List<String>) {
         viewModelScope.launch {
-            coachesAccessManager.getCoachesUsers(coachesIds = coachesIds)
+            coachesAccessManager.getCoachesUsersByIds(coachesIds = coachesIds)
                 .flowOn(Dispatchers.IO)
                 .catch { throwable ->
                     throwable.printStackTrace()
