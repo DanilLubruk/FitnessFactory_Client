@@ -2,10 +2,7 @@ package com.example.fitnessfactory_client.ui.screens.homeScreen
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -88,21 +85,27 @@ object HomeScreen {
             }
 
             if (showSessionsList) {
-                SessionsListView.SessionsListViewScreen(
-                    lifecycle = lifecycle,
-                    date = date,
-                    listStateFlow = viewModel.sessionViewsListState,
-                    startDataListener = { listenerDate ->
-                        viewModel.startSessionViewsDataListener(
-                            date = listenerDate
-                        )
-                    },
-                    onItemClickAction = subscribeToSession,
-                    onItemActionName = ResUtils.getString(R.string.caption_subscribe),
-                    askActionMessage = StringUtils.getMessageSubscribeToSession(),
-                    fetchCoachUsers = { coachesIds -> viewModel.fetchCoachUsers(coachesIds = coachesIds) },
-                    coachUsersFlow = viewModel.coachesListState
-                )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    SessionsListView.SessionsListViewScreen(
+                        lifecycle = lifecycle,
+                        date = date,
+                        listStateFlow = viewModel.sessionViewsListState,
+                        startDataListener = { listenerDate ->
+                            viewModel.startSessionViewsDataListener(
+                                date = listenerDate
+                            )
+                        },
+                        onItemClickAction = subscribeToSession,
+                        onItemActionName = ResUtils.getString(R.string.caption_subscribe),
+                        askActionMessage = StringUtils.getMessageSubscribeToSession(),
+                        fetchCoachUsers = { coachesIds -> viewModel.fetchCoachUsers(coachesIds = coachesIds) },
+                        coachUsersFlow = viewModel.coachesListState
+                    )
+                }
             }
         }
     }
