@@ -5,9 +5,13 @@ import com.example.fitnessfactory_client.FFApp
 import java.lang.Exception
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.YearMonth
 import java.util.*
 
 object TimeUtils {
+
+    fun getStartDate(month: YearMonth): Date =
+        getStartDate(ConvertUtils.dateFromYearMonth(month = month))
 
     fun getStartDate(date: Date): Date {
         val calendar = Calendar.getInstance()
@@ -16,6 +20,9 @@ object TimeUtils {
         calendar[Calendar.DAY_OF_MONTH] = startDay
         return calendar.time
     }
+
+    fun getEndDate(month: YearMonth): Date =
+        getEndDate(ConvertUtils.dateFromYearMonth(month = month))
 
     fun getEndDate(date: Date): Date {
         val calendar = Calendar.getInstance()

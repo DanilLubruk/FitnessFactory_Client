@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.lang.Exception
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SessionsCalendarListListener: BaseDataListener() {
 
     override fun getRoot(): String =
         FirestoreCollections.getSessionsCollection()
 
-    fun startDataListener(startDate: Date, endDate: Date): Flow<List<Session>> =
+    fun startDataListener(startDate: Date, endDate: Date): Flow<ArrayList<Session>> =
         callbackFlow {
             listenerRegistration =
                 getCollection()
@@ -30,7 +31,7 @@ class SessionsCalendarListListener: BaseDataListener() {
                             throw Exception(ResUtils.getString(R.string.message_error_data_obtain))
                         }
 
-                        val sessions: List<Session> = value.toObjects(Session::class.java)
+                        val sessions: ArrayList<Session> = value.toObjects(Session::class.java) as ArrayList<Session>
                         trySend(sessions)
                     }
 

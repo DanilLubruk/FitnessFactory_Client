@@ -1,14 +1,14 @@
 package com.example.fitnessfactory_client.ui.screens.homeScreen
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
+import com.example.fitnessfactory_client.data.dataListeners.SessionsCalendarListListener
 import com.example.fitnessfactory_client.data.managers.CoachesAccessManager
 import com.example.fitnessfactory_client.data.managers.SessionsDataManager
 import com.example.fitnessfactory_client.data.repositories.SessionViewRepository
-import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.SessionViewsListState
-import com.example.fitnessfactory_client.ui.uiState.UsersListState
+import com.example.fitnessfactory_client.ui.screens.viewModels.SessionsListViewModel
 import com.example.fitnessfactory_client.utils.GuiUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -20,17 +20,30 @@ class HomeScreenViewModel @Inject constructor(
     private val sessionsDataManager: SessionsDataManager,
     private val sessionViewRepository: SessionViewRepository,
     private val daysSessionsListListener: DaysSessionsListListener,
+    private val sessionsCalendarListListener: SessionsCalendarListListener,
     private val coachesAccessManager: CoachesAccessManager
-) : ViewModel() {
+) : SessionsListViewModel(coachesAccessManager = coachesAccessManager) {
 
-    private val mutableSessionsListState =
-        MutableStateFlow<SessionViewsListState>(SessionViewsListState.Loading)
-    val sessionViewsListState: StateFlow<SessionViewsListState> = mutableSessionsListState
+    private val mutableCalendarSessionsListState =
+        MutableStateFlow<SessionsListState>(SessionsListState.Loading)
+    val calendarSessionsListState: StateFlow<SessionsListState> = mutableCalendarSessionsListState
 
-    private val mutableCoachesListState = MutableSharedFlow<UsersListState>()
-    val coachesListState: SharedFlow<UsersListState> = mutableCoachesListState
+    fun startCalendarSessionsDataListener(startDate: Date, endDate: Date) {
+        viewModelScope.launch {
+            sessionsCalendarListListener.startDataListener(startDate = startDate, endDate = endDate)
+                .flowOn(Dispatchers.IO)
+                .catch { throwable ->
+                    throwable.printStackTrace()
+                    GuiUtils.showMessage(throwable.localizedMessage)
+                    mutableCalendarSessionsListState.emit(SessionsListState.Error(throwable))
+                }
+                .collect {
+                    mutableCalendarSessionsListState.emit(SessionsListState.Loaded(it))
+                }
+        }
+    }
 
-    fun startDataListener(date: Date) {
+    fun startSessionViewsDataListener(date: Date) {
         viewModelScope.launch {
             daysSessionsListListener.startDataListener(date = date)
                 .map { sessions ->
@@ -57,21 +70,6 @@ class HomeScreenViewModel @Inject constructor(
                     GuiUtils.showMessage(throwable.localizedMessage)
                 }
                 .collect()
-        }
-    }
-
-    fun fetchCoachUsers(coachesIds: List<String>) {
-        viewModelScope.launch {
-            coachesAccessManager.getCoachesUsers(coachesIds = coachesIds)
-                .flowOn(Dispatchers.IO)
-                .catch { throwable ->
-                    throwable.printStackTrace()
-                    GuiUtils.showMessage(throwable.localizedMessage)
-                    mutableCoachesListState.emit(UsersListState.Error(throwable = throwable))
-                }
-                .collect {
-                    mutableCoachesListState.emit(UsersListState.Loaded(it))
-                }
         }
     }
 }
