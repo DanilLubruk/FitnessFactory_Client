@@ -8,7 +8,7 @@ class Personnel() {
         const val GYMS_ARRAY_FIELD = "gymsIds"
     }
 
-    lateinit var id: String
+    var id: String = ""
     lateinit var userEmail: String
     var gymsIds: List<String>? = null
 }

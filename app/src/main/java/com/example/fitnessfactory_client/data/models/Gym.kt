@@ -18,8 +18,8 @@ class Gym(doFilter: Boolean = true): FilterEntity(doFilter = doFilter) {
         }
     }
 
-    lateinit var id: String
-    lateinit var name: String
+    var id: String = ""
+    var name: String = ""
     private var toStringField: String
     set(value) {
         name = value

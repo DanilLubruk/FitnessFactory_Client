@@ -17,6 +17,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.GymsChainData
 import com.example.fitnessfactory_client.data.beans.PeriodObject
+import com.example.fitnessfactory_client.data.beans.SessionsFilter
+import com.example.fitnessfactory_client.data.beans.TopBarAction
 import com.example.fitnessfactory_client.data.models.Session
 import com.example.fitnessfactory_client.ui.components.FilterScreen
 import com.example.fitnessfactory_client.ui.components.HomeScreenCalendarView
@@ -30,6 +32,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 import kotlin.collections.ArrayList
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 
 object HomeScreen {
 
@@ -50,12 +55,15 @@ object HomeScreen {
             }
             date = it
         }
-        var calendarListenerPeriod by remember { mutableStateOf(PeriodObject()) }
 
-        LaunchedEffect(calendarListenerPeriod) {
+        var calendarListenerPeriod by remember { mutableStateOf(PeriodObject()) }
+        var sessionsFilter by remember { mutableStateOf(SessionsFilter.getNoFilterEntity()) }
+        val clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity() }
+        LaunchedEffect(calendarListenerPeriod, sessionsFilter) {
             viewModel.startCalendarSessionsDataListener(
                 startDate = calendarListenerPeriod.startDate,
-                endDate = calendarListenerPeriod.endDate
+                endDate = calendarListenerPeriod.endDate,
+                sessionsFilter = sessionsFilter
             )
         }
 
@@ -72,9 +80,11 @@ object HomeScreen {
                 title = ResUtils.getString(R.string.title_home_screen),
                 buttonIcon = Icons.Filled.Menu,
                 onButtonClicked = { openDrawer() },
-                actionName = stringResource(id = R.string.caption_filter),
-                action = { viewModel.fetchGymsChainData() })
-
+                actions = listOf(
+                    TopBarAction(stringResource(id = R.string.caption_filter)) { viewModel.fetchGymsChainData() },
+                    TopBarAction(stringResource(id = R.string.caption_clear)) { clearFilter() }
+                )
+            )
 
             var gymsChainData: GymsChainData by remember { mutableStateOf(GymsChainData.getBlankObject()) }
             LaunchedEffect(key1 = Unit) {
@@ -88,13 +98,10 @@ object HomeScreen {
             if (showFilterDialog) {
                 FilterScreen.FilterScreen(
                     onDismissRequest = { showFilterDialog = false },
+                    sessionsFilter = sessionsFilter,
                     chainData = gymsChainData,
-                    setFilter = { sessionsFilter ->
-                        viewModel.startCalendarSessionsDataListener(
-                            startDate = calendarListenerPeriod.startDate,
-                            endDate = calendarListenerPeriod.endDate,
-                            sessionsFilter = sessionsFilter
-                        )
+                    setFilter = {
+                        sessionsFilter = it
                     }
                 )
             }

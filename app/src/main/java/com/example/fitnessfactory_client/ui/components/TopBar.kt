@@ -14,6 +14,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.TopBarAction
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -29,8 +30,7 @@ object TopBar {
         title: String = "",
         buttonIcon: ImageVector,
         onButtonClicked: () -> Unit,
-        actionName: String = "",
-        action: () -> Unit = {}
+        actions: List<TopBarAction> = ArrayList()
     ) {
         TopAppBar(
             title = {
@@ -46,20 +46,22 @@ object TopBar {
             },
             backgroundColor = colorResource(id = R.color.royalBlue),
             actions = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .clickable { action() },
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
+                actions.forEach {
+                    Column(
                         modifier = Modifier
-                            .padding(end = 8.dp),
-                        text = actionName,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
+                            .fillMaxHeight()
+                            .clickable { it.action() },
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(end = 8.dp),
+                            text = it.actionName,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         )

@@ -11,20 +11,22 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.GymsChainData
 import com.example.fitnessfactory_client.data.beans.SessionsFilter
-import com.example.fitnessfactory_client.utils.ResUtils
 import java.util.*
 
 object FilterScreen {
 
+    private const val NO_FILTER = 0
+    private const val NO_ELEMENT_FOUND = -1
+
     @Composable
     fun FilterScreen(
         onDismissRequest: () -> Unit,
+        sessionsFilter: SessionsFilter,
         chainData: GymsChainData,
         setFilter: (SessionsFilter) -> Unit
     ) {
@@ -46,26 +48,47 @@ object FilterScreen {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    var selectedGym by remember { mutableStateOf(chainData.gyms[0]) }
+                    var selectedGymIndex = NO_FILTER
+                    chainData.gyms.forEachIndexed { index, gym ->
+                        if (gym.id == sessionsFilter.gym.id) {
+                            selectedGymIndex = index
+                        }
+                    }
+                    var selectedGym by remember { mutableStateOf(chainData.gyms[selectedGymIndex]) }
                     DropDownItem(
                         items = chainData.gyms,
                         selectedItem = selectedGym,
                         setSelectedItem = { gym -> selectedGym = gym },
-                        hint = stringResource(id = R.string.caption_gym))
+                        hint = stringResource(id = R.string.caption_gym)
+                    )
 
-                    var selectedSessionType by remember { mutableStateOf(chainData.sessionTypes[0]) }
+                    var selectedTypeIndex = NO_FILTER
+                    chainData.sessionTypes.forEachIndexed { index, type ->
+                        if (type.id == sessionsFilter.sessionType.id) {
+                            selectedTypeIndex = index
+                        }
+                    }
+                    var selectedSessionType by remember { mutableStateOf(chainData.sessionTypes[selectedTypeIndex]) }
                     DropDownItem(
                         items = chainData.sessionTypes,
                         selectedItem = selectedSessionType,
                         setSelectedItem = { sessionType -> selectedSessionType = sessionType },
-                        hint = stringResource(id = R.string.caption_session_type))
+                        hint = stringResource(id = R.string.caption_session_type)
+                    )
 
-                    var selectedCoach by remember { mutableStateOf(chainData.coaches[0]) }
+                    var selectedCoachIndex = NO_FILTER
+                    chainData.coaches.forEachIndexed { index, coach ->
+                        if (coach.id == sessionsFilter.coachData.id) {
+                            selectedCoachIndex = index
+                        }
+                    }
+                    var selectedCoach by remember { mutableStateOf(chainData.coaches[selectedCoachIndex]) }
                     DropDownItem(
                         items = chainData.coaches,
                         selectedItem = selectedCoach,
                         setSelectedItem = { coach -> selectedCoach = coach },
-                        hint = stringResource(id = R.string.title_coaches_screen))
+                        hint = stringResource(id = R.string.title_coaches_screen)
+                    )
 
                     Button(
                         modifier = Modifier
@@ -96,7 +119,12 @@ object FilterScreen {
     }
 
     @Composable
-    fun <T> DropDownItem(items: List<T>, selectedItem: T, setSelectedItem: (T) -> Unit, hint: String) {
+    fun <T> DropDownItem(
+        items: List<T>,
+        selectedItem: T,
+        setSelectedItem: (T) -> Unit,
+        hint: String
+    ) {
         var toogle by remember { mutableStateOf(false) }
         Row(modifier = Modifier.fillMaxWidth()) {
             Box(

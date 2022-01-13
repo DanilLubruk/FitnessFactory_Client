@@ -35,4 +35,5 @@
     <string name="title_set_filters">Set filters</string>
     <string name="message_error_coach_users">There are some unregistered coaches!</string>
     <string name="caption_no_filter">No filter</string>
+    <string name="caption_clear">Clear</string>
 </resources>
