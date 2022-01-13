@@ -5,5 +5,20 @@ import com.example.fitnessfactory_client.data.models.Gym
 import com.example.fitnessfactory_client.data.models.Personnel
 import com.example.fitnessfactory_client.data.models.SessionType
 
-class SessionsFilter(var gym: Gym, var sessionType: SessionType, var coach: AppUser) {
+class SessionsFilter(
+    var gym: Gym,
+    var sessionType: SessionType,
+    var coachData: CoachData,
+    var doFilter: Boolean = true
+) {
+
+    companion object {
+        fun getNoFilterEntity(): SessionsFilter =
+            SessionsFilter(
+                Gym(),
+                SessionType(),
+                coachData = CoachData(coach = Personnel(), coachUser = AppUser()),
+                doFilter = false
+            )
+    }
 }

@@ -3,6 +3,7 @@ package com.example.fitnessfactory_client.ui.screens.homeScreen
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.data.beans.GymsChainData
+import com.example.fitnessfactory_client.data.beans.SessionsFilter
 import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
 import com.example.fitnessfactory_client.data.dataListeners.SessionsCalendarListListener
 import com.example.fitnessfactory_client.data.managers.CoachesAccessManager
@@ -34,9 +35,17 @@ class HomeScreenViewModel @Inject constructor(
     private val mutableGymsChainDataState = MutableSharedFlow<GymsChainData>()
     val gymsChainDataState: SharedFlow<GymsChainData> = mutableGymsChainDataState
 
-    fun startCalendarSessionsDataListener(startDate: Date, endDate: Date) {
+    fun startCalendarSessionsDataListener(
+        startDate: Date,
+        endDate: Date,
+        sessionsFilter: SessionsFilter = SessionsFilter.getNoFilterEntity()
+    ) {
         viewModelScope.launch {
-            sessionsCalendarListListener.startDataListener(startDate = startDate, endDate = endDate)
+            sessionsCalendarListListener.startDataListener(
+                startDate = startDate,
+                endDate = endDate,
+                sessionsFilter = sessionsFilter
+            )
                 .flowOn(Dispatchers.IO)
                 .catch { throwable ->
                     throwable.printStackTrace()

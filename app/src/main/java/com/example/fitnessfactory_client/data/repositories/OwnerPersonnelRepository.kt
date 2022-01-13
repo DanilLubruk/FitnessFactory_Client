@@ -1,12 +1,14 @@
 package com.example.fitnessfactory_client.data.repositories
 
-import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.models.Personnel
 import java.lang.Exception
 
 abstract class OwnerPersonnelRepository : BaseRepository() {
 
     protected abstract fun getNotUniqueEmailMessage(): String
+
+    suspend fun getPersonnelList(): List<Personnel> =
+        getQuerySnapshot(getCollection().orderBy(Personnel.USER_EMAIL_FIELD)).toObjects(Personnel::class.java)
 
     suspend fun getPersonnelEmails(): List<String> {
         val personnelList = getQuerySnapshot(getCollection()).toObjects(Personnel::class.java)

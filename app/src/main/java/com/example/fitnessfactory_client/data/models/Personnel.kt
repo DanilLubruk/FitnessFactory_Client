@@ -1,6 +1,6 @@
 package com.example.fitnessfactory_client.data.models
 
-class Personnel {
+class Personnel() {
 
     companion object {
         const val ID_FIELD = "id"

@@ -16,6 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.GymsChainData
+import com.example.fitnessfactory_client.data.beans.PeriodObject
 import com.example.fitnessfactory_client.data.models.Session
 import com.example.fitnessfactory_client.ui.components.FilterScreen
 import com.example.fitnessfactory_client.ui.components.HomeScreenCalendarView
@@ -49,8 +50,17 @@ object HomeScreen {
             }
             date = it
         }
+        var calendarListenerPeriod by remember { mutableStateOf(PeriodObject()) }
+
+        LaunchedEffect(calendarListenerPeriod) {
+            viewModel.startCalendarSessionsDataListener(
+                startDate = calendarListenerPeriod.startDate,
+                endDate = calendarListenerPeriod.endDate
+            )
+        }
+
         val setCalendarListenerDates: (Date, Date) -> Unit = { startDate, endDate ->
-            viewModel.startCalendarSessionsDataListener(startDate = startDate, endDate = endDate)
+            calendarListenerPeriod = PeriodObject(startDate = startDate, endDate = endDate)
         }
         val subscribeToSession: (String) -> Unit = { sessionId ->
             viewModel.subscribeToSession(sessionId = sessionId)
@@ -79,7 +89,13 @@ object HomeScreen {
                 FilterScreen.FilterScreen(
                     onDismissRequest = { showFilterDialog = false },
                     chainData = gymsChainData,
-                    setFilter = { sessionsFilter ->  GuiUtils.showMessage("${sessionsFilter.gym.name} ${sessionsFilter.sessionType.name} ${sessionsFilter.coach.name}")}
+                    setFilter = { sessionsFilter ->
+                        viewModel.startCalendarSessionsDataListener(
+                            startDate = calendarListenerPeriod.startDate,
+                            endDate = calendarListenerPeriod.endDate,
+                            sessionsFilter = sessionsFilter
+                        )
+                    }
                 )
             }
 

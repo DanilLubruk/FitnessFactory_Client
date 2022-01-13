@@ -47,14 +47,15 @@ object TopBar {
             backgroundColor = colorResource(id = R.color.royalBlue),
             actions = {
                 Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .clickable { action() },
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         modifier = Modifier
-                            .padding(end = 8.dp)
-                            .fillMaxHeight()
-                            .clickable { action() },
+                            .padding(end = 8.dp),
                         text = actionName,
                         color = Color.White,
                         textAlign = TextAlign.Center

@@ -191,7 +191,7 @@ object SessionsListView {
                         color = colorResource(id = R.color.transparent_royal_blue),
                         shape = RoundedCornerShape(10.dp)
                     )
-                    .pointerInput(Unit) {
+                    .pointerInput(item) {
                         detectTapGestures(
                             onPress = { },
                             onDoubleTap = { },
@@ -200,7 +200,7 @@ object SessionsListView {
                                 showActionDialog = true
                             },
                             onTap = {
-                                sessionData= item
+                                sessionData = item
                                 if (item.session.coachesIds == null) {
                                     fetchCoachUsers(ArrayList<String>())
                                 } else {

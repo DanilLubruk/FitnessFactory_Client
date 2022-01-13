@@ -50,19 +50,22 @@ object FilterScreen {
                     DropDownItem(
                         items = chainData.gyms,
                         selectedItem = selectedGym,
-                        setSelectedItem = { gym -> selectedGym = gym })
+                        setSelectedItem = { gym -> selectedGym = gym },
+                        hint = stringResource(id = R.string.caption_gym))
 
                     var selectedSessionType by remember { mutableStateOf(chainData.sessionTypes[0]) }
                     DropDownItem(
                         items = chainData.sessionTypes,
                         selectedItem = selectedSessionType,
-                        setSelectedItem = { sessionType -> selectedSessionType = sessionType })
+                        setSelectedItem = { sessionType -> selectedSessionType = sessionType },
+                        hint = stringResource(id = R.string.caption_session_type))
 
                     var selectedCoach by remember { mutableStateOf(chainData.coaches[0]) }
                     DropDownItem(
                         items = chainData.coaches,
                         selectedItem = selectedCoach,
-                        setSelectedItem = { coach -> selectedCoach = coach })
+                        setSelectedItem = { coach -> selectedCoach = coach },
+                        hint = stringResource(id = R.string.title_coaches_screen))
 
                     Button(
                         modifier = Modifier
@@ -75,9 +78,9 @@ object FilterScreen {
                         onClick = {
                             setFilter(
                                 SessionsFilter(
-                                    selectedGym,
-                                    selectedSessionType,
-                                    selectedCoach
+                                    gym = selectedGym,
+                                    sessionType = selectedSessionType,
+                                    coachData = selectedCoach
                                 )
                             )
                             onDismissRequest()
@@ -93,7 +96,7 @@ object FilterScreen {
     }
 
     @Composable
-    fun <T> DropDownItem(items: List<T>, selectedItem: T, setSelectedItem: (T) -> Unit) {
+    fun <T> DropDownItem(items: List<T>, selectedItem: T, setSelectedItem: (T) -> Unit, hint: String) {
         var toogle by remember { mutableStateOf(false) }
         Row(modifier = Modifier.fillMaxWidth()) {
             Box(
@@ -104,7 +107,7 @@ object FilterScreen {
                 OutlinedTextField(
                     value = selectedItem.toString(),
                     onValueChange = {},
-                    label = { Text(ResUtils.getString(R.string.caption_gym)) },
+                    label = { Text(hint) },
                     textStyle = MaterialTheme.typography.body1,
                     colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
                 )
