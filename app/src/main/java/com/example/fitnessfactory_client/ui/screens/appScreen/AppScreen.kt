@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fitnessfactory_client.ui.components.Drawer
 import com.example.fitnessfactory_client.ui.screens.Screens
 import com.example.fitnessfactory_client.ui.screens.authScreen.*
+import com.example.fitnessfactory_client.ui.screens.coachesScreen.CoachesScreen
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreen
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsListScreen
 import com.example.fitnessfactory_client.ui.screens.splashScreen.IsAuthState
@@ -38,7 +39,6 @@ class AppScreen : AppCompatActivity() {
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("TAG", "main screen init")
 
         setContent {
             val navController = rememberNavController()
@@ -124,6 +124,13 @@ class AppScreen : AppCompatActivity() {
                     MySessionsListScreen.MySessionsListScreen(
                         lifecycle = lifecycle,
                         openDrawer = { openDrawer() }
+                    )
+                }
+                composable(Screens.COACHES_SCREEN) {
+                    CoachesScreen.CoachesScreen(
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() },
+                        showSessionsAction = { coachEmail -> }
                     )
                 }
             }

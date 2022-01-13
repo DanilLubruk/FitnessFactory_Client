@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -79,8 +80,8 @@ object SessionsListView {
         }
 
         when (listState) {
-            is ListState.Loading -> ListLoadingView()
-            is ListState.Empty -> ListEmptyView()
+            is ListState.Loading -> ListLoadingView.ListLoadingView()
+            is ListState.Empty -> ListEmptyView.ListEmptyView(stringResource(id = R.string.caption_no_sessions_for_date))
             is ListState.Loaded -> SessionsListView(
                 lifecycle = lifecycle,
                 sessionsList = sessionsList,
@@ -89,37 +90,6 @@ object SessionsListView {
                 askActionMessage = askActionMessage,
                 fetchCoachUsers = fetchCoachUsers,
                 coachUsersFlow = coachUsersFlow
-            )
-        }
-    }
-
-    @Composable
-    private fun ListLoadingView() {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .height(32.dp)
-                    .width(32.dp),
-                strokeWidth = 2.dp,
-                color = MaterialTheme.colors.primary
-            )
-        }
-    }
-
-    @Composable
-    private fun ListEmptyView() {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = ResUtils.getString(R.string.caption_no_sessions_for_date),
-                style = MaterialTheme.typography.body1
             )
         }
     }

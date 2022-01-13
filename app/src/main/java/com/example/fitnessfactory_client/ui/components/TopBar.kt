@@ -1,7 +1,5 @@
 package com.example.fitnessfactory_client.ui.components
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,16 +13,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.TopBarAction
-import com.google.accompanist.pager.ExperimentalPagerApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object TopBar {
 
-    @ExperimentalPagerApi
-    @ExperimentalAnimationApi
-    @ExperimentalFoundationApi
-    @ExperimentalCoroutinesApi
-    @ExperimentalMaterialApi
     @Composable
     fun TopBar(
         title: String = "",

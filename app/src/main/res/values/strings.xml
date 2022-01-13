@@ -36,4 +36,9 @@
     <string name="message_error_coach_users">There are some unregistered coaches!</string>
     <string name="caption_no_filter">No filter</string>
     <string name="caption_clear">Clear</string>
+    <string name="caption_empty_coaches_list">There are no available coaches...</string>
+    <string name="caption_name">Name</string>
+    <string name="caption_email">Email</string>
+    <string name="caption_gyms">Gyms</string>
+    <string name="caption_show_sessions">Show sessions</string>
 </resources>

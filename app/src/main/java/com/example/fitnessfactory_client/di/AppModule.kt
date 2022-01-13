@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.di
 
+import com.example.fitnessfactory_client.data.dataListeners.CoachesListListener
 import com.example.fitnessfactory_client.data.dataListeners.DaysSessionsListListener
 import com.example.fitnessfactory_client.data.dataListeners.DaysUsersSessionsListListener
 import com.example.fitnessfactory_client.data.dataListeners.SessionsCalendarListListener
@@ -140,4 +141,9 @@ class AppModule {
     @Provides
     fun provideSessionTypesRepository() =
         SessionTypesRepository()
+
+    @AppScope
+    @Provides
+    fun provideCoachesListListener() =
+        CoachesListListener()
 }
