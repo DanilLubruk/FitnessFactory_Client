@@ -1,6 +1,8 @@
 package com.example.fitnessfactory_client.data.repositories
 
+import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Personnel
+import com.example.fitnessfactory_client.utils.StringUtils
 import java.lang.Exception
 
 abstract class OwnerPersonnelRepository : BaseRepository() {
@@ -9,6 +11,21 @@ abstract class OwnerPersonnelRepository : BaseRepository() {
 
     suspend fun getPersonnelList(): List<Personnel> =
         getQuerySnapshot(getCollection().orderBy(Personnel.USER_EMAIL_FIELD)).toObjects(Personnel::class.java)
+
+    suspend fun getPersonnelByEmail(personnelEmail: String): Personnel {
+        val personnelList = getQuerySnapshot(
+            getCollection().whereEqualTo(
+                Personnel.USER_EMAIL_FIELD,
+                personnelEmail
+            )
+        ).documents
+
+        if (!isEntityUnique(personnelList)) {
+            throw Exception(StringUtils.getMessageErrorUsersSameEmail())
+        }
+
+        return personnelList.get(0).toObject(Personnel::class.java) as Personnel
+    }
 
     suspend fun getPersonnelEmails(): List<String> {
         val personnelList = getQuerySnapshot(getCollection()).toObjects(Personnel::class.java)

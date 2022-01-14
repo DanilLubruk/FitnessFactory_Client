@@ -24,17 +24,14 @@ import com.example.fitnessfactory_client.ui.components.FilterScreen
 import com.example.fitnessfactory_client.ui.components.HomeScreenCalendarView
 import com.example.fitnessfactory_client.ui.components.SessionsListView
 import com.example.fitnessfactory_client.ui.components.TopBar
-import com.example.fitnessfactory_client.utils.GuiUtils
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
-import com.example.fitnessfactory_client.utils.TimeUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 import kotlin.collections.ArrayList
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.*
 
 object HomeScreen {
 
@@ -44,7 +41,13 @@ object HomeScreen {
     @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
     @Composable
-    fun HomeScreen(lifecycle: Lifecycle, openDrawer: () -> Unit) {
+    fun HomeScreen(
+        lifecycle: Lifecycle,
+        sessionsFilter: SessionsFilter = SessionsFilter.getNoFilterEntity(),
+        openDrawer: () -> Unit,
+        setFilter: (SessionsFilter) -> Unit,
+        clearFilter: () -> Unit
+    ) {
         val viewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModelFactory())
 
         var date by rememberSaveable { mutableStateOf(Date()) }
@@ -57,8 +60,6 @@ object HomeScreen {
         }
 
         var calendarListenerPeriod by remember { mutableStateOf(PeriodObject()) }
-        var sessionsFilter by remember { mutableStateOf(SessionsFilter.getNoFilterEntity()) }
-        val clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity() }
         LaunchedEffect(calendarListenerPeriod, sessionsFilter) {
             viewModel.startCalendarSessionsDataListener(
                 startDate = calendarListenerPeriod.startDate,
@@ -101,7 +102,7 @@ object HomeScreen {
                     sessionsFilter = sessionsFilter,
                     chainData = gymsChainData,
                     setFilter = {
-                        sessionsFilter = it
+                        setFilter(it)
                     }
                 )
             }

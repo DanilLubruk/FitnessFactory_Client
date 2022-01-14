@@ -25,6 +25,14 @@ class GymsChainDataManager
     private val usersRepository: UsersRepository
 ) {
 
+    fun getCoachDataByEmail(coachEmail: String): Flow<CoachData> =
+        flow {
+            val coachUser = usersRepository.getAppUserByEmail(coachEmail)
+            val coach = ownerCoachRepository.getPersonnelByEmail(coachEmail)
+
+            emit(CoachData(coachUser = coachUser, coach = coach))
+        }
+
     fun getGymsChainData(): Flow<GymsChainData> =
         flow {
             val gymsList = ArrayList<Gym>()

@@ -23,6 +23,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.CoachData
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Gym
 import com.example.fitnessfactory_client.ui.components.CoachDataScreen
@@ -38,7 +39,7 @@ object CoachesScreen {
     fun CoachesScreen(
         lifecycle: Lifecycle,
         openDrawer: () -> Unit,
-        showSessionsAction: (String) -> Unit
+        showSessionsAction: (CoachData) -> Unit
     ) {
         val viewModel: CoachesScreenViewModel = viewModel(factory = CoachesScreenViewModelFactory())
         var coachesListState: CoachesListState by remember { mutableStateOf(CoachesListState.Loading) }
@@ -53,6 +54,14 @@ object CoachesScreen {
 
         LaunchedEffect(key1 = Unit) {
             viewModel.startDataListener()
+        }
+
+        LaunchedEffect(key1 = Unit) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.coachForFilter.collect { coachData ->
+                    showSessionsAction(coachData)
+                }
+            }
         }
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -73,7 +82,7 @@ object CoachesScreen {
                             coachesList = coachesList,
                             gymsFlow = viewModel.gymsList,
                             fetchGyms = { viewModel.fetchGymsList() },
-                            showSessionsAction = { coachEmail -> showSessionsAction(coachEmail) }
+                            fetchCoachData = { coachEmail -> viewModel.fetchCoachForFilter(coachEmail) }
                         )
                     } else {
                         ListEmptyView.ListEmptyView(
@@ -92,7 +101,7 @@ object CoachesScreen {
         coachesList: List<AppUser>,
         gymsFlow: SharedFlow<ArrayList<Gym>>,
         fetchGyms: () -> Unit,
-        showSessionsAction: (String) -> Unit
+        fetchCoachData: (String) -> Unit
     ) {
         var coach by remember { mutableStateOf(AppUser()) }
         var gymsList by remember { mutableStateOf(ArrayList<Gym>()) }
@@ -103,7 +112,7 @@ object CoachesScreen {
                 coach = coach,
                 gymsList = gymsList,
                 onDismissRequest = { showDataDialog = false },
-                showSessionsAction = { coachEmail -> showSessionsAction(coachEmail) })
+                showSessionsAction = { coachEmail -> fetchCoachData(coachEmail) })
         }
 
         LaunchedEffect(key1 = Unit) {

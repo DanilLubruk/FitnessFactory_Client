@@ -20,5 +20,8 @@ class SessionsFilter(
                 coachData = CoachData(coach = Personnel(), coachUser = AppUser()),
                 doFilter = false
             )
+
+        fun getCoachFilteredEntity(coachData: CoachData): SessionsFilter =
+            SessionsFilter(gym = Gym.getNoFilterEntity(), sessionType = SessionType.getNoFilterEntity(), coachData = coachData)
     }
 }

@@ -3,6 +3,9 @@ package com.example.fitnessfactory_client.ui.screens.appScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.CoachData
+import com.example.fitnessfactory_client.data.beans.GymsChainData
+import com.example.fitnessfactory_client.data.managers.GymsChainDataManager
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import com.example.fitnessfactory_client.ui.screens.splashScreen.IsAuthState
 import com.example.fitnessfactory_client.utils.GuiUtils

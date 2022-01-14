@@ -2,7 +2,6 @@ package com.example.fitnessfactory_client.ui.screens.appScreen
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -15,16 +14,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.fitnessfactory_client.data.beans.SessionsFilter
 import com.example.fitnessfactory_client.ui.components.Drawer
 import com.example.fitnessfactory_client.ui.screens.Screens
 import com.example.fitnessfactory_client.ui.screens.authScreen.*
 import com.example.fitnessfactory_client.ui.screens.coachesScreen.CoachesScreen
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreen
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsListScreen
-import com.example.fitnessfactory_client.ui.screens.splashScreen.IsAuthState
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreen
-import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModel
-import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModelFactory
 import com.example.fitnessfactory_client.utils.GuiUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -84,6 +81,11 @@ class AppScreen : AppCompatActivity() {
             }
         }
 
+        var sessionsFilter by remember { mutableStateOf(SessionsFilter.getNoFilterEntity()) }
+        LaunchedEffect(sessionsFilter) {
+            navController.navigate(Screens.HOME_SCREEN)
+        }
+
         ModalDrawer(
             drawerState = drawerState,
             gesturesEnabled = drawerState.isOpen,
@@ -117,7 +119,10 @@ class AppScreen : AppCompatActivity() {
                 composable(Screens.HOME_SCREEN) {
                     HomeScreen.HomeScreen(
                         lifecycle = lifecycle,
-                        openDrawer = { openDrawer() }
+                        sessionsFilter = sessionsFilter,
+                        openDrawer = { openDrawer() },
+                        clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity()},
+                        setFilter = { sessionsFilter = it }
                     )
                 }
                 composable(Screens.MY_SESSIONS_SCREEN) {
@@ -130,7 +135,7 @@ class AppScreen : AppCompatActivity() {
                     CoachesScreen.CoachesScreen(
                         lifecycle = lifecycle,
                         openDrawer = { openDrawer() },
-                        showSessionsAction = { coachEmail -> }
+                        showSessionsAction = { coachData -> sessionsFilter = SessionsFilter.getCoachFilteredEntity(coachData) }
                     )
                 }
             }

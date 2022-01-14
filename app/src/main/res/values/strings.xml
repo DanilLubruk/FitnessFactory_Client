@@ -41,4 +41,5 @@
     <string name="caption_email">Email</string>
     <string name="caption_gyms">Gyms</string>
     <string name="caption_show_sessions">Show sessions</string>
+    <string name="caption_users">Users</string>
 </resources>
