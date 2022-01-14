@@ -36,13 +36,15 @@ class AppModule {
         firebaseAuthManager: FirebaseAuthManager,
         usersRepository: UsersRepository,
         clientsAccessRepository: ClientsAccessRepository,
-        ownersRepository: OwnersRepository
+        ownersRepository: OwnersRepository,
+        ownerClientRepository: OwnerClientRepository
     ): AuthManager =
         AuthManager(
             firebaseAuthManager = firebaseAuthManager,
             usersRepository = usersRepository,
             clientsAccessRepository = clientsAccessRepository,
-            ownersRepository = ownersRepository
+            ownersRepository = ownersRepository,
+            ownerClientRepository = ownerClientRepository
         )
 
     @AppScope

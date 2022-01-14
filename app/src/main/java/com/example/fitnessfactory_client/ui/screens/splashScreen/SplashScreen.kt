@@ -8,11 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.ui.components.ListLoadingView
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,14 +57,16 @@ object SplashScreen {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = ResUtils.getString(R.string.caption_greetings))
+                    Text(
+                        text = ResUtils.getString(R.string.caption_greetings),
+                        style = MaterialTheme.typography.body1)
                     Spacer(modifier = Modifier.height(5.dp))
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .height(16.dp)
-                            .width(16.dp),
+                            .height(32.dp)
+                            .width(32.dp),
                         strokeWidth = 2.dp,
-                        color = MaterialTheme.colors.primary
+                        color = colorResource(id = R.color.royalBlue)
                     )
                 }
             }

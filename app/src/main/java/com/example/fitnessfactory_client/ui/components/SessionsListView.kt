@@ -1,7 +1,9 @@
 package com.example.fitnessfactory_client.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -10,6 +12,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -179,71 +182,73 @@ object SessionsListView {
                             }
                         )
                     }) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 4.dp)
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                text = item.gymName,
-                                color = Color.White,
-                                style = MaterialTheme.typography.body1,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.End,
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)) {
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            Row {
+                            Column(horizontalAlignment = Alignment.Start) {
                                 Text(
-                                    text = ResUtils.getString(R.string.caption_from),
+                                    text = item.gymName,
                                     color = Color.White,
-                                    style = MaterialTheme.typography.body1
-                                )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                Text(
-                                    color = Color.White,
-                                    text = item.session.startTimeString,
                                     style = MaterialTheme.typography.body1,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
                                 )
                             }
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Row {
+                                    Text(
+                                        text = ResUtils.getString(R.string.caption_from),
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.body1
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        color = Color.White,
+                                        text = item.session.startTimeString,
+                                        style = MaterialTheme.typography.body1,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
                         }
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                color = Color.White,
-                                text = item.sessionTypeName,
-                                style = MaterialTheme.typography.body1
-                            )
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.End,
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            Row {
+                            Column(horizontalAlignment = Alignment.Start) {
                                 Text(
-                                    text = ResUtils.getString(R.string.caption_until),
                                     color = Color.White,
+                                    text = item.sessionTypeName,
                                     style = MaterialTheme.typography.body1
                                 )
-                                Spacer(modifier = Modifier.width(2.dp))
-                                Text(
-                                    text = item.session.endTimeString,
-                                    color = Color.White,
-                                    style = MaterialTheme.typography.body1,
-                                    fontWeight = FontWeight.Bold
-                                )
+                            }
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Row {
+                                    Text(
+                                        text = ResUtils.getString(R.string.caption_until),
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.body1
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = item.session.endTimeString,
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.body1,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                         }
                     }

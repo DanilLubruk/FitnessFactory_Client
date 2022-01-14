@@ -118,7 +118,6 @@ object GymsScreen {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
-
         ) {
             itemsIndexed(gymsList) { index, item ->
                 Column(modifier = Modifier
@@ -138,34 +137,38 @@ object GymsScreen {
                             }
                         )
                     }) {
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(end = 4.dp)
+                            .padding(8.dp)
                     ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                text = item.name,
-                                color = Color.White,
-                                style = MaterialTheme.typography.body1,
-                                fontWeight = FontWeight.Bold,
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Column(horizontalAlignment = Alignment.Start) {
+                                Text(
+                                    text = item.name,
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.body1,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                color = Color.White,
-                                text = item.address,
-                                style = MaterialTheme.typography.body1
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Column(horizontalAlignment = Alignment.Start) {
+                                Text(
+                                    color = Color.White,
+                                    text = item.address,
+                                    style = MaterialTheme.typography.body1
+                                )
+                            }
                         }
                     }
                 }

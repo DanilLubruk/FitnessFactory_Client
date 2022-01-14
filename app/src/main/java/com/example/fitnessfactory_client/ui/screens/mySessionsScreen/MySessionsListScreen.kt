@@ -10,10 +10,13 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.ui.components.DataScreenField
 import com.example.fitnessfactory_client.ui.components.SessionsListView
 import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.utils.DialogUtils
@@ -79,18 +82,26 @@ object MySessionsListScreen {
             )
         }
 
-        TextField(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .clickable { showDatePicker = true },
-            value = TimeUtils.dateToLocaleStr(date),
-            onValueChange = {},
-            enabled = false,
-            label = { Text(ResUtils.getString(R.string.caption_date)) },
-            textStyle = MaterialTheme.typography.body1
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
+                .wrapContentHeight()
+        ) {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                value = TimeUtils.dateToLocaleStr(date),
+                onValueChange = {},
+                label = { Text(ResUtils.getString(R.string.caption_date)) },
+                textStyle = MaterialTheme.typography.body1
+            )
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .alpha(0f)
+                    .clickable { showDatePicker = true }
+            )
+        }
     }
 }

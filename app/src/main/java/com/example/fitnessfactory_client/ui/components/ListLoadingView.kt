@@ -6,7 +6,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import com.example.fitnessfactory_client.R
 
 object ListLoadingView {
 
@@ -22,7 +24,7 @@ object ListLoadingView {
                     .height(32.dp)
                     .width(32.dp),
                 strokeWidth = 2.dp,
-                color = MaterialTheme.colors.primary
+                color = colorResource(id = R.color.royalBlue)
             )
         }
     }

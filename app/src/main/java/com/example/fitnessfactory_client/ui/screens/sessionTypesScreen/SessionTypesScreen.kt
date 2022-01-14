@@ -118,34 +118,37 @@ object SessionTypesScreen {
                             }
                         )
                     }) {
-                    Row(
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 4.dp)
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                text = item.name,
-                                color = Color.White,
-                                style = MaterialTheme.typography.body1,
-                                fontWeight = FontWeight.Bold,
-                            )
+                        .fillMaxWidth()
+                        .padding(8.dp)) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Column(horizontalAlignment = Alignment.Start) {
+                                Text(
+                                    text = item.name,
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.body1,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                    ) {
-                        Column(horizontalAlignment = Alignment.Start) {
-                            Text(
-                                color = Color.White,
-                                text = item.name,
-                                style = MaterialTheme.typography.body1
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Column(horizontalAlignment = Alignment.Start) {
+                                Text(
+                                    color = Color.White,
+                                    text = item.name,
+                                    style = MaterialTheme.typography.body1
+                                )
+                            }
                         }
                     }
                 }
