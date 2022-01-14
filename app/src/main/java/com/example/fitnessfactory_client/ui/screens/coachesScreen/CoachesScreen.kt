@@ -28,6 +28,7 @@ import com.example.fitnessfactory_client.data.models.Gym
 import com.example.fitnessfactory_client.ui.components.ListEmptyView
 import com.example.fitnessfactory_client.ui.components.ListLoadingView
 import com.example.fitnessfactory_client.ui.components.TopBar
+import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
 import kotlinx.coroutines.flow.SharedFlow
@@ -66,7 +67,7 @@ object CoachesScreen {
         Column(modifier = Modifier.fillMaxSize()) {
 
             TopBar.TopBar(
-                title = ResUtils.getString(R.string.title_coaches_screen),
+                title = DrawerScreens.Coaches.title,
                 buttonIcon = Icons.Filled.Menu,
                 onButtonClicked = { openDrawer() },
             )

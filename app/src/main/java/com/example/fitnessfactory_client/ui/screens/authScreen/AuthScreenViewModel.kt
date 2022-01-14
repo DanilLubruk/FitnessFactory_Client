@@ -55,7 +55,7 @@ class AuthScreenViewModel
         }
     }
 
-    fun pickOwner(usersEmail: String) {
+    fun getOwnersData(usersEmail: String) {
         viewModelScope.launch {
            authManager.getAuthOwnersData(usersEmail = usersEmail)
                .flowOn(Dispatchers.IO)

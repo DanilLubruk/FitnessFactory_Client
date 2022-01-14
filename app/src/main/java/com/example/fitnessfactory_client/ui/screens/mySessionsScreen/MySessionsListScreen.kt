@@ -19,6 +19,7 @@ import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.ui.components.DataScreenField
 import com.example.fitnessfactory_client.ui.components.SessionsListView
 import com.example.fitnessfactory_client.ui.components.TopBar
+import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
 import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
@@ -38,7 +39,7 @@ object MySessionsListScreen {
     fun MySessionsListScreen(lifecycle: Lifecycle, openDrawer: () -> Unit) {
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar.TopBar(
-                title = ResUtils.getString(R.string.title_sessions_screen),
+                title = DrawerScreens.MySessions.title,
                 buttonIcon = Icons.Filled.Menu,
                 onButtonClicked = { openDrawer() })
             val viewModel: MySessionsListScreenViewModel =

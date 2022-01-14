@@ -11,7 +11,7 @@ class OwnersRepository: BaseRepository() {
     override fun getRoot(): String =
         FirestoreCollections.getOwnersCollection()
 
-    suspend fun getOwnersByIds(ownersIds: List<String>): List<Owner> {
+    suspend fun getOwnersByIds(ownersIds: List<String>): ArrayList<Owner> {
         val ownersList = ArrayList<Owner>()
 
         if (ownersIds.isEmpty()) {
@@ -36,7 +36,7 @@ class OwnersRepository: BaseRepository() {
         return ownersList
     }
 
-    suspend fun getAllOwners(): List<Owner> {
+    suspend fun getAllOwners(): ArrayList<Owner> {
         val allOwnersList = ArrayList<Owner>()
 
         getQuerySnapshot(getCollection()).documents

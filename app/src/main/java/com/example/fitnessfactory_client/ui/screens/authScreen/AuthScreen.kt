@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.authScreen
 
+import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -11,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,20 +48,27 @@ object AuthScreen {
     @Composable
     fun AuthScreen(
         lifecycle: Lifecycle,
-        openHomeScreen: () -> Unit
+        openHomeScreen: () -> Unit,
+        savedState: Bundle
     ) {
         val viewModel: AuthScreenViewModel = viewModel(factory = AuthScreenViewModelFactory())
-        var text by remember { mutableStateOf("") }
+        var text by rememberSaveable { mutableStateOf("") }
         var showDialog by remember { mutableStateOf(false) }
-        var isLoading by remember { mutableStateOf(false) }
+        var isLoading by rememberSaveable { mutableStateOf(false) }
+        var usersEmail by rememberSaveable { mutableStateOf("") }
         val signInRequestCode = 1
+
+        var ownersData by remember { mutableStateOf(OwnersData()) }
+        LaunchedEffect(key1 = Unit) {
+            ownersData.restoreState(savedState = savedState)
+        }
 
         LaunchedEffect(key1 = Unit) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getRegisterUiState().collect { uiState ->
                     when (uiState) {
                         is RegisterUiState.Success ->
-                            viewModel.pickOwner(uiState.usersEmail)
+                            viewModel.getOwnersData(uiState.usersEmail)
                         is RegisterUiState.Error -> {
                             text = signInFailed
                             isLoading = false
@@ -70,7 +79,6 @@ object AuthScreen {
             }
         }
 
-        var ownersData by remember { mutableStateOf(OwnersData()) }
         LaunchedEffect(key1 = Unit) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getOwnersData().collect { uiState ->
