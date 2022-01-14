@@ -8,19 +8,28 @@ sealed class DrawerScreens(val title: String, val navRoute: String) {
 
     object Home : DrawerScreens(
         ResUtils.getString(R.string.title_home_screen),
-        Screens.HOME_SCREEN)
+        Screens.HOME_SCREEN
+    )
 
     object MySessions : DrawerScreens(
         ResUtils.getString(R.string.title_sessions_screen),
-        Screens.MY_SESSIONS_SCREEN)
+        Screens.MY_SESSIONS_SCREEN
+    )
 
     object Coaches : DrawerScreens(
         ResUtils.getString(R.string.title_coaches_screen),
-        Screens.COACHES_SCREEN)
+        Screens.COACHES_SCREEN
+    )
 
     object SessionTypes : DrawerScreens(
         ResUtils.getString(R.string.title_session_types_screen),
-        Screens.SESSION_TYPES_SCREEN)
+        Screens.SESSION_TYPES_SCREEN
+    )
+
+    object Gyms : DrawerScreens(
+        ResUtils.getString(R.string.caption_gyms),
+        Screens.GYMS_SCREEN
+    )
 
     companion object {
         fun getDrawerScreens(): List<DrawerScreens> =
@@ -28,7 +37,8 @@ sealed class DrawerScreens(val title: String, val navRoute: String) {
                 Home,
                 MySessions,
                 Coaches,
-                SessionTypes
+                SessionTypes,
+                Gyms
             )
     }
 }

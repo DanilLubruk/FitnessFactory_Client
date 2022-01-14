@@ -56,7 +56,7 @@ object GymDataScreen {
                     if (coaches.isNotEmpty()) {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
-                            text = ResUtils.getString(R.string.caption_gyms),
+                            text = ResUtils.getString(R.string.title_coaches_screen),
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold
                         )
