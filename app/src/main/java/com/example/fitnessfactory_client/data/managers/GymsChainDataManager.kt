@@ -43,11 +43,9 @@ class GymsChainDataManager
             sessionTypesList.add(SessionType.getNoFilterEntity())
             sessionTypesList.addAll(sessionTypesRepository.getSessionTypes())
 
-            val coaches = ownerCoachRepository.getPersonnelList()
-            val coachUsers = usersRepository.getAppUsersByPersonnel(coaches)
             val coachesDataList = ArrayList<CoachData>()
             coachesDataList.add(CoachData.getNoFilterEntity())
-            coachesDataList.addAll(getCoachesData(coachUsers = coachUsers, coaches = coaches))
+            coachesDataList.addAll(getCoachesData())
 
             val gymsChainData = GymsChainData(
                 gyms = gymsList,
@@ -57,6 +55,18 @@ class GymsChainDataManager
 
             emit(gymsChainData)
         }
+
+    fun getCoachesDataFlow(): Flow<List<CoachData>> =
+        flow {
+            emit(getCoachesData())
+        }
+
+    private suspend fun getCoachesData(): List<CoachData> {
+        val coaches = ownerCoachRepository.getPersonnelList()
+        val coachUsers = usersRepository.getAppUsersByPersonnel(coaches)
+
+        return getCoachesData(coachUsers = coachUsers, coaches = coaches)
+    }
 
     private fun getCoachesData(coachUsers: List<AppUser>, coaches: List<Personnel>): List<CoachData> {
         if (coachUsers.size != coaches.size) {

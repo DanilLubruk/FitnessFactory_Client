@@ -19,6 +19,7 @@ import com.example.fitnessfactory_client.ui.components.Drawer
 import com.example.fitnessfactory_client.ui.screens.Screens
 import com.example.fitnessfactory_client.ui.screens.authScreen.*
 import com.example.fitnessfactory_client.ui.screens.coachesScreen.CoachesScreen
+import com.example.fitnessfactory_client.ui.screens.gymsScreen.GymsScreen
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreen
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsListScreen
 import com.example.fitnessfactory_client.ui.screens.sessionTypesScreen.SessionTypesScreen
@@ -154,6 +155,19 @@ class AppScreen : AppCompatActivity() {
                                 SessionsFilter
                                     .builder()
                                     .filterSessionType(sessionType = sessionType)
+                                    .build()
+                        }
+                    )
+                }
+                composable(Screens.GYMS_SCREEN) {
+                    GymsScreen.GymsScreen(
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() },
+                        showSessionsAction = { gym ->
+                            sessionsFilter =
+                                SessionsFilter
+                                    .builder()
+                                    .filterGym(gym = gym)
                                     .build()
                         }
                     )

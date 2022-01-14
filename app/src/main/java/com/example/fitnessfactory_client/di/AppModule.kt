@@ -1,10 +1,7 @@
 package com.example.fitnessfactory_client.di
 
 import com.example.fitnessfactory_client.data.dataListeners.*
-import com.example.fitnessfactory_client.data.managers.AuthManager
-import com.example.fitnessfactory_client.data.managers.CoachesAccessManager
-import com.example.fitnessfactory_client.data.managers.GymsChainDataManager
-import com.example.fitnessfactory_client.data.managers.SessionsDataManager
+import com.example.fitnessfactory_client.data.managers.*
 import com.example.fitnessfactory_client.data.repositories.*
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
 import dagger.Module
@@ -147,5 +144,18 @@ class AppModule {
     @AppScope
     @Provides
     fun provideSessionTypesDataListener() =
-        SessionTypesDataListener()
+        SessionTypesListListener()
+
+    @AppScope
+    @Provides
+    fun provideGymsListListener() =
+        GymsListListener()
+
+    @AppScope
+    @Provides
+    fun provideCoachesDataManager(
+        ownerCoachRepository: OwnerCoachRepository,
+        usersRepository: UsersRepository
+    ) =
+        CoachesDataManager(ownerCoachRepository = ownerCoachRepository, usersRepository = usersRepository)
 }

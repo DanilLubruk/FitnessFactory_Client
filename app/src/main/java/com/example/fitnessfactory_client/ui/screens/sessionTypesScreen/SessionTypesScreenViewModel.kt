@@ -2,7 +2,7 @@ package com.example.fitnessfactory_client.ui.screens.sessionTypesScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fitnessfactory_client.data.dataListeners.SessionTypesDataListener
+import com.example.fitnessfactory_client.data.dataListeners.SessionTypesListListener
 import com.example.fitnessfactory_client.utils.GuiUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SessionTypesScreenViewModel
-@Inject constructor(private val sessionTypesDataListener: SessionTypesDataListener):
+@Inject constructor(private val sessionTypesListListener: SessionTypesListListener):
     ViewModel() {
 
     private val mutableTypesListState = MutableStateFlow<SessionTypesListState>(SessionTypesListState.Loading)
@@ -21,7 +21,7 @@ class SessionTypesScreenViewModel
 
     fun startDataListener() {
         viewModelScope.launch {
-            sessionTypesDataListener.startDataListener()
+            sessionTypesListListener.startDataListener()
                 .flowOn(Dispatchers.IO)
                 .catch { throwable ->
                     throwable.printStackTrace()

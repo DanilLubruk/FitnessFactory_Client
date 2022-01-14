@@ -44,4 +44,5 @@
     <string name="caption_users">Users</string>
     <string name="caption_people_amount">People amount</string>
     <string name="caption_price">Price (%1$s)</string>
+    <string name="caption_address">Address</string>
 </resources>

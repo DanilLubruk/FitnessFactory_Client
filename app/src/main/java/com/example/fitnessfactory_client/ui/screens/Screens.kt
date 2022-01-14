@@ -7,4 +7,5 @@ object Screens {
     val COACHES_SCREEN = "coaches"
     val SESSION_TYPES_SCREEN = "sessions_types"
     val AUTH_SCREEN = "auth"
+    val GYMS_SCREEN = "gyms"
 }

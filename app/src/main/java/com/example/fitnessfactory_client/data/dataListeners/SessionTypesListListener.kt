@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.lang.Exception
 
-class SessionTypesDataListener: BaseDataListener() {
+class SessionTypesListListener: BaseDataListener() {
 
     override fun getRoot(): String =
         FirestoreCollections.getSessionTypesCollection()
