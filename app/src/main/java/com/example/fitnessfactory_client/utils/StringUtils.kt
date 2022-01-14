@@ -52,4 +52,10 @@ object StringUtils {
             ResUtils.getString(R.string.caption_price),
             AppPrefs.currencySing().value
         )
+
+    fun getPeopleCaption(peopleAmount: Int) =
+        peopleAmount.toString() + " " + ResUtils.getString(R.string.caption_people)
+
+    fun getPriceTag(price: Float) =
+        price.toString() + " " + AppPrefs.currencySing().value
 }

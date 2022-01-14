@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -26,6 +27,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.models.SessionType
+import com.example.fitnessfactory_client.ui.components.DataScreenField
 import com.example.fitnessfactory_client.ui.components.ListEmptyView
 import com.example.fitnessfactory_client.ui.components.ListLoadingView
 import com.example.fitnessfactory_client.ui.components.TopBar
@@ -95,7 +97,8 @@ object SessionTypesScreen {
             SessionTypeDataScreen.SessionTypeDataScreen(
                 sessionType = sessionType,
                 onDismissRequest = { showDataDialog = false },
-                showSessionsAction = showSessionsAction)
+                showSessionsAction = showSessionsAction
+            )
         }
 
         LazyColumn(
@@ -111,7 +114,7 @@ object SessionTypesScreen {
                         color = colorResource(id = R.color.transparent_royal_blue),
                         shape = RoundedCornerShape(10.dp)
                     )
-                        .pointerInput(item) {
+                    .pointerInput(item) {
                         detectTapGestures(
                             onPress = { },
                             onDoubleTap = { },
@@ -124,32 +127,43 @@ object SessionTypesScreen {
                     }) {
                     Column(
                         modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)) {
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Column(horizontalAlignment = Alignment.Start) {
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                horizontalAlignment = Alignment.Start,
+                            ) {
                                 Text(
                                     text = item.name,
                                     color = Color.White,
                                     style = MaterialTheme.typography.body1,
                                     fontWeight = FontWeight.Bold,
                                 )
-                            }
-                        }
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                                Spacer(modifier = Modifier.height(4.dp))
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Column(horizontalAlignment = Alignment.Start) {
                                 Text(
                                     color = Color.White,
-                                    text = item.name,
+                                    text = StringUtils.getPeopleCaption(item.peopleAmount),
+                                    style = MaterialTheme.typography.body1
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Column(
+                                modifier = Modifier.weight(1f).fillMaxHeight(),
+                                horizontalAlignment = Alignment.End,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    color = Color.White,
+                                    text = StringUtils.getPriceTag(item.price),
                                     style = MaterialTheme.typography.body1
                                 )
                             }

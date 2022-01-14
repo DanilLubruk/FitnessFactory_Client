@@ -47,4 +47,5 @@
     <string name="caption_address">Address</string>
     <string name="caption_search">Search</string>
     <string name="caption_invited">Invitations</string>
+    <string name="caption_people">people</string>
 </resources>
