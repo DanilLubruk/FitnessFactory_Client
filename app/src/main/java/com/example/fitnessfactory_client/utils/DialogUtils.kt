@@ -22,6 +22,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.fitnessfactory_client.data.beans.OwnersData
 import com.example.fitnessfactory_client.data.models.Owner
@@ -54,8 +56,9 @@ object DialogUtils {
                 Column(modifier = Modifier.padding(SizeUtils.dialogPadding)) {
 
                     Text(
-                        text = title,
-                        style = MaterialTheme.typography.h4
+                        text = title.uppercase(Locale.getDefault()),
+                        style = MaterialTheme.typography.h5,
+                        textAlign = TextAlign.Center
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -63,8 +66,8 @@ object DialogUtils {
                     val searchTabIndex = 0
                     val invitedTabIndex = 1
                     val tabData = listOf(
-                        "Search",
-                        "Invited",
+                        stringResource(id = R.string.caption_search),
+                        stringResource(id = R.string.caption_invited),
                     )
 
                     val pagerState = rememberPagerState(
@@ -75,7 +78,11 @@ object DialogUtils {
                     val tabIndex = pagerState.currentPage
                     val coroutineScope = rememberCoroutineScope()
 
-                    TabRow(selectedTabIndex = tabIndex) {
+                    TabRow(
+                        selectedTabIndex = tabIndex,
+                        backgroundColor = colorResource(id = R.color.royalBlue),
+                        contentColor = Color.White,
+                    ) {
                         tabData.forEachIndexed { index, text ->
                             Tab(selected = tabIndex == index, onClick = {
                                 coroutineScope.launch {
@@ -141,6 +148,7 @@ object DialogUtils {
         var text by remember { mutableStateOf("") }
         var optionsListValues by remember { mutableStateOf(optionsList) }
 
+        Spacer(modifier = Modifier.height(8.dp))
 
         TextField(
             value = text,
@@ -157,7 +165,7 @@ object DialogUtils {
             label = { Text(ResUtils.getString(R.string.caption_search_by_name)) }
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn {
             itemsIndexed(optionsListValues) { index, owner ->
@@ -185,7 +193,7 @@ object DialogUtils {
                 modifier = Modifier
                     .wrapContentSize()
                     .background(
-                        color = MaterialTheme.colors.surface,
+                        color = colorResource(id = R.color.royalBlue),
                         shape = RoundedCornerShape(size = 16.dp)
                     )
             ) {
@@ -194,7 +202,7 @@ object DialogUtils {
                         .defaultMinSize(minHeight = 72.dp)
                         .fillMaxWidth()
                         .background(
-                            color = MaterialTheme.colors.primary,
+                            color = colorResource(id = R.color.royalBlue),
                             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                         )
                         .padding(16.dp)

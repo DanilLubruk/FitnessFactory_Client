@@ -45,4 +45,6 @@
     <string name="caption_people_amount">People amount</string>
     <string name="caption_price">Price (%1$s)</string>
     <string name="caption_address">Address</string>
+    <string name="caption_search">Search</string>
+    <string name="caption_invited">Invitations</string>
 </resources>
