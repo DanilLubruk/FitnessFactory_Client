@@ -5,6 +5,7 @@ import com.example.fitnessfactory_client.ui.screens.authScreen.AuthScreenViewMod
 import com.example.fitnessfactory_client.ui.screens.coachesScreen.CoachesScreenViewModelFactory
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreenViewModelFactory
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsListScreenViewModelFactory
+import com.example.fitnessfactory_client.ui.screens.sessionTypesScreen.SessionTypesScreenViewModelFactory
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModel
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModelFactory
 import dagger.Component
@@ -21,4 +22,5 @@ interface AppComponent {
     fun inject(mySessionsListScreenViewModelFactory: MySessionsListScreenViewModelFactory)
     fun inject(homeScreenViewModelFactory: HomeScreenViewModelFactory)
     fun inject(coachesScreenViewModelFactory: CoachesScreenViewModelFactory)
+    fun inject(sessionTypesScreenViewModelFactory: SessionTypesScreenViewModelFactory)
 }

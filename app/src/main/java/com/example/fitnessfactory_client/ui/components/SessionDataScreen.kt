@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,27 +45,10 @@ object SessionDataScreen {
                     )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        OutlinedTextField(
-                            value = sessionData.session.dateString,
-                            onValueChange = {},
-                            label = { Text(ResUtils.getString(R.string.caption_date)) },
-                            textStyle = MaterialTheme.typography.body1,
-                            colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .alpha(0f)
-                                .clickable(onClick = {})
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
+                    DataScreenField.DataScreenField(
+                        content = sessionData.session.dateString,
+                        hint = stringResource(id = R.string.caption_date)
+                    )
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -74,25 +58,10 @@ object SessionDataScreen {
                             modifier = Modifier.weight(1f),
                             horizontalAlignment = Alignment.Start,
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight()
-                            ) {
-                                OutlinedTextField(
-                                    value = sessionData.session.startTimeString,
-                                    onValueChange = {},
-                                    label = { Text(ResUtils.getString(R.string.caption_start_time)) },
-                                    textStyle = MaterialTheme.typography.body1,
-                                    colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .alpha(0f)
-                                        .clickable(onClick = {})
-                                )
-                            }
+                            DataScreenField.DataScreenField(
+                                content = sessionData.session.startTimeString,
+                                hint = stringResource(id = R.string.caption_start_time)
+                            )
                         }
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -101,73 +70,22 @@ object SessionDataScreen {
                             modifier = Modifier.weight(1f),
                             horizontalAlignment = Alignment.End
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .wrapContentHeight()
-                            ) {
-                                OutlinedTextField(
-                                    value = sessionData.session.endTimeString,
-                                    onValueChange = {},
-                                    label = { Text(ResUtils.getString(R.string.caption_end_time)) },
-                                    textStyle = MaterialTheme.typography.body1,
-                                    colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .matchParentSize()
-                                        .alpha(0f)
-                                        .clickable(onClick = {})
-                                )
-                            }
+                            DataScreenField.DataScreenField(
+                                content = sessionData.session.endTimeString,
+                                hint = stringResource(id = R.string.caption_end_time)
+                            )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    DataScreenField.DataScreenField(
+                        content = sessionData.gymName,
+                        hint = stringResource(id = R.string.caption_gym)
+                    )
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        OutlinedTextField(
-                            value = sessionData.gymName,
-                            onValueChange = {},
-                            label = { Text(ResUtils.getString(R.string.caption_gym)) },
-                            textStyle = MaterialTheme.typography.body1,
-                            colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .alpha(0f)
-                                .clickable(onClick = {})
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        OutlinedTextField(
-                            value = sessionData.sessionTypeName,
-                            onValueChange = {},
-                            label = { Text(ResUtils.getString(R.string.caption_session_type)) },
-                            textStyle = MaterialTheme.typography.body1,
-                            colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .alpha(0f)
-                                .clickable(onClick = {})
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
+                    DataScreenField.DataScreenField(
+                        content = sessionData.sessionTypeName,
+                        hint = stringResource(id = R.string.caption_session_type)
+                    )
 
                     if (coachUsers.isNotEmpty()) {
                         Text(

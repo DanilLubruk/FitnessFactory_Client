@@ -2,19 +2,19 @@ package com.example.fitnessfactory_client.data.dataListeners
 
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.FirestoreCollections
-import com.example.fitnessfactory_client.data.models.Personnel
+import com.example.fitnessfactory_client.data.models.SessionType
 import com.example.fitnessfactory_client.utils.ResUtils
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import java.lang.Exception
 
-class CoachesListListener: BaseDataListener() {
+class SessionTypesDataListener: BaseDataListener() {
 
     override fun getRoot(): String =
-        FirestoreCollections.getOwnerCoachesCollection()
+        FirestoreCollections.getSessionTypesCollection()
 
-    fun startDataListener(): Flow<List<Personnel>> =
+    fun startDataListener(): Flow<List<SessionType>> =
         callbackFlow {
             listenerRegistration = getCollection().addSnapshotListener { value, error ->
                 if (error != null) {
@@ -24,8 +24,8 @@ class CoachesListListener: BaseDataListener() {
                     throw Exception(ResUtils.getString(R.string.message_error_data_obtain))
                 }
 
-                val coachesList = value.toObjects(Personnel::class.java)
-                trySend(coachesList)
+                val sessionTypes = value.toObjects(SessionType::class.java)
+                trySend(sessionTypes)
             }
 
             awaitClose { listenerRegistration.remove() }

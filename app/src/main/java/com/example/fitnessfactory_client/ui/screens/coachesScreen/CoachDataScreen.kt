@@ -1,4 +1,4 @@
-package com.example.fitnessfactory_client.ui.components
+package com.example.fitnessfactory_client.ui.screens.coachesScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,6 +20,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Gym
+import com.example.fitnessfactory_client.ui.components.DataScreenField
 import com.example.fitnessfactory_client.utils.ResUtils
 
 object CoachDataScreen {
@@ -41,49 +42,15 @@ object CoachDataScreen {
                     )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        OutlinedTextField(
-                            value = coach.name,
-                            onValueChange = {},
-                            label = { Text(stringResource(id = R.string.caption_name)) },
-                            textStyle = MaterialTheme.typography.body1,
-                            colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .alpha(0f)
-                                .clickable(onClick = {})
-                        )
-                    }
+                    DataScreenField.DataScreenField(
+                        content = coach.name,
+                        hint = stringResource(id = R.string.caption_name)
+                    )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        OutlinedTextField(
-                            value = coach.email,
-                            onValueChange = {},
-                            label = { Text(stringResource(id = R.string.caption_email)) },
-                            textStyle = MaterialTheme.typography.body1,
-                            colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
-                        )
-                        Box(
-                            modifier = Modifier
-                                .matchParentSize()
-                                .alpha(0f)
-                                .clickable(onClick = {})
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
+                    DataScreenField.DataScreenField(
+                        content = coach.email,
+                        hint = stringResource(id = R.string.caption_email)
+                    )
 
                     if (gymsList.isNotEmpty()) {
                         Text(

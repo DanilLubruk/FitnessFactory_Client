@@ -9,4 +9,10 @@ object AppPrefs {
             .builder("gym_owner_id")
             .setDefaultValue("")
             .build()
+
+    fun currencySing(): StringPreference =
+        StringPreference
+            .builder("currency_sign_pref")
+            .setDefaultValue("₽")
+            .build()
 }

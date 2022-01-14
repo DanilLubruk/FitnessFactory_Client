@@ -45,7 +45,7 @@ class SessionsCalendarListListener : BaseDataListener() {
                         trySend(sessions)
                     }
 
-            awaitClose { listenerRegistration }
+            awaitClose { listenerRegistration.remove() }
         }
 
     private fun getQuery(

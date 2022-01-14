@@ -1,4 +1,4 @@
-package com.example.fitnessfactory_client.ui.screens.coachesScreen
+package com.example.fitnessfactory_client.ui.screens.sessionTypesScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -22,45 +22,35 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
-import com.example.fitnessfactory_client.data.beans.CoachData
-import com.example.fitnessfactory_client.data.models.AppUser
-import com.example.fitnessfactory_client.data.models.Gym
+import com.example.fitnessfactory_client.data.models.SessionType
 import com.example.fitnessfactory_client.ui.components.ListEmptyView
 import com.example.fitnessfactory_client.ui.components.ListLoadingView
 import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
-import kotlinx.coroutines.flow.SharedFlow
 
-object CoachesScreen {
+object SessionTypesScreen {
 
     @Composable
-    fun CoachesScreen(
+    fun SessionTypesScreen(
         lifecycle: Lifecycle,
         openDrawer: () -> Unit,
-        showSessionsAction: (CoachData) -> Unit
+        showSessionsAction: (SessionType) -> Unit
     ) {
-        val viewModel: CoachesScreenViewModel = viewModel(factory = CoachesScreenViewModelFactory())
-        var coachesListState: CoachesListState by remember { mutableStateOf(CoachesListState.Loading) }
+        val viewModel: SessionTypesScreenViewModel =
+            viewModel(factory = SessionTypesScreenViewModelFactory())
+        var typesListState: SessionTypesListState by remember { mutableStateOf(SessionTypesListState.Loading) }
 
         LaunchedEffect(key1 = Unit) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.coachesListState.collect { listState ->
-                    coachesListState = listState
+                viewModel.typesListState.collect { listState ->
+                    typesListState = listState
                 }
             }
         }
 
         LaunchedEffect(key1 = Unit) {
             viewModel.startDataListener()
-        }
-
-        LaunchedEffect(key1 = Unit) {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.coachForFilter.collect { coachData ->
-                    showSessionsAction(coachData)
-                }
-            }
         }
 
         Column(modifier = Modifier.fillMaxSize()) {
@@ -71,55 +61,37 @@ object CoachesScreen {
                 onButtonClicked = { openDrawer() },
             )
 
-            when (coachesListState) {
-                is CoachesListState.Loaded -> {
-                    val coachesList = (coachesListState as CoachesListState.Loaded).coachesList
-                    if (coachesList.isNotEmpty()) {
-                        CoachesList(
-                            lifecycle = lifecycle,
-                            coachesList = coachesList,
-                            gymsFlow = viewModel.gymsList,
-                            fetchGyms = { viewModel.fetchGymsList() },
-                            fetchCoachData = { coachEmail -> viewModel.fetchCoachForFilter(coachEmail) }
+            when (typesListState) {
+                is SessionTypesListState.Loaded -> {
+                    val typesList = (typesListState as SessionTypesListState.Loaded).sessionTypes
+                    if (typesList.isNotEmpty()) {
+                        SessionTypesListView(
+                            typesList = typesList,
+                            showSessionsAction = showSessionsAction
                         )
                     } else {
                         ListEmptyView.ListEmptyView(
-                            emptyListCaption = StringUtils.getCaptionEmptyCoachesList()
+                            emptyListCaption = StringUtils.getCaptionEmptySessionTypesList()
                         )
                     }
                 }
-                is CoachesListState.Loading -> ListLoadingView.ListLoadingView()
+                is SessionTypesListState.Loading -> ListLoadingView.ListLoadingView()
             }
         }
     }
 
     @Composable
-    private fun CoachesList(
-        lifecycle: Lifecycle,
-        coachesList: List<AppUser>,
-        gymsFlow: SharedFlow<ArrayList<Gym>>,
-        fetchGyms: () -> Unit,
-        fetchCoachData: (String) -> Unit
+    private fun SessionTypesListView(
+        typesList: ArrayList<SessionType>,
+        showSessionsAction: (SessionType) -> Unit
     ) {
-        var coach by remember { mutableStateOf(AppUser()) }
-        var gymsList by remember { mutableStateOf(ArrayList<Gym>()) }
-
+        var sessionType by remember { mutableStateOf(SessionType()) }
         var showDataDialog by remember { mutableStateOf(false) }
         if (showDataDialog) {
-            CoachDataScreen.CoachDataScreen(
-                coach = coach,
-                gymsList = gymsList,
+            SessionTypeDataScreen.SessionTypeDataScreen(
+                sessionType = sessionType,
                 onDismissRequest = { showDataDialog = false },
-                showSessionsAction = { coachEmail -> fetchCoachData(coachEmail) })
-        }
-
-        LaunchedEffect(key1 = Unit) {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                gymsFlow.collect {
-                    gymsList = it
-                    showDataDialog = true
-                }
-            }
+                showSessionsAction = showSessionsAction)
         }
 
         LazyColumn(
@@ -128,7 +100,7 @@ object CoachesScreen {
                 .fillMaxWidth()
 
         ) {
-            itemsIndexed(coachesList) { index, item ->
+            itemsIndexed(typesList) { index, item ->
                 Column(modifier = Modifier
                     .fillMaxWidth()
                     .background(
@@ -141,8 +113,8 @@ object CoachesScreen {
                             onDoubleTap = { },
                             onLongPress = {},
                             onTap = {
-                                coach = item
-                                fetchGyms()
+                                sessionType = item
+                                showDataDialog = true
                             }
                         )
                     }) {
@@ -171,7 +143,7 @@ object CoachesScreen {
                         Column(horizontalAlignment = Alignment.Start) {
                             Text(
                                 color = Color.White,
-                                text = item.email,
+                                text = item.name,
                                 style = MaterialTheme.typography.body1
                             )
                         }

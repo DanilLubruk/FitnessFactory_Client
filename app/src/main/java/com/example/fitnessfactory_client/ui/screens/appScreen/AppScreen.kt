@@ -21,6 +21,7 @@ import com.example.fitnessfactory_client.ui.screens.authScreen.*
 import com.example.fitnessfactory_client.ui.screens.coachesScreen.CoachesScreen
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreen
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsListScreen
+import com.example.fitnessfactory_client.ui.screens.sessionTypesScreen.SessionTypesScreen
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreen
 import com.example.fitnessfactory_client.utils.GuiUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -121,7 +122,7 @@ class AppScreen : AppCompatActivity() {
                         lifecycle = lifecycle,
                         sessionsFilter = sessionsFilter,
                         openDrawer = { openDrawer() },
-                        clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity()},
+                        clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity() },
                         setFilter = { sessionsFilter = it }
                     )
                 }
@@ -135,7 +136,26 @@ class AppScreen : AppCompatActivity() {
                     CoachesScreen.CoachesScreen(
                         lifecycle = lifecycle,
                         openDrawer = { openDrawer() },
-                        showSessionsAction = { coachData -> sessionsFilter = SessionsFilter.getCoachFilteredEntity(coachData) }
+                        showSessionsAction = { coachData ->
+                            sessionsFilter =
+                                SessionsFilter
+                                    .builder()
+                                    .filterCoach(coachData = coachData)
+                                    .build()
+                        }
+                    )
+                }
+                composable(Screens.SESSION_TYPES_SCREEN) {
+                    SessionTypesScreen.SessionTypesScreen(
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() },
+                        showSessionsAction = { sessionType ->
+                            sessionsFilter =
+                                SessionsFilter
+                                    .builder()
+                                    .filterSessionType(sessionType = sessionType)
+                                    .build()
+                        }
                     )
                 }
             }
