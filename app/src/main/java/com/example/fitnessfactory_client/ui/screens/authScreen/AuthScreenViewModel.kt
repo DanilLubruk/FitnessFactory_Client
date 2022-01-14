@@ -28,6 +28,18 @@ class AuthScreenViewModel
     fun getOwnersData(): Flow<PickOwnerUiState> =
         ownersDataChannel.consumeAsFlow()
 
+    fun registerClient(ownerId: String) {
+        viewModelScope.launch {
+            authManager.registerClient(ownerId = ownerId)
+                .flowOn(Dispatchers.IO)
+                .catch { throwable ->
+                    throwable.printStackTrace()
+                    GuiUtils.showMessage(throwable.localizedMessage)
+                }
+                .collect()
+        }
+    }
+
     fun registerUser(googleSignInAccount: GoogleSignInAccount) {
         viewModelScope.launch {
             authManager.handleSignInResult(googleSignInAccount = googleSignInAccount)

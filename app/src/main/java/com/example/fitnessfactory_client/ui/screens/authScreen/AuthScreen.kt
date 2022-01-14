@@ -123,6 +123,7 @@ object AuthScreen {
                 onSubmitButtonClick = { owner ->
                     run {
                         AppPrefs.gymOwnerId().value = owner.id
+                        viewModel.registerClient(ownerId = owner.id)
                         showDialog = false
                         isLoading = false
                         openHomeScreen()

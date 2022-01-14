@@ -84,9 +84,7 @@ class AppScreen : AppCompatActivity() {
         }
 
         var sessionsFilter by remember { mutableStateOf(SessionsFilter.getNoFilterEntity()) }
-        LaunchedEffect(sessionsFilter) {
-            navController.navigate(Screens.HOME_SCREEN)
-        }
+        val navigateHome = { navController.navigate(Screens.HOME_SCREEN) }
 
         ModalDrawer(
             drawerState = drawerState,
@@ -109,13 +107,13 @@ class AppScreen : AppCompatActivity() {
                     SplashScreen.SplashScreen(
                         lifecycle = lifecycle,
                         openAuthScreen = { navController.navigate(Screens.AUTH_SCREEN) },
-                        openHomeScreen = { navController.navigate(Screens.HOME_SCREEN) }
+                        openHomeScreen = { navigateHome() }
                     )
                 }
                 composable(Screens.AUTH_SCREEN) {
                     AuthScreen.AuthScreen(
                         lifecycle = lifecycle,
-                        openHomeScreen = { navController.navigate(Screens.HOME_SCREEN) }
+                        openHomeScreen = { navigateHome() }
                     )
                 }
                 composable(Screens.HOME_SCREEN) {
@@ -143,6 +141,7 @@ class AppScreen : AppCompatActivity() {
                                     .builder()
                                     .filterCoach(coachData = coachData)
                                     .build()
+                            navigateHome()
                         }
                     )
                 }
@@ -156,6 +155,7 @@ class AppScreen : AppCompatActivity() {
                                     .builder()
                                     .filterSessionType(sessionType = sessionType)
                                     .build()
+                            navigateHome()
                         }
                     )
                 }
@@ -169,6 +169,7 @@ class AppScreen : AppCompatActivity() {
                                     .builder()
                                     .filterGym(gym = gym)
                                     .build()
+                            navigateHome()
                         }
                     )
                 }
