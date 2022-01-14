@@ -34,6 +34,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object AuthScreen {
 
+    private val BUNDLE_EXTRA = "BUNDLE_EXTRA"
+
     private val signInFailed: String = ResUtils.getString(R.string.message_error_sign_in_failed)
     private val signInCaption: String = ResUtils.getString(R.string.caption_sing_in_button)
     private val signInProcessCaption: String = ResUtils.getString(R.string.caption_sign_in_process)
@@ -48,19 +50,21 @@ object AuthScreen {
     @Composable
     fun AuthScreen(
         lifecycle: Lifecycle,
-        openHomeScreen: () -> Unit,
-        savedState: Bundle
+        openHomeScreen: () -> Unit
     ) {
         val viewModel: AuthScreenViewModel = viewModel(factory = AuthScreenViewModelFactory())
         var text by rememberSaveable { mutableStateOf("") }
-        var showDialog by remember { mutableStateOf(false) }
+        var showDialog by rememberSaveable { mutableStateOf(false) }
         var isLoading by rememberSaveable { mutableStateOf(false) }
-        var usersEmail by rememberSaveable { mutableStateOf("") }
+        val savedState by rememberSaveable { mutableStateOf(Bundle()) }
         val signInRequestCode = 1
 
         var ownersData by remember { mutableStateOf(OwnersData()) }
         LaunchedEffect(key1 = Unit) {
             ownersData.restoreState(savedState = savedState)
+        }
+        LaunchedEffect(ownersData) {
+            ownersData.saveState(savedState = savedState)
         }
 
         LaunchedEffect(key1 = Unit) {

@@ -30,7 +30,11 @@ class Owner() {
     }
 
     fun restoreState(savedState: Bundle, index: Int) {
-        id = savedState.getString(ID_FIELD_EXTRA + index) as String
-        organisationName = savedState.getString(ORG_NAME_EXTRA + index) as String
+        savedState.getString(ID_FIELD_EXTRA + index)?.let {
+            id = it
+        }
+        savedState.getString(ORG_NAME_EXTRA + index)?.let {
+            organisationName = it
+        }
     }
 }

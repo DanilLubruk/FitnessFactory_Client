@@ -31,9 +31,6 @@ import kotlinx.coroutines.launch
 
 class AppScreen : AppCompatActivity() {
 
-    private var bundle: Bundle = Bundle()
-    private val BUNDLE_EXTRA = "BUNDLE_EXTRA"
-
     @ExperimentalPagerApi
     @ExperimentalAnimationApi
     @ExperimentalFoundationApi
@@ -116,8 +113,7 @@ class AppScreen : AppCompatActivity() {
                 composable(Screens.AUTH_SCREEN) {
                     AuthScreen.AuthScreen(
                         lifecycle = lifecycle,
-                        openHomeScreen = { navigateHome() },
-                        savedState = bundle
+                        openHomeScreen = { navigateHome() }
                     )
                 }
                 composable(Screens.HOME_SCREEN) {
@@ -179,15 +175,5 @@ class AppScreen : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBundle(BUNDLE_EXTRA, bundle)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        bundle = savedInstanceState.get(BUNDLE_EXTRA) as Bundle
     }
 }
