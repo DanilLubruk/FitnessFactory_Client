@@ -45,12 +45,11 @@ object TopBar {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
+                        Icon(
                             modifier = Modifier
                                 .padding(end = 8.dp),
-                            text = it.actionName,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
+                            imageVector = it.image, contentDescription = it.actionName,
+                            tint = colorResource(id = R.color.white),
                         )
                     }
                 }

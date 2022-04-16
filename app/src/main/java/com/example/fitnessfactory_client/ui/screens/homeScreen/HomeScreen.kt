@@ -6,6 +6,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.FilterTiltShift
+import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -102,8 +105,8 @@ object HomeScreen {
                 buttonIcon = Icons.Filled.Menu,
                 onButtonClicked = { openDrawer() },
                 actions = listOf(
-                    TopBarAction(stringResource(id = R.string.caption_filter)) { viewModel.fetchGymsChainData() },
-                    TopBarAction(stringResource(id = R.string.caption_clear)) { clearFilter() }
+                    TopBarAction(stringResource(id = R.string.caption_filter), image = Icons.Filled.FilterAlt) { viewModel.fetchGymsChainData() },
+                    TopBarAction(stringResource(id = R.string.caption_clear), image = Icons.Filled.HighlightOff) { clearFilter() }
                 )
             )
 

@@ -22,6 +22,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
@@ -53,21 +54,12 @@ object DialogUtils {
                     .wrapContentHeight(),
                 shape = RoundedCornerShape(10.dp)
             ) {
-                Column(modifier = Modifier.padding(SizeUtils.dialogPadding)) {
-
-                    Text(
-                        text = title.uppercase(Locale.getDefault()),
-                        style = MaterialTheme.typography.h5,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    val searchTabIndex = 0
-                    val invitedTabIndex = 1
+                Column {
+                    val invitedTabIndex = 0
+                    val searchTabIndex = 1
                     val tabData = listOf(
-                        stringResource(id = R.string.caption_search),
                         stringResource(id = R.string.caption_invited),
+                        stringResource(id = R.string.caption_search),
                     )
 
                     val pagerState = rememberPagerState(
@@ -82,38 +74,59 @@ object DialogUtils {
                         selectedTabIndex = tabIndex,
                         backgroundColor = colorResource(id = R.color.royalBlue),
                         contentColor = Color.White,
+                        modifier = Modifier.height(48.dp),
                     ) {
                         tabData.forEachIndexed { index, text ->
-                            Tab(selected = tabIndex == index, onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
+                            Tab(
+                                selected = tabIndex == index,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                },
+                                text = {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = text,
+                                            style = MaterialTheme.typography.body1
+                                        )
+                                    }
                                 }
-                            }, text = {
-                                Text(text = text)
-                            })
+                            )
                         }
                     }
 
-                    HorizontalPager(
-                        verticalAlignment = Alignment.Top,
-                        modifier = Modifier
-                            .wrapContentHeight()
-                            .fillMaxWidth(),
-                        state = pagerState
-                    ) { index ->
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            when (index) {
-                                searchTabIndex -> SearchOwnerTab(
-                                    optionsList = allOwnersList,
-                                    onSubmitButtonClick = onSubmitButtonClick
-                                )
-                                invitedTabIndex -> SearchOwnerTab(
-                                    optionsList = invitedOwnersList,
-                                    onSubmitButtonClick = onSubmitButtonClick
-                                )
+                    Column(
+                        modifier = Modifier.absolutePadding(
+                            left = SizeUtils.dialogPadding,
+                            right = SizeUtils.dialogPadding,
+                            bottom = SizeUtils.dialogPadding
+                        )
+                    ) {
+                        HorizontalPager(
+                            verticalAlignment = Alignment.Top,
+                            modifier = Modifier
+                                .wrapContentHeight()
+                                .fillMaxWidth(),
+                            state = pagerState
+                        ) { index ->
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                when (index) {
+                                    searchTabIndex -> SearchOwnerTab(
+                                        optionsList = allOwnersList,
+                                        onSubmitButtonClick = onSubmitButtonClick
+                                    )
+                                    invitedTabIndex -> SearchOwnerTab(
+                                        optionsList = invitedOwnersList,
+                                        onSubmitButtonClick = onSubmitButtonClick
+                                    )
+                                }
                             }
                         }
                     }
@@ -148,9 +161,8 @@ object DialogUtils {
         var text by remember { mutableStateOf("") }
         var optionsListValues by remember { mutableStateOf(optionsList) }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TextField(
+        OutlinedTextField(
+            singleLine = true,
             value = text,
             onValueChange = { value ->
                 run {
