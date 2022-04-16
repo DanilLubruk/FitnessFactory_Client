@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.homeScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -32,6 +33,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.fitnessfactory_client.utils.DialogUtils.YesNoDialog
 
 object HomeScreen {
 
@@ -46,8 +48,26 @@ object HomeScreen {
         sessionsFilter: SessionsFilter = SessionsFilter.getNoFilterEntity(),
         openDrawer: () -> Unit,
         setFilter: (SessionsFilter) -> Unit,
-        clearFilter: () -> Unit
+        clearFilter: () -> Unit,
+        logout: () -> Unit,
     ) {
+        var showLogoutDialog by remember { mutableStateOf(false) }
+        BackHandler {
+            showLogoutDialog = true
+        }
+        if (showLogoutDialog) {
+            YesNoDialog(
+                onOkPress = {
+                    showLogoutDialog = false
+                    logout()
+                },
+                onDismissRequest = {
+                    showLogoutDialog = false
+                },
+                questionText = stringResource(id = R.string.message_ask_logout)
+            )
+        }
+
         val viewModel: HomeScreenViewModel = viewModel(factory = HomeScreenViewModelFactory())
 
         var date by rememberSaveable { mutableStateOf(Date()) }

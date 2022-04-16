@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.sessionTypesScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -41,7 +42,7 @@ object SessionTypesScreen {
     fun SessionTypesScreen(
         lifecycle: Lifecycle,
         openDrawer: () -> Unit,
-        showSessionsAction: (SessionType) -> Unit
+        showSessionsAction: (SessionType) -> Unit,
     ) {
         val viewModel: SessionTypesScreenViewModel =
             viewModel(factory = SessionTypesScreenViewModelFactory())

@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.coachesScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -39,7 +40,7 @@ object CoachesScreen {
     fun CoachesScreen(
         lifecycle: Lifecycle,
         openDrawer: () -> Unit,
-        showSessionsAction: (CoachData) -> Unit
+        showSessionsAction: (CoachData) -> Unit,
     ) {
         val viewModel: CoachesScreenViewModel = viewModel(factory = CoachesScreenViewModelFactory())
         var coachesListState: CoachesListState by remember { mutableStateOf(CoachesListState.Loading) }

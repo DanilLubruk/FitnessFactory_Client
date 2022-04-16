@@ -68,8 +68,10 @@ class AppScreen : AppCompatActivity() {
                 drawerState.close()
             }
         }
-        val logout = {
-            navController.navigate(Screens.AUTH_SCREEN)
+        val logout: () -> Unit = {
+            navController.navigate(Screens.AUTH_SCREEN) {
+                popUpTo(Screens.AUTH_SCREEN)
+            }
             closeDrawer()
         }
         LaunchedEffect(key1 = Unit) {
@@ -84,7 +86,11 @@ class AppScreen : AppCompatActivity() {
         }
 
         var sessionsFilter by remember { mutableStateOf(SessionsFilter.getNoFilterEntity()) }
-        val navigateHome = { navController.navigate(Screens.HOME_SCREEN) }
+        val navigateHome = {
+            navController.navigate(Screens.HOME_SCREEN) {
+                popUpTo(Screens.HOME_SCREEN)
+            }
+        }
 
         ModalDrawer(
             drawerState = drawerState,
@@ -93,10 +99,11 @@ class AppScreen : AppCompatActivity() {
                 Drawer.Drawer(
                     onDestinationClicked = { route ->
                         closeDrawer()
-
-                        navController.navigate(route)
+                        navController.navigate(route) {
+                            popUpTo(Screens.HOME_SCREEN)
+                        }
                     },
-                    logout = { viewModel.logout() }
+                    logout = {viewModel.logout()}
                 )
             }) {
             NavHost(
@@ -122,13 +129,14 @@ class AppScreen : AppCompatActivity() {
                         sessionsFilter = sessionsFilter,
                         openDrawer = { openDrawer() },
                         clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity() },
-                        setFilter = { sessionsFilter = it }
+                        setFilter = { sessionsFilter = it },
+                        logout = {viewModel.logout()}
                     )
                 }
                 composable(Screens.MY_SESSIONS_SCREEN) {
                     MySessionsListScreen.MySessionsListScreen(
                         lifecycle = lifecycle,
-                        openDrawer = { openDrawer() }
+                        openDrawer = { openDrawer() },
                     )
                 }
                 composable(Screens.COACHES_SCREEN) {
@@ -142,7 +150,7 @@ class AppScreen : AppCompatActivity() {
                                     .filterCoach(coachData = coachData)
                                     .build()
                             navigateHome()
-                        }
+                        },
                     )
                 }
                 composable(Screens.SESSION_TYPES_SCREEN) {
@@ -156,7 +164,7 @@ class AppScreen : AppCompatActivity() {
                                     .filterSessionType(sessionType = sessionType)
                                     .build()
                             navigateHome()
-                        }
+                        },
                     )
                 }
                 composable(Screens.GYMS_SCREEN) {
@@ -170,7 +178,7 @@ class AppScreen : AppCompatActivity() {
                                     .filterGym(gym = gym)
                                     .build()
                             navigateHome()
-                        }
+                        },
                     )
                 }
             }

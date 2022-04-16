@@ -1,6 +1,8 @@
 package com.example.fitnessfactory_client.ui.screens.authScreen
 
+import android.app.Activity
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -52,6 +55,10 @@ object AuthScreen {
         lifecycle: Lifecycle,
         openHomeScreen: () -> Unit
     ) {
+        val activity = (LocalContext.current as? Activity)
+        BackHandler {
+            activity?.finish();
+        }
         val viewModel: AuthScreenViewModel = viewModel(factory = AuthScreenViewModelFactory())
         var text by rememberSaveable { mutableStateOf("") }
         var showDialog by rememberSaveable { mutableStateOf(false) }

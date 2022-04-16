@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.mySessionsScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
