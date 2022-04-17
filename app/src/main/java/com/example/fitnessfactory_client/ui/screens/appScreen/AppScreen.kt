@@ -4,16 +4,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.SessionsFilter
 import com.example.fitnessfactory_client.ui.components.Drawer
 import com.example.fitnessfactory_client.ui.screens.Screens
@@ -25,22 +31,27 @@ import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsL
 import com.example.fitnessfactory_client.ui.screens.sessionTypesScreen.SessionTypesScreen
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreen
 import com.example.fitnessfactory_client.utils.GuiUtils
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 class AppScreen : AppCompatActivity() {
 
-    @ExperimentalPagerApi
-    @ExperimentalAnimationApi
-    @ExperimentalFoundationApi
-    @ExperimentalCoroutinesApi
-    @ExperimentalMaterialApi
+    @OptIn(
+        androidx.compose.animation.ExperimentalAnimationApi::class,
+        androidx.compose.material.ExperimentalMaterialApi::class,
+        androidx.compose.foundation.ExperimentalFoundationApi::class,
+        com.google.accompanist.pager.ExperimentalPagerApi::class
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val navController = rememberNavController()
+            val navController = rememberAnimatedNavController()
 
             Scaffold {
                 NavigationComponent(navController = navController)
@@ -55,6 +66,13 @@ class AppScreen : AppCompatActivity() {
     @ExperimentalPagerApi
     @Composable
     fun NavigationComponent(navController: NavHostController) {
+        val systemUiController = rememberSystemUiController()
+        val statusBarColor = colorResource(id = R.color.royalBlue)
+        SideEffect {
+            systemUiController.setSystemBarsColor(
+                color = statusBarColor,
+            )
+        }
         val viewModel: AppScreenViewModel = viewModel(factory = AppScreenViewModelFactory())
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
@@ -91,6 +109,7 @@ class AppScreen : AppCompatActivity() {
                 popUpTo(Screens.HOME_SCREEN)
             }
         }
+        val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
 
         ModalDrawer(
             drawerState = drawerState,
@@ -103,10 +122,10 @@ class AppScreen : AppCompatActivity() {
                             popUpTo(Screens.HOME_SCREEN)
                         }
                     },
-                    logout = {viewModel.logout()}
+                    logout = { viewModel.logout() }
                 )
             }) {
-            NavHost(
+            AnimatedNavHost(
                 navController = navController,
                 startDestination = Screens.SPLASH_SCREEN
             ) {
@@ -123,14 +142,15 @@ class AppScreen : AppCompatActivity() {
                         openHomeScreen = { navigateHome() }
                     )
                 }
-                composable(Screens.HOME_SCREEN) {
+                composable(
+                    Screens.HOME_SCREEN) {
                     HomeScreen.HomeScreen(
                         lifecycle = lifecycle,
                         sessionsFilter = sessionsFilter,
                         openDrawer = { openDrawer() },
                         clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity() },
                         setFilter = { sessionsFilter = it },
-                        logout = {viewModel.logout()}
+                        logout = { viewModel.logout() }
                     )
                 }
                 composable(Screens.MY_SESSIONS_SCREEN) {
