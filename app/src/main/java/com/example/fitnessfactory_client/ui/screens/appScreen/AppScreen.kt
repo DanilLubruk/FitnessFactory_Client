@@ -7,10 +7,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -84,16 +86,13 @@ class AppScreen : AppCompatActivity() {
                 drawerState.open()
             }
         }
-        val closeDrawer = {
+        val logout: () -> Unit = {
             scope.launch {
                 drawerState.close()
+                navController.navigate(Screens.AUTH_SCREEN) {
+                    popUpTo(Screens.AUTH_SCREEN)
+                }
             }
-        }
-        val logout: () -> Unit = {
-            navController.navigate(Screens.AUTH_SCREEN) {
-                popUpTo(Screens.AUTH_SCREEN)
-            }
-            closeDrawer()
         }
         LaunchedEffect(key1 = Unit) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -112,7 +111,6 @@ class AppScreen : AppCompatActivity() {
                 popUpTo(Screens.HOME_SCREEN)
             }
         }
-        val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
 
         ModalDrawer(
             drawerState = drawerState,
@@ -120,9 +118,11 @@ class AppScreen : AppCompatActivity() {
             drawerContent = {
                 Drawer.Drawer(
                     onDestinationClicked = { route ->
-                        closeDrawer()
-                        navController.navigate(route) {
-                            popUpTo(Screens.HOME_SCREEN)
+                        scope.launch {
+                            drawerState.close()
+                            navController.navigate(route) {
+                                popUpTo(Screens.HOME_SCREEN)
+                            }
                         }
                     },
                     logout = { viewModel.logout() }
@@ -146,7 +146,8 @@ class AppScreen : AppCompatActivity() {
                     )
                 }
                 composable(
-                    Screens.HOME_SCREEN) {
+                    Screens.HOME_SCREEN
+                ) {
                     HomeScreen.HomeScreen(
                         lifecycle = lifecycle,
                         sessionsFilter = sessionsFilter,
@@ -162,7 +163,9 @@ class AppScreen : AppCompatActivity() {
                         openDrawer = { openDrawer() },
                     )
                 }
-                composable(Screens.COACHES_SCREEN) {
+                composable(
+                    Screens.COACHES_SCREEN
+                ) {
                     CoachesScreen.CoachesScreen(
                         lifecycle = lifecycle,
                         openDrawer = { openDrawer() },
