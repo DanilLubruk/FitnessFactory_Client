@@ -2,6 +2,7 @@ package com.example.fitnessfactory_client.ui.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -13,7 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
 import com.example.fitnessfactory_client.utils.ResUtils
@@ -36,24 +42,41 @@ object Drawer {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(start = 24.dp, top = 48.dp)
+                .background(color = colorResource(id = R.color.royalBlue))
+                .padding(top = 16.dp),
         ) {
-            Text(
-                text = ResUtils.getString(R.string.app_name),
-                style = MaterialTheme.typography.h4
-            )
-
-            DrawerScreens.getDrawerScreens().forEach { screen ->
-                Spacer(modifier = Modifier.height(24.dp))
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = screen.title,
-                    style = MaterialTheme.typography.body1,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onDestinationClicked(screen.navRoute)
-                        }
+                    text = ResUtils.getString(R.string.app_name),
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp,
+                    color = Color.White
                 )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            DrawerScreens.getDrawerScreensGrouped().forEach { group ->
+                group.forEach { screen ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                            .clickable {
+                                onDestinationClicked(screen.navRoute)
+                            },
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(start = 16.dp),
+                            text = screen.title,
+                            fontSize = 16.sp,
+                            color = Color.White,
+                        )
+                    }
+                }
+                Divider(color = Color.White, thickness = 1.dp, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
             }
 
             Column(
@@ -62,7 +85,7 @@ object Drawer {
                 horizontalAlignment = Alignment.Start
             ) {
                 IconButton(onClick = { logout() }) {
-                    Icon(Icons.Sharp.Logout, contentDescription = "")
+                    Icon(Icons.Sharp.Logout, contentDescription = "", tint = Color.White)
                 }
             }
         }

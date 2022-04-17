@@ -40,5 +40,11 @@ sealed class DrawerScreens(val title: String, val navRoute: String) {
                 SessionTypes,
                 Gyms
             )
+
+        fun getDrawerScreensGrouped(): List<List<DrawerScreens>> = listOf(
+            listOf(Home),
+            listOf(MySessions),
+            listOf(Coaches, Gyms, SessionTypes)
+        )
     }
 }
