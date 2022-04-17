@@ -7,7 +7,7 @@ import com.example.fitnessfactory_client.data.models.Gym
 import com.example.fitnessfactory_client.data.models.Personnel
 import com.example.fitnessfactory_client.utils.ResUtils
 
-class CoachData(private var coachUser: AppUser, private var coach: Personnel, doFilter: Boolean = true) :
+class CoachData(var coachUser: AppUser, private var coach: Personnel, doFilter: Boolean = true) :
     FilterEntity(doFilter = doFilter) {
 
     companion object {

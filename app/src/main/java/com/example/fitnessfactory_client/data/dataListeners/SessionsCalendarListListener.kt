@@ -68,7 +68,7 @@ class SessionsCalendarListListener : BaseDataListener() {
 
     private fun whereSessionHasCoach(query: Query, coachData: CoachData): Query =
         if (coachData.doFilter)
-            query.whereArrayContains(Session.COACHES_EMAILS_FIELD, coachData.id)
+            query.whereArrayContains(Session.COACHES_EMAILS_FIELD, coachData.coachUser.email)
         else
             query
 

@@ -253,7 +253,7 @@ object DialogUtils {
                     ) {
                         Text(
                             text = ResUtils.getString(R.string.caption_cancel),
-                            style = MaterialTheme.typography.button
+                            color = Color.White
                         )
                     }
 
@@ -265,7 +265,7 @@ object DialogUtils {
                     ) {
                         Text(
                             text = ResUtils.getString(R.string.caption_ok),
-                            style = MaterialTheme.typography.button
+                            color = Color.White
                         )
                     }
 
