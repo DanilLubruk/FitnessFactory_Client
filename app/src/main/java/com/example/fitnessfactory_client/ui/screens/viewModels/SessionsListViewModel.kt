@@ -14,7 +14,7 @@ import javax.inject.Inject
 open class SessionsListViewModel
 @Inject constructor(
     private val coachesAccessManager: CoachesAccessManager
-): ViewModel() {
+) : ViewModel() {
 
     protected val mutableSessionsListState =
         MutableStateFlow<SessionViewsListState>(SessionViewsListState.Loading)
@@ -23,18 +23,17 @@ open class SessionsListViewModel
     private val mutableCoachesListState = MutableSharedFlow<UsersListState>()
     val coachesListState: SharedFlow<UsersListState> = mutableCoachesListState
 
-    fun fetchCoachUsers(coachesIds: List<String>) {
-        viewModelScope.launch {
-            coachesAccessManager.getCoachesUsersByIds(coachesIds = coachesIds)
-                .flowOn(Dispatchers.IO)
-                .catch { throwable ->
-                    throwable.printStackTrace()
-                    GuiUtils.showMessage(throwable.localizedMessage)
-                    mutableCoachesListState.emit(UsersListState.Error(throwable = throwable))
-                }
-                .collect {
-                    mutableCoachesListState.emit(UsersListState.Loaded(it))
-                }
+    fun fetchCoachUsers(coachesEmails: List<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val coaches =
+                    coachesAccessManager.getCoachesUsersByEmails(coachesEmails = coachesEmails)
+                mutableCoachesListState.emit(UsersListState.Loaded(coaches))
+            } catch (throwable: Exception) {
+                throwable.printStackTrace()
+                GuiUtils.showMessage(throwable.localizedMessage)
+                mutableCoachesListState.emit(UsersListState.Error(throwable = throwable))
+            }
         }
     }
 }

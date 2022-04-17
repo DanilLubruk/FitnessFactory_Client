@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.ripple.rememberRipple
@@ -36,9 +35,12 @@ import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 object SessionTypesScreen {
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun SessionTypesScreen(
         lifecycle: Lifecycle,
@@ -60,49 +62,63 @@ object SessionTypesScreen {
         LaunchedEffect(key1 = Unit) {
             viewModel.startDataListener()
         }
+        val modalBottomSheetState =
+            rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = false)
+        val scope = rememberCoroutineScope()
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        var sessionType by remember { mutableStateOf(SessionType()) }
+        val showBottomSheet: (SessionType) -> Unit = {
+            scope.launch {
+                sessionType = it
+                modalBottomSheetState.show()
+            }
+        }
 
-            TopBar.TopBar(
-                title = DrawerScreens.SessionTypes.title,
-                buttonIcon = Icons.Filled.Menu,
-                onButtonClicked = { openDrawer() },
-            )
+        ModalBottomSheetLayout(
+            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            sheetContent = {
+                SessionTypeDataScreen.SessionTypeDataScreen(
+                    sessionType = sessionType,
+                    showSessionsAction = showSessionsAction,
+                )
+            },
+            sheetState = modalBottomSheetState,
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
 
-            when (typesListState) {
-                is SessionTypesListState.Loaded -> {
-                    val typesList = (typesListState as SessionTypesListState.Loaded).sessionTypes
-                    if (typesList.isNotEmpty()) {
-                        SessionTypesListView(
-                            typesList = typesList,
-                            showSessionsAction = showSessionsAction
-                        )
-                    } else {
-                        ListEmptyView.ListEmptyView(
-                            emptyListCaption = StringUtils.getCaptionEmptySessionTypesList()
-                        )
+                TopBar.TopBar(
+                    title = DrawerScreens.SessionTypes.title,
+                    buttonIcon = Icons.Filled.Menu,
+                    onButtonClicked = { openDrawer() },
+                )
+
+                when (typesListState) {
+                    is SessionTypesListState.Loaded -> {
+                        val typesList =
+                            (typesListState as SessionTypesListState.Loaded).sessionTypes
+                        if (typesList.isNotEmpty()) {
+                            SessionTypesListView(
+                                typesList = typesList,
+                                showBottomSheet = showBottomSheet
+                            )
+                        } else {
+                            ListEmptyView.ListEmptyView(
+                                emptyListCaption = StringUtils.getCaptionEmptySessionTypesList()
+                            )
+                        }
                     }
+                    is SessionTypesListState.Loading -> ListLoadingView.ListLoadingView()
                 }
-                is SessionTypesListState.Loading -> ListLoadingView.ListLoadingView()
             }
         }
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun SessionTypesListView(
         typesList: ArrayList<SessionType>,
-        showSessionsAction: (SessionType) -> Unit
+        showBottomSheet: (SessionType) -> Unit,
     ) {
-        var sessionType by remember { mutableStateOf(SessionType()) }
-        var showDataDialog by remember { mutableStateOf(false) }
-        if (showDataDialog) {
-            SessionTypeDataScreen.SessionTypeDataScreen(
-                sessionType = sessionType,
-                onDismissRequest = { showDataDialog = false },
-                showSessionsAction = showSessionsAction
-            )
-        }
-
         LazyColumn(
             modifier = Modifier
                 .padding(16.dp)
@@ -119,8 +135,7 @@ object SessionTypesScreen {
                             onDoubleTap = { },
                             onLongPress = {},
                             onTap = {
-                                sessionType = item
-                                showDataDialog = true
+                                showBottomSheet(item)
                             }
                         )
                     }) {

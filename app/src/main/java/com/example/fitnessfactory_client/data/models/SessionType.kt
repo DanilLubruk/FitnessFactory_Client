@@ -27,8 +27,8 @@ class SessionType(doFilter: Boolean = true): FilterEntity(doFilter = doFilter) {
         name = value
     }
     get() = name
-    var peopleAmount by Delegates.notNull<Int>()
-    var price by Delegates.notNull<Float>()
+    var peopleAmount: Int = 0
+    var price: Float = 0F
 
     override fun toString(): String =
         toStringField

@@ -74,7 +74,7 @@ class AppScreen : AppCompatActivity() {
         val systemUiController = rememberSystemUiController()
         val statusBarColor = colorResource(id = R.color.royalBlue)
         SideEffect {
-            systemUiController.setSystemBarsColor(
+            systemUiController.setStatusBarColor(
                 color = statusBarColor,
             )
         }

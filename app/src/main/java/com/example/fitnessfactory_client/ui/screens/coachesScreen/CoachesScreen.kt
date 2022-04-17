@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
@@ -27,16 +26,20 @@ import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.CoachData
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Gym
+import com.example.fitnessfactory_client.ui.components.CoachListItemView
 import com.example.fitnessfactory_client.ui.components.ListEmptyView
 import com.example.fitnessfactory_client.ui.components.ListLoadingView
 import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
+import com.example.fitnessfactory_client.ui.screens.gymsScreen.GymDataScreen
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 
 object CoachesScreen {
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun CoachesScreen(
         lifecycle: Lifecycle,
@@ -65,70 +68,78 @@ object CoachesScreen {
                 }
             }
         }
+        val modalBottomSheetState =
+            rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = false)
+        val scope = rememberCoroutineScope()
+        var coach by remember { mutableStateOf(AppUser()) }
+        var gymsList by remember { mutableStateOf(ArrayList<Gym>()) }
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        val showBottomSheet: (AppUser, ArrayList<Gym>) -> Unit = { selectedCoach, gyms ->
+            scope.launch {
+                coach = selectedCoach
+                gymsList = gyms
+                modalBottomSheetState.show()
+            }
+        }
 
-            TopBar.TopBar(
-                title = DrawerScreens.Coaches.title,
-                buttonIcon = Icons.Filled.Menu,
-                onButtonClicked = { openDrawer() },
-            )
-
-            when (coachesListState) {
-                is CoachesListState.Loaded -> {
-                    val coachesList = (coachesListState as CoachesListState.Loaded).coachesList
-                    if (coachesList.isNotEmpty()) {
-                        CoachesList(
-                            lifecycle = lifecycle,
-                            coachesList = coachesList,
-                            gymsFlow = viewModel.gymsList,
-                            fetchGyms = { coachEmail -> viewModel.fetchGymsList(coachEmail) },
-                            fetchCoachData = { coachEmail ->
-                                viewModel.fetchCoachForFilter(
-                                    coachEmail
-                                )
-                            }
-                        )
-                    } else {
-                        ListEmptyView.ListEmptyView(
-                            emptyListCaption = StringUtils.getCaptionEmptyCoachesList()
-                        )
-                    }
+        LaunchedEffect(key1 = Unit) {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.gymsList.collect {
+                    showBottomSheet(coach, it)
                 }
-                is CoachesListState.Loading -> ListLoadingView.ListLoadingView()
+            }
+        }
+
+        ModalBottomSheetLayout(
+            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            sheetContent = {
+                CoachDataScreen.CoachDataScreen(
+                    coach = coach,
+                    gymsList = gymsList,
+                    showSessionsAction = { coachEmail ->
+                        viewModel.fetchCoachForFilter(
+                            coachEmail
+                        )
+                    })
+            },
+            sheetState = modalBottomSheetState,
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+
+                TopBar.TopBar(
+                    title = DrawerScreens.Coaches.title,
+                    buttonIcon = Icons.Filled.Menu,
+                    onButtonClicked = { openDrawer() },
+                )
+
+                when (coachesListState) {
+                    is CoachesListState.Loaded -> {
+                        val coachesList = (coachesListState as CoachesListState.Loaded).coachesList
+                        if (coachesList.isNotEmpty()) {
+                            CoachesList(
+                                coachesList = coachesList,
+                                fetchGyms = { selectedCoach ->
+                                    coach = selectedCoach
+                                    viewModel.fetchGymsList(selectedCoach.email)
+                                },
+                            )
+                        } else {
+                            ListEmptyView.ListEmptyView(
+                                emptyListCaption = StringUtils.getCaptionEmptyCoachesList()
+                            )
+                        }
+                    }
+                    is CoachesListState.Loading -> ListLoadingView.ListLoadingView()
+                }
             }
         }
     }
 
     @Composable
     private fun CoachesList(
-        lifecycle: Lifecycle,
         coachesList: List<AppUser>,
-        gymsFlow: SharedFlow<ArrayList<Gym>>,
-        fetchGyms: (String) -> Unit,
-        fetchCoachData: (String) -> Unit
+        fetchGyms: (AppUser) -> Unit,
     ) {
-        var coach by remember { mutableStateOf(AppUser()) }
-        var gymsList by remember { mutableStateOf(ArrayList<Gym>()) }
-
-        var showDataDialog by remember { mutableStateOf(false) }
-        if (showDataDialog) {
-            CoachDataScreen.CoachDataScreen(
-                coach = coach,
-                gymsList = gymsList,
-                onDismissRequest = { showDataDialog = false },
-                showSessionsAction = { coachEmail -> fetchCoachData(coachEmail) })
-        }
-
-        LaunchedEffect(key1 = Unit) {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                gymsFlow.collect {
-                    gymsList = it
-                    showDataDialog = true
-                }
-            }
-        }
-
         LazyColumn(
             modifier = Modifier
                 .padding(16.dp)
@@ -136,50 +147,10 @@ object CoachesScreen {
 
         ) {
             itemsIndexed(coachesList) { index, item ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .pointerInput(item) {
-                            detectTapGestures(
-                                onPress = { },
-                                onDoubleTap = { },
-                                onLongPress = {},
-                                onTap = {
-                                    coach = item
-                                    fetchGyms(item.email)
-                                }
-                            )
-                        }, verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = item.name,
-                            color = Color.Black,
-                            fontSize = 16.sp
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        verticalAlignment = Alignment.Top,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            color = Color.Gray,
-                            text = item.email,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
+                CoachListItemView.CoachListItemView(
+                    item = item,
+                    onTap = { fetchGyms(item) }
+                )
             }
         }
     }

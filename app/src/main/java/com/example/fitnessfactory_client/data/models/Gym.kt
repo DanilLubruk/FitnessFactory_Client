@@ -25,7 +25,7 @@ class Gym(doFilter: Boolean = true): FilterEntity(doFilter = doFilter) {
         name = value
     }
     get() = name
-    lateinit var address: String
+    var address: String = ""
 
     override fun toString(): String =
         toStringField

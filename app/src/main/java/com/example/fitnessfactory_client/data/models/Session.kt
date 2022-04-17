@@ -12,7 +12,7 @@ class Session() {
         const val END_TIME_FIELD = "endTime"
         const val GYM_ID_FIELD = "gymId"
         const val SESSION_TYPE_ID_FIELD = "sessionTypeId"
-        const val COACHES_IDS_FIELD = "coachesIds"
+        const val COACHES_EMAILS_FIELD = "coachesEmails"
         const val CLIENTS_EMAILS_FIELD = "clientsEmails"
     }
 
@@ -56,7 +56,7 @@ class Session() {
 
     lateinit var gymId: String
     lateinit var sessionTypeId: String
-    var coachesIds: List<String>? = null
+    var coachesEmails: List<String>? = null
     var clientsEmails: List<String>? = null
 
     private fun correctStartEndTimeDay() {

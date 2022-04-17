@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
@@ -26,16 +25,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Gym
+import com.example.fitnessfactory_client.data.models.SessionType
+import com.example.fitnessfactory_client.ui.components.GymListItemView
 import com.example.fitnessfactory_client.ui.components.ListEmptyView
 import com.example.fitnessfactory_client.ui.components.ListLoadingView
 import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
+import com.example.fitnessfactory_client.ui.screens.sessionTypesScreen.SessionTypeDataScreen
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 
 object GymsScreen {
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun GymsScreen(
         lifecycle: Lifecycle,
@@ -56,115 +61,86 @@ object GymsScreen {
         LaunchedEffect(key1 = Unit) {
             viewModel.startDataListener()
         }
-
-        Column(modifier = Modifier.fillMaxSize()) {
-
-            TopBar.TopBar(
-                title = DrawerScreens.Gyms.title,
-                buttonIcon = Icons.Filled.Menu,
-                onButtonClicked = { openDrawer() },
-            )
-
-            when (gymsListState) {
-                is GymsListState.Loaded -> {
-                    val gymsList = (gymsListState as GymsListState.Loaded).gymsList
-                    if (gymsList.isNotEmpty()) {
-                        GymsList(
-                            lifecycle = lifecycle,
-                            gymsList = gymsList,
-                            coachesFlow = viewModel.coachesDataList,
-                            fetchCoaches = { gymId -> viewModel.fetchCoachesData(gymId = gymId) },
-                            showSessionsAction = showSessionsAction
-                        )
-                    } else {
-                        ListEmptyView.ListEmptyView(
-                            emptyListCaption = StringUtils.getCaptionEmptyCoachesList()
-                        )
-                    }
-                }
-                is GymsListState.Loading -> ListLoadingView.ListLoadingView()
-            }
-        }
-    }
-
-    @Composable
-    private fun GymsList(
-        lifecycle: Lifecycle,
-        gymsList: ArrayList<Gym>,
-        coachesFlow: SharedFlow<ArrayList<AppUser>>,
-        fetchCoaches: (String) -> Unit,
-        showSessionsAction: (Gym) -> Unit
-    ) {
+        val modalBottomSheetState =
+            rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = false)
+        val scope = rememberCoroutineScope()
         var gym by remember { mutableStateOf(Gym()) }
         var coachesList by remember { mutableStateOf(ArrayList<AppUser>()) }
-
-        var showDataDialog by remember { mutableStateOf(false) }
-        if (showDataDialog) {
-            GymDataScreen.GymDataScreen(
-                gym = gym,
-                coaches = coachesList,
-                onDismissRequest = { showDataDialog = false },
-                showSessionsAction = showSessionsAction
-            )
+        val showBottomSheet: (Gym, ArrayList<AppUser>) -> Unit = { selectedGym, coaches ->
+            scope.launch {
+                gym = selectedGym
+                coachesList = coaches
+                modalBottomSheetState.show()
+            }
         }
 
         LaunchedEffect(key1 = Unit) {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                coachesFlow.collect {
+                viewModel.coachesDataList.collect {
                     coachesList = it
-                    showDataDialog = true
+                    showBottomSheet(gym, coachesList)
                 }
             }
         }
 
+        ModalBottomSheetLayout(
+            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            sheetContent = {
+                GymDataScreen.GymDataScreen(
+                    gym = gym,
+                    coaches = coachesList,
+                    showSessionsAction = showSessionsAction
+                )
+            },
+            sheetState = modalBottomSheetState,
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+
+                TopBar.TopBar(
+                    title = DrawerScreens.Gyms.title,
+                    buttonIcon = Icons.Filled.Menu,
+                    onButtonClicked = { openDrawer() },
+                )
+
+                when (gymsListState) {
+                    is GymsListState.Loaded -> {
+                        val gymsList = (gymsListState as GymsListState.Loaded).gymsList
+                        if (gymsList.isNotEmpty()) {
+                            GymsList(
+                                gymsList = gymsList,
+                                fetchCoaches = { selectedGym ->
+                                    gym = selectedGym
+                                    viewModel.fetchCoachesData(gymId = gym.id)
+                                },
+                            )
+                        } else {
+                            ListEmptyView.ListEmptyView(
+                                emptyListCaption = StringUtils.getCaptionEmptyCoachesList()
+                            )
+                        }
+                    }
+                    is GymsListState.Loading -> ListLoadingView.ListLoadingView()
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    private fun GymsList(
+        gymsList: ArrayList<Gym>,
+        fetchCoaches: (Gym) -> Unit,
+    ) {
         LazyColumn(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
             itemsIndexed(gymsList) { index, item ->
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .pointerInput(item) {
-                        detectTapGestures(
-                            onPress = { },
-                            onDoubleTap = { },
-                            onLongPress = {},
-                            onTap = {
-                                gym = item
-                                fetchCoaches(gym.id)
-                            }
-                        )
-                    }) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = item.name,
-                            color = Color.Black,
-                            fontSize = 16.sp
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        verticalAlignment = Alignment.Top,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            color = Color.Gray,
-                            text = item.address,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
+                GymListItemView.GymListItemView(
+                    item = item,
+                    onTap = { gym -> fetchCoaches(gym) }
+                )
             }
         }
     }

@@ -25,10 +25,14 @@ object DataScreenField {
         ) {
             OutlinedTextField(
                 value = content,
+                modifier = Modifier.fillMaxWidth(),
                 onValueChange = {},
                 label = { Text(hint) },
                 textStyle = MaterialTheme.typography.body1,
-                colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = Color.Black,
+                    backgroundColor = Color.White
+                )
             )
             Box(
                 modifier = Modifier
@@ -38,6 +42,6 @@ object DataScreenField {
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
