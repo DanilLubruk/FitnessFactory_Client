@@ -19,6 +19,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -82,7 +83,11 @@ object CoachesScreen {
                             coachesList = coachesList,
                             gymsFlow = viewModel.gymsList,
                             fetchGyms = { viewModel.fetchGymsList() },
-                            fetchCoachData = { coachEmail -> viewModel.fetchCoachForFilter(coachEmail) }
+                            fetchCoachData = { coachEmail ->
+                                viewModel.fetchCoachForFilter(
+                                    coachEmail
+                                )
+                            }
                         )
                     } else {
                         ListEmptyView.ListEmptyView(
@@ -131,57 +136,50 @@ object CoachesScreen {
 
         ) {
             itemsIndexed(coachesList) { index, item ->
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = colorResource(id = R.color.transparent_royal_blue),
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                    .pointerInput(item) {
-                        detectTapGestures(
-                            onPress = { },
-                            onDoubleTap = { },
-                            onLongPress = {},
-                            onTap = {
-                                coach = item
-                                fetchGyms()
-                            }
-                        )
-                    }) {
-                    Column(modifier = Modifier
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Column(horizontalAlignment = Alignment.Start) {
-                                Text(
-                                    text = item.name,
-                                    color = Color.White,
-                                    style = MaterialTheme.typography.body1,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            }
-                        }
+                        .height(64.dp)
+                        .pointerInput(item) {
+                            detectTapGestures(
+                                onPress = { },
+                                onDoubleTap = { },
+                                onLongPress = {},
+                                onTap = {
+                                    coach = item
+                                    fetchGyms()
+                                }
+                            )
+                        }, verticalArrangement = Arrangement.Center
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            text = item.name,
+                            color = Color.Black,
+                            fontSize = 16.sp
+                        )
+                    }
 
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Column(horizontalAlignment = Alignment.Start) {
-                                Text(
-                                    color = Color.White,
-                                    text = item.email,
-                                    style = MaterialTheme.typography.body1
-                                )
-                            }
-                        }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            color = Color.Gray,
+                            text = item.email,
+                            fontSize = 14.sp
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }

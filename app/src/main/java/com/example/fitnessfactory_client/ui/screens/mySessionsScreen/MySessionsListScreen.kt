@@ -89,7 +89,7 @@ object MySessionsListScreen {
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            TextField(
+            OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),

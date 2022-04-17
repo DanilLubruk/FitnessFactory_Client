@@ -23,6 +23,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -111,10 +112,7 @@ object SessionTypesScreen {
             itemsIndexed(typesList) { index, item ->
                 Column(modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        color = colorResource(id = R.color.transparent_royal_blue),
-                        shape = RoundedCornerShape(10.dp)
-                    )
+                    .height(64.dp)
                     .pointerInput(item) {
                         detectTapGestures(
                             onPress = { },
@@ -126,52 +124,38 @@ object SessionTypesScreen {
                             }
                         )
                     }) {
-                    Column(
+                    Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                horizontalAlignment = Alignment.Start,
-                            ) {
-                                Text(
-                                    text = item.name,
-                                    color = Color.White,
-                                    style = MaterialTheme.typography.body1,
-                                    fontWeight = FontWeight.Bold,
-                                )
+                        Text(
+                            text = item.name,
+                            color = Color.Black,
+                            fontSize = 16.sp
+                        )
+                        Text(
+                            color = Color.Gray,
+                            text = StringUtils.getPriceTag(item.price),
+                            fontSize = 14.sp
+                        )
+                    }
 
-                                Spacer(modifier = Modifier.height(4.dp))
-
-                                Text(
-                                    color = Color.White,
-                                    text = StringUtils.getPeopleCaption(item.peopleAmount),
-                                    style = MaterialTheme.typography.body1
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Column(
-                                modifier = Modifier.weight(1f).fillMaxHeight(),
-                                horizontalAlignment = Alignment.End,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    color = Color.White,
-                                    text = StringUtils.getPriceTag(item.price),
-                                    style = MaterialTheme.typography.body1
-                                )
-                            }
-                        }
+                    Row(
+                        modifier = Modifier
+                            .weight(1f),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Text(
+                            color = Color.Gray,
+                            text = StringUtils.getPeopleCaption(item.peopleAmount),
+                            fontSize = 14.sp
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }

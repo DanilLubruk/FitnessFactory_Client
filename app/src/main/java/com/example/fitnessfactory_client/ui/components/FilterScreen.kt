@@ -40,14 +40,6 @@ object FilterScreen {
                     )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-
-                    Text(
-                        text = stringResource(id = R.string.title_set_filters).uppercase(Locale.getDefault()),
-                        style = MaterialTheme.typography.h5
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     var selectedGymIndex = NO_FILTER
                     chainData.gyms.forEachIndexed { index, gym ->
                         if (gym.id == sessionsFilter.gym.id) {
