@@ -10,5 +10,5 @@ class Personnel() {
 
     var id: String = ""
     lateinit var userEmail: String
-    var gymsIds: List<String>? = null
+    var gymsIds: List<String> = ArrayList()
 }

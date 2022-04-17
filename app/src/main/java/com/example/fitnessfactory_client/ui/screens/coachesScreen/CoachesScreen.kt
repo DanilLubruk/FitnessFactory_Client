@@ -82,7 +82,7 @@ object CoachesScreen {
                             lifecycle = lifecycle,
                             coachesList = coachesList,
                             gymsFlow = viewModel.gymsList,
-                            fetchGyms = { viewModel.fetchGymsList() },
+                            fetchGyms = { coachEmail -> viewModel.fetchGymsList(coachEmail) },
                             fetchCoachData = { coachEmail ->
                                 viewModel.fetchCoachForFilter(
                                     coachEmail
@@ -105,7 +105,7 @@ object CoachesScreen {
         lifecycle: Lifecycle,
         coachesList: List<AppUser>,
         gymsFlow: SharedFlow<ArrayList<Gym>>,
-        fetchGyms: () -> Unit,
+        fetchGyms: (String) -> Unit,
         fetchCoachData: (String) -> Unit
     ) {
         var coach by remember { mutableStateOf(AppUser()) }
@@ -147,7 +147,7 @@ object CoachesScreen {
                                 onLongPress = {},
                                 onTap = {
                                     coach = item
-                                    fetchGyms()
+                                    fetchGyms(item.email)
                                 }
                             )
                         }, verticalArrangement = Arrangement.Center

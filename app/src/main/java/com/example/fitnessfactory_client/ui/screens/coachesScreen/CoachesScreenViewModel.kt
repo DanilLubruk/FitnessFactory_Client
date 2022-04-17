@@ -7,7 +7,10 @@ import com.example.fitnessfactory_client.data.beans.CoachData
 import com.example.fitnessfactory_client.data.dataListeners.CoachesListListener
 import com.example.fitnessfactory_client.data.managers.GymsChainDataManager
 import com.example.fitnessfactory_client.data.models.Gym
+import com.example.fitnessfactory_client.data.models.Personnel
+import com.example.fitnessfactory_client.data.repositories.OwnerCoachRepository
 import com.example.fitnessfactory_client.data.repositories.OwnerGymsRepository
+import com.example.fitnessfactory_client.data.repositories.OwnerPersonnelRepository
 import com.example.fitnessfactory_client.data.repositories.UsersRepository
 import com.example.fitnessfactory_client.utils.GuiUtils
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +23,12 @@ class CoachesScreenViewModel
     private val coachesListListener: CoachesListListener,
     private val gymsChainDataManager: GymsChainDataManager,
     private val usersRepository: UsersRepository,
-    private val gymsRepository: OwnerGymsRepository
+    private val gymsRepository: OwnerGymsRepository,
+    private val ownerPersonnelRepository: OwnerCoachRepository,
 ) : ViewModel() {
 
-    private val mutableCoachesListState = MutableStateFlow<CoachesListState>(CoachesListState.Loading)
+    private val mutableCoachesListState =
+        MutableStateFlow<CoachesListState>(CoachesListState.Loading)
     val coachesListState: StateFlow<CoachesListState> = mutableCoachesListState
 
     private val mutableGymsList = MutableSharedFlow<ArrayList<Gym>>()
@@ -47,17 +52,16 @@ class CoachesScreenViewModel
         }
     }
 
-    fun fetchGymsList() {
-        viewModelScope.launch {
-            gymsRepository.getGymsFlow()
-                .flowOn(Dispatchers.IO)
-                .catch { throwable ->
-                    throwable.printStackTrace()
-                    GuiUtils.showMessage(throwable.localizedMessage)
-                }
-                .collect {
-                    mutableGymsList.emit(ArrayList(it))
-                }
+    fun fetchGymsList(coachEmail: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val coach = ownerPersonnelRepository.getPersonnelByEmail(coachEmail)
+                val gyms = gymsRepository.getCoachGyms(coach = coach)
+                mutableGymsList.emit(ArrayList(gyms))
+            } catch (throwable: Exception) {
+                throwable.printStackTrace()
+                throwable.localizedMessage?.let { GuiUtils.showMessage(it) }
+            }
         }
     }
 

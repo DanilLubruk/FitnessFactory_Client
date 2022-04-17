@@ -3,6 +3,7 @@ package com.example.fitnessfactory_client.data.beans
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.FilterEntity
+import com.example.fitnessfactory_client.data.models.Gym
 import com.example.fitnessfactory_client.data.models.Personnel
 import com.example.fitnessfactory_client.utils.ResUtils
 
@@ -31,6 +32,7 @@ class CoachData(private var coachUser: AppUser, private var coach: Personnel, do
         coachUser.name = value
     }
     get() = coachUser.name
+
 
     override fun toString(): String =
         toStringField
