@@ -1,7 +1,6 @@
 package com.example.fitnessfactory_client.ui.components
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -10,10 +9,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.consumeAllChanges
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.fitnessfactory_client.data.models.Session
@@ -126,7 +122,7 @@ object HomeScreenCalendarView {
         dayState: DayState<DaySelectionState>
     ): Boolean {
         sessionsList.forEach { session ->
-            session.date?.let {
+            session.dateValue?.let {
                 val sessionDate: LocalDate = ConvertUtils.dateToLocalDate(it)
                 if (dayState.date.isEqual(sessionDate)) {
                     return true

@@ -19,8 +19,8 @@ class DaysSessionsListListener: BaseDataListener() {
     fun startDataListener(date: Date): Flow<List<Session>> =
         callbackFlow {
             listenerRegistration = getCollection()
-                .whereGreaterThan(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(date = date))
-                .whereLessThan(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(date = date))
+                .whereGreaterThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(date = date).time)
+                .whereLessThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(date = date).time)
                 .addSnapshotListener { value, error ->
                     if (error != null) {
                         throw error

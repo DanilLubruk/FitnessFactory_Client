@@ -39,9 +39,11 @@ object TimeUtils {
             val firstHourOfDay = calendar.getActualMinimum(Calendar.HOUR_OF_DAY)
             val firstMinute = calendar.getActualMinimum(Calendar.MINUTE)
             val firstSecond = calendar.getActualMinimum(Calendar.SECOND)
+            val firstMillisecond = calendar.getActualMinimum(Calendar.MILLISECOND)
             calendar[Calendar.HOUR_OF_DAY] = firstHourOfDay
             calendar[Calendar.MINUTE] = firstMinute
             calendar[Calendar.SECOND] = firstSecond
+            calendar[Calendar.MILLISECOND] = firstMillisecond
             return calendar.time
         }
         return Date()
@@ -54,9 +56,11 @@ object TimeUtils {
             val firstHourOfDay = calendar.getActualMaximum(Calendar.HOUR_OF_DAY)
             val firstMinute = calendar.getActualMaximum(Calendar.MINUTE)
             val firstSecond = calendar.getActualMaximum(Calendar.SECOND)
+            val firstMillisecond = calendar.getActualMinimum(Calendar.MILLISECOND)
             calendar[Calendar.HOUR_OF_DAY] = firstHourOfDay
             calendar[Calendar.MINUTE] = firstMinute
             calendar[Calendar.SECOND] = firstSecond
+            calendar[Calendar.MILLISECOND] = firstMillisecond
             return calendar.time
         }
         return Date()

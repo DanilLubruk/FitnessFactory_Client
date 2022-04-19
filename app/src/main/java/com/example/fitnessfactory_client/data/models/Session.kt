@@ -1,6 +1,7 @@
 package com.example.fitnessfactory_client.data.models
 
 import com.example.fitnessfactory_client.utils.TimeUtils
+import com.google.firebase.firestore.Exclude
 import java.util.*
 
 class Session() {
@@ -17,7 +18,17 @@ class Session() {
     }
 
     lateinit var id: String
-    var date: Date? = null
+
+    var dateValue: Date?
+        get() = Date(date)
+        set(value) {
+            if (value != null) {
+                date = value.time
+            }
+            correctStartEndTimeDay()
+        }
+
+    var date: Long = 0
         get
         set(value) {
             field = value
@@ -26,7 +37,7 @@ class Session() {
 
     var dateString: String = ""
         get() {
-            return TimeUtils.dateToLocaleStr(date = date)
+            return TimeUtils.dateToLocaleStr(date = dateValue)
         }
         set
 
@@ -60,11 +71,11 @@ class Session() {
     var clientsEmails: List<String>? = null
 
     private fun correctStartEndTimeDay() {
-        if (!TimeUtils.isTheSameDay(date, startTime)) {
-            startTime = TimeUtils.setDatesDay(date, startTime)
+        if (!TimeUtils.isTheSameDay(dateValue, startTime)) {
+            startTime = TimeUtils.setDatesDay(dateValue, startTime)
         }
-        if (!TimeUtils.isTheSameDay(date, endTime)) {
-            endTime = TimeUtils.setDatesDay(date, endTime)
+        if (!TimeUtils.isTheSameDay(dateValue, endTime)) {
+            endTime = TimeUtils.setDatesDay(dateValue, endTime)
         }
     }
 }

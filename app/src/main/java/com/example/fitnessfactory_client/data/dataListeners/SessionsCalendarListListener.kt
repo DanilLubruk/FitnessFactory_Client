@@ -91,6 +91,6 @@ class SessionsCalendarListListener : BaseDataListener() {
         endDate: Date
     ): Query =
         query
-            .whereGreaterThan(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(startDate))
-            .whereLessThan(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(endDate))
+            .whereGreaterThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(startDate).time)
+            .whereLessThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(endDate).time)
 }
