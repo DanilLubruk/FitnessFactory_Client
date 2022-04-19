@@ -210,13 +210,19 @@ object HomeScreen {
                         SessionsListView.SessionsListViewScreen(
                             lifecycle = lifecycle,
                             date = date,
+                            sessionsFilter = sessionsFilter,
                             listStateFlow = viewModel.sessionViewsListState,
-                            startDataListener = { listenerDate ->
+                            startDataListener = { listenerDate, newSessionsFilter ->
                                 viewModel.startSessionViewsDataListener(
-                                    date = listenerDate
+                                    date = listenerDate,
+                                    sessionsFilter = sessionsFilter
                                 )
                             },
-                            fetchCoachUsers = { coachesEmails -> viewModel.fetchCoachUsers(coachesEmails = coachesEmails) },
+                            fetchCoachUsers = { coachesEmails ->
+                                viewModel.fetchCoachUsers(
+                                    coachesEmails = coachesEmails
+                                )
+                            },
                             coachUsersFlow = viewModel.coachesListState,
                             showBottomSheet = showBottomSheet
                         )

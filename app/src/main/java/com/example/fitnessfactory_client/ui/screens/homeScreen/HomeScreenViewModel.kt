@@ -58,9 +58,9 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    fun startSessionViewsDataListener(date: Date) {
+    fun startSessionViewsDataListener(date: Date, sessionsFilter: SessionsFilter) {
         viewModelScope.launch {
-            daysSessionsListListener.startDataListener(date = date)
+            daysSessionsListListener.startDataListener(date = date, sessionsFilter = sessionsFilter)
                 .map { sessions ->
                     sessionViewRepository.getSessionViewsList(sessionsList = sessions)
                 }

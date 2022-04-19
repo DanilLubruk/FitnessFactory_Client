@@ -1,8 +1,11 @@
 package com.example.fitnessfactory_client.ui.screens.mySessionsScreen
 
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessfactory_client.data.beans.GymsChainData
+import com.example.fitnessfactory_client.data.beans.SessionsFilter
 import com.example.fitnessfactory_client.data.dataListeners.DaysUsersSessionsListListener
 import com.example.fitnessfactory_client.data.managers.CoachesAccessManager
+import com.example.fitnessfactory_client.data.managers.GymsChainDataManager
 import com.example.fitnessfactory_client.data.managers.SessionsDataManager
 import com.example.fitnessfactory_client.data.repositories.SessionViewRepository
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
@@ -20,16 +23,21 @@ class MySessionsListScreenViewModel
     private val sessionViewRepository: SessionViewRepository,
     private val daysUsersSessionsListListener: DaysUsersSessionsListListener,
     private val sessionsDataManager: SessionsDataManager,
-    private val coachesAccessManager: CoachesAccessManager
+    private val coachesAccessManager: CoachesAccessManager,
+    private val gymsChainDataManager: GymsChainDataManager,
 ) : SessionsListViewModel(coachesAccessManager = coachesAccessManager) {
 
-    fun startDataListener(startDate: Date, endDate: Date) {
+    private val mutableGymsChainDataState = MutableSharedFlow<GymsChainData>()
+    val gymsChainDataState: SharedFlow<GymsChainData> = mutableGymsChainDataState
+
+    fun startDataListener(startDate: Date, endDate: Date, sessionsFilter: SessionsFilter) {
         viewModelScope.launch {
             firebaseAuthManager.getCurrentUserEmail()?.let { usersEmail ->
                 daysUsersSessionsListListener.startDataListener(
                     startDate = startDate,
                     endDate = endDate,
-                    usersEmail = usersEmail
+                    usersEmail = usersEmail,
+                    sessionsFilter = sessionsFilter,
                 )
                     .map { sessions ->
                         sessionViewRepository.getSessionViewsList(sessionsList = sessions)
@@ -56,6 +64,20 @@ class MySessionsListScreenViewModel
                     GuiUtils.showMessage(throwable.localizedMessage)
                 }
                 .collect()
+        }
+    }
+
+    fun fetchGymsChainData() {
+        viewModelScope.launch {
+            gymsChainDataManager.getGymsChainData()
+                .flowOn(Dispatchers.IO)
+                .catch { throwable ->
+                    throwable.printStackTrace()
+                    GuiUtils.showMessage(throwable.localizedMessage)
+                }
+                .collect { gymsChainData ->
+                    mutableGymsChainDataState.emit(gymsChainData)
+                }
         }
     }
 }

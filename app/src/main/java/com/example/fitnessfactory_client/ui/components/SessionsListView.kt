@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.SessionsFilter
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Session
 import com.example.fitnessfactory_client.data.views.SessionView
@@ -36,8 +37,9 @@ object SessionsListView {
     fun SessionsListViewScreen(
         lifecycle: Lifecycle,
         date: Date,
+        sessionsFilter: SessionsFilter,
         listStateFlow: StateFlow<SessionViewsListState>,
-        startDataListener: (Date) -> Unit,
+        startDataListener: (Date, SessionsFilter) -> Unit,
         fetchCoachUsers: (List<String>) -> Unit,
         coachUsersFlow: SharedFlow<UsersListState>,
         showBottomSheet: (SessionView, List<AppUser>) -> Unit,
@@ -45,8 +47,9 @@ object SessionsListView {
         lifecycle = lifecycle,
         startDate = date,
         endDate = date,
+        sessionsFilter = sessionsFilter,
         listStateFlow = listStateFlow,
-        startDataListener = { startDate, endDate -> startDataListener(startDate) },
+        startDataListener = { startDate, endDate, newSessionsFilter -> startDataListener(startDate, newSessionsFilter) },
         fetchCoachUsers = fetchCoachUsers,
         coachUsersFlow = coachUsersFlow,
         showBottomSheet = showBottomSheet
@@ -58,8 +61,9 @@ object SessionsListView {
         lifecycle: Lifecycle,
         startDate: Date,
         endDate: Date,
+        sessionsFilter: SessionsFilter,
         listStateFlow: StateFlow<SessionViewsListState>,
-        startDataListener: (Date, Date) -> Unit,
+        startDataListener: (Date, Date, SessionsFilter) -> Unit,
         fetchCoachUsers: (List<String>) -> Unit,
         coachUsersFlow: SharedFlow<UsersListState>,
         showBottomSheet: (SessionView, List<AppUser>) -> Unit,
@@ -89,8 +93,8 @@ object SessionsListView {
             }
         }
 
-        LaunchedEffect(startDate, endDate) {
-            startDataListener(startDate, endDate)
+        LaunchedEffect(startDate, endDate, sessionsFilter) {
+            startDataListener(startDate, endDate, sessionsFilter)
         }
 
         when (listState) {

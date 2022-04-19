@@ -2,6 +2,7 @@ package com.example.fitnessfactory_client.data.dataListeners
 
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.FirestoreCollections
+import com.example.fitnessfactory_client.data.beans.SessionsFilter
 import com.example.fitnessfactory_client.data.models.Session
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.TimeUtils
@@ -11,16 +12,19 @@ import kotlinx.coroutines.flow.callbackFlow
 import java.lang.Exception
 import java.util.*
 
-class DaysSessionsListListener: BaseDataListener() {
+class DaysSessionsListListener : BaseDataListener() {
 
     override fun getRoot(): String =
         FirestoreCollections.getSessionsCollection()
 
-    fun startDataListener(date: Date): Flow<List<Session>> =
+    fun startDataListener(date: Date, sessionsFilter: SessionsFilter): Flow<List<Session>> =
         callbackFlow {
-            listenerRegistration = getCollection()
-                .whereGreaterThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(date = date).time)
-                .whereLessThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(date = date).time)
+            listenerRegistration = SessionsQueryFilter.getQuery(
+                initialQuery = getCollection(),
+                startDate = date,
+                endDate = date,
+                sessionsFilter = sessionsFilter
+            )
                 .addSnapshotListener { value, error ->
                     if (error != null) {
                         throw error
