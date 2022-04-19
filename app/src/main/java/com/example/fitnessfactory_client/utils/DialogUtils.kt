@@ -22,7 +22,6 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
@@ -196,77 +195,126 @@ object DialogUtils {
         }
     }
 
+    @OptIn(ExperimentalPagerApi::class)
     @Composable
-    fun DatePicker(onDateSelected: (Date) -> Unit, onDismissRequest: () -> Unit) {
-        var selDate by remember { mutableStateOf(Date()) }
+    fun RangePicker(
+        startDate: Date,
+        endDate: Date,
+        onRangeSelected: (Date, Date) -> Unit,
+        onDismissRequest: () -> Unit
+    ) {
+        var startDate by remember { mutableStateOf(startDate) }
+        var endDate by remember { mutableStateOf(endDate) }
 
-        Dialog(onDismissRequest = { onDismissRequest() }, properties = DialogProperties()) {
+        Dialog(
+            onDismissRequest = { onDismissRequest.invoke() }
+        ) {
             Column(
-                modifier = Modifier
-                    .wrapContentSize()
+                Modifier
+                    .defaultMinSize(minHeight = 72.dp)
+                    .fillMaxWidth()
                     .background(
                         color = colorResource(id = R.color.royalBlue),
-                        shape = RoundedCornerShape(size = 16.dp)
+                        shape = RoundedCornerShape(16.dp)
                     )
+                    .padding(16.dp)
             ) {
-                Column(
-                    Modifier
-                        .defaultMinSize(minHeight = 72.dp)
-                        .fillMaxWidth()
-                        .background(
-                            color = colorResource(id = R.color.royalBlue),
-                            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                        )
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = ResUtils.getString(R.string.caption_select_date)
-                            .uppercase(Locale.ENGLISH),
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.onPrimary
+                Column {
+                    val startDateTabIndex = 0
+                    val endDateTabIndex = 1
+                    val tabData = listOf(
+                        "Start Date",
+                        "End Date",
                     )
 
-                    Spacer(modifier = Modifier.size(24.dp))
-
-                    Text(
-                        text = TimeUtils.dateToLocaleStr(selDate),
-                        style = MaterialTheme.typography.h4,
-                        color = MaterialTheme.colors.onPrimary
+                    val pagerState = rememberPagerState(
+                        pageCount = tabData.size,
+                        initialOffscreenLimit = 2,
                     )
 
-                    Spacer(modifier = Modifier.size(16.dp))
-                }
+                    val tabIndex = pagerState.currentPage
+                    val coroutineScope = rememberCoroutineScope()
 
-                CustomCalendarView(onDateSelected = {
-                    selDate = it
-                })
-
-                Spacer(modifier = Modifier.size(8.dp))
-
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(bottom = 16.dp, end = 16.dp)
-                ) {
-                    TextButton(
-                        onClick = onDismissRequest
+                    TabRow(
+                        selectedTabIndex = tabIndex,
+                        backgroundColor = colorResource(id = R.color.royalBlue),
+                        contentColor = Color.White,
+                        modifier = Modifier.height(48.dp),
                     ) {
-                        Text(
-                            text = ResUtils.getString(R.string.caption_cancel),
-                            color = Color.White
-                        )
+                        tabData.forEachIndexed { index, text ->
+                            Tab(
+                                selected = tabIndex == index,
+                                onClick = {
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                },
+                                text = {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = text,
+                                            style = MaterialTheme.typography.body1
+                                        )
+                                    }
+                                }
+                            )
+                        }
                     }
 
-                    TextButton(
-                        onClick = {
-                            onDateSelected(selDate)
-                            onDismissRequest()
+
+                    HorizontalPager(
+                        verticalAlignment = Alignment.Top,
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth(),
+                        state = pagerState
+                    ) { index ->
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            when (index) {
+                                startDateTabIndex -> {
+                                    DatePickerView(
+                                        selectedDate = startDate,
+                                        onDateSelected = {
+                                            startDate = it
+                                        },
+                                        onOkPress = {
+                                            coroutineScope.launch {
+                                                pagerState.animateScrollToPage(
+                                                    endDateTabIndex
+                                                )
+                                            }
+                                        },
+                                        okButtonText = "Next",
+                                        onDismissRequest = onDismissRequest
+                                    )
+                                }
+                                endDateTabIndex -> {
+                                    DatePickerView(
+                                        selectedDate = endDate,
+                                        onDateSelected = {
+                                            endDate = it
+                                        },
+                                        onOkPress = {
+                                            if (startDate.after(endDate)) {
+                                                val date = startDate
+                                                startDate = endDate
+                                                endDate = date
+                                            }
+                                            onRangeSelected(startDate, endDate)
+                                            onDismissRequest()
+                                        },
+                                        okButtonText = stringResource(id = R.string.caption_ok),
+                                        onDismissRequest = onDismissRequest
+                                    )
+                                }
+                            }
                         }
-                    ) {
-                        Text(
-                            text = ResUtils.getString(R.string.caption_ok),
-                            color = Color.White
-                        )
                     }
 
                 }
@@ -275,11 +323,107 @@ object DialogUtils {
     }
 
     @Composable
-    fun CustomCalendarView(onDateSelected: (Date) -> Unit) {
+    fun DatePicker(onDateSelected: (Date) -> Unit, onDismissRequest: () -> Unit) {
+        var selectedDate by remember { mutableStateOf(Date()) }
+
+        Dialog(onDismissRequest = { onDismissRequest() }, properties = DialogProperties()) {
+            Column(
+                Modifier
+                    .defaultMinSize(minHeight = 72.dp)
+                    .fillMaxWidth()
+                    .background(
+                        color = colorResource(id = R.color.royalBlue),
+                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                    )
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = ResUtils.getString(R.string.caption_select_date)
+                        .uppercase(Locale.ENGLISH),
+                    style = MaterialTheme.typography.caption,
+                    color = MaterialTheme.colors.onPrimary
+                )
+
+                DatePickerView(
+                    selectedDate = selectedDate,
+                    onDateSelected = { selectedDate = it },
+                    onOkPress = {
+                        onDateSelected(selectedDate)
+                        onDismissRequest()
+                    },
+                    okButtonText = ResUtils.getString(R.string.caption_ok),
+                    onDismissRequest = onDismissRequest
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun DatePickerView(
+        selectedDate: Date,
+        onDateSelected: (Date) -> Unit,
+        onOkPress: () -> Unit,
+        okButtonText: String,
+        onDismissRequest: () -> Unit
+    ) {
+        Spacer(modifier = Modifier.size(16.dp))
+
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
+                .background(
+                    color = colorResource(id = R.color.royalBlue),
+                )
+        ) {
+
+            Text(
+                text = TimeUtils.dateToLocaleStr(selectedDate),
+                style = MaterialTheme.typography.h4,
+                color = MaterialTheme.colors.onPrimary
+            )
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+
+            CustomCalendarView(selectedDate = selectedDate, onDateSelected = onDateSelected)
+
+            Spacer(modifier = Modifier.size(8.dp))
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.End)
+            ) {
+                TextButton(
+                    onClick = onDismissRequest
+                ) {
+                    Text(
+                        text = ResUtils.getString(R.string.caption_cancel),
+                        color = Color.White
+                    )
+                }
+
+                TextButton(
+                    onClick = {
+                        onOkPress()
+                    }
+                ) {
+                    Text(
+                        text = okButtonText,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun CustomCalendarView(selectedDate: Date, onDateSelected: (Date) -> Unit) {
         AndroidView(
             modifier = Modifier.wrapContentSize(),
             factory = { context ->
-                CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
+                val view = CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
+                view.setDate(selectedDate.time)
+                view
             },
             update = { view ->
                 view.setOnDateChangeListener { _, year, month, dayOfMonth ->

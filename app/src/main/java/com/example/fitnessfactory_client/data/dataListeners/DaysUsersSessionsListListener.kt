@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.data.dataListeners
 
+import android.util.Log
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.models.Session
@@ -16,11 +17,11 @@ class DaysUsersSessionsListListener : BaseDataListener() {
     override fun getRoot(): String =
         FirestoreCollections.getSessionsCollection()
 
-    fun startDataListener(date: Date, usersEmail: String): Flow<List<Session>> =
+    fun startDataListener(startDate: Date, endDate: Date, usersEmail: String): Flow<List<Session>> =
         callbackFlow {
             listenerRegistration = getCollection()
-                .whereGreaterThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(date = date).time)
-                .whereLessThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(date = date).time)
+                .whereGreaterThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(date = startDate).time)
+                .whereLessThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(date = endDate).time)
                 .whereArrayContains(Session.CLIENTS_EMAILS_FIELD, usersEmail)
                 .addSnapshotListener { value, error ->
                     if (error != null) {

@@ -23,6 +23,7 @@ import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.SessionView
 import com.example.fitnessfactory_client.ui.uiState.ListState
 import com.example.fitnessfactory_client.ui.uiState.UsersListState
 import com.example.fitnessfactory_client.utils.ResUtils
+import com.example.fitnessfactory_client.utils.TimeUtils
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.*
@@ -37,6 +38,28 @@ object SessionsListView {
         date: Date,
         listStateFlow: StateFlow<SessionViewsListState>,
         startDataListener: (Date) -> Unit,
+        fetchCoachUsers: (List<String>) -> Unit,
+        coachUsersFlow: SharedFlow<UsersListState>,
+        showBottomSheet: (SessionView, List<AppUser>) -> Unit,
+    ) = SessionsListViewScreen(
+        lifecycle = lifecycle,
+        startDate = date,
+        endDate = date,
+        listStateFlow = listStateFlow,
+        startDataListener = { startDate, endDate -> startDataListener(startDate) },
+        fetchCoachUsers = fetchCoachUsers,
+        coachUsersFlow = coachUsersFlow,
+        showBottomSheet = showBottomSheet
+    )
+
+    @ExperimentalMaterialApi
+    @Composable
+    fun SessionsListViewScreen(
+        lifecycle: Lifecycle,
+        startDate: Date,
+        endDate: Date,
+        listStateFlow: StateFlow<SessionViewsListState>,
+        startDataListener: (Date, Date) -> Unit,
         fetchCoachUsers: (List<String>) -> Unit,
         coachUsersFlow: SharedFlow<UsersListState>,
         showBottomSheet: (SessionView, List<AppUser>) -> Unit,
@@ -66,8 +89,8 @@ object SessionsListView {
             }
         }
 
-        LaunchedEffect(date) {
-            startDataListener(date)
+        LaunchedEffect(startDate, endDate) {
+            startDataListener(startDate, endDate)
         }
 
         when (listState) {
@@ -119,7 +142,7 @@ object SessionsListView {
             itemsIndexed(sessionsList) { index, item ->
                 Column(modifier = Modifier
                     .fillMaxWidth()
-                    .height(64.dp)
+                    .height(72.dp)
                     .pointerInput(item) {
                         detectTapGestures(
                             onPress = { },
@@ -135,6 +158,20 @@ object SessionsListView {
                             }
                         )
                     }) {
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            color = Color.Gray,
+                            text = TimeUtils.dateToLocaleStr(item.session.dateValue),
+                            fontSize = 14.sp
+                        )
+                    }
+
                     Row(
                         modifier = Modifier
                             .weight(1f)
@@ -167,7 +204,7 @@ object SessionsListView {
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth(),
-                        verticalAlignment = Alignment.Top,
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
