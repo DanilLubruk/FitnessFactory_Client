@@ -129,7 +129,10 @@ object FilterScreen {
                     onValueChange = {},
                     label = { Text(hint) },
                     textStyle = MaterialTheme.typography.body1,
-                    colors = TextFieldDefaults.textFieldColors(textColor = Color.Black)
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.Black,
+                        backgroundColor = Color.White
+                    )
                 )
                 Box(
                     modifier = Modifier

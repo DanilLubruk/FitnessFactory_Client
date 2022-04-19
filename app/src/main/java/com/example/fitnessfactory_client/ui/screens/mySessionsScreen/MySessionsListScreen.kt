@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.mySessionsScreen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -47,7 +48,12 @@ object MySessionsListScreen {
     @ExperimentalCoroutinesApi
     @ExperimentalMaterialApi
     @Composable
-    fun MySessionsListScreen(lifecycle: Lifecycle, openDrawer: () -> Unit) {
+    fun MySessionsListScreen(
+        lifecycle: Lifecycle, openDrawer: () -> Unit, navigateHome: () -> Unit,
+    ) {
+        BackHandler {
+            navigateHome()
+        }
         val modalBottomSheetState =
             rememberModalBottomSheetState(
                 initialValue = ModalBottomSheetValue.Hidden,

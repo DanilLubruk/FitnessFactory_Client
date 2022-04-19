@@ -46,7 +46,11 @@ object GymsScreen {
         lifecycle: Lifecycle,
         openDrawer: () -> Unit,
         showSessionsAction: (Gym) -> Unit,
+        navigateHome: () -> Unit,
     ) {
+        BackHandler {
+            navigateHome()
+        }
         val viewModel: GymsScreenViewModel = viewModel(factory = GymsScreenViewModelFactory())
         var gymsListState: GymsListState by remember { mutableStateOf(GymsListState.Loading) }
 

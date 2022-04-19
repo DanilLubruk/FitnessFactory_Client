@@ -46,7 +46,11 @@ object SessionTypesScreen {
         lifecycle: Lifecycle,
         openDrawer: () -> Unit,
         showSessionsAction: (SessionType) -> Unit,
+        navigateHome: () -> Unit,
     ) {
+        BackHandler {
+            navigateHome()
+        }
         val viewModel: SessionTypesScreenViewModel =
             viewModel(factory = SessionTypesScreenViewModelFactory())
         var typesListState: SessionTypesListState by remember { mutableStateOf(SessionTypesListState.Loading) }
@@ -63,7 +67,10 @@ object SessionTypesScreen {
             viewModel.startDataListener()
         }
         val modalBottomSheetState =
-            rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = false)
+            rememberModalBottomSheetState(
+                initialValue = ModalBottomSheetValue.Hidden,
+                skipHalfExpanded = false
+            )
         val scope = rememberCoroutineScope()
 
         var sessionType by remember { mutableStateOf(SessionType()) }

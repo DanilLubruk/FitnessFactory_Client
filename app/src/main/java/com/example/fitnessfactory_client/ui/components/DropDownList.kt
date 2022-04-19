@@ -18,7 +18,7 @@ object DropDownList {
     ) {
         DropdownMenu(
             expanded = isToogled,
-            onDismissRequest = { }) {
+            onDismissRequest = { setToogle(false) }) {
             items.forEach {
                 DropdownMenuItem(
                     onClick = {

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.CoachData
 import com.example.fitnessfactory_client.data.models.AppUser
@@ -31,6 +32,7 @@ import com.example.fitnessfactory_client.ui.components.ListEmptyView
 import com.example.fitnessfactory_client.ui.components.ListLoadingView
 import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
+import com.example.fitnessfactory_client.ui.screens.Screens
 import com.example.fitnessfactory_client.ui.screens.gymsScreen.GymDataScreen
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
@@ -45,7 +47,12 @@ object CoachesScreen {
         lifecycle: Lifecycle,
         openDrawer: () -> Unit,
         showSessionsAction: (CoachData) -> Unit,
+        navigateHome: () -> Unit,
     ) {
+        BackHandler {
+           navigateHome()
+        }
+
         val viewModel: CoachesScreenViewModel = viewModel(factory = CoachesScreenViewModelFactory())
         var coachesListState: CoachesListState by remember { mutableStateOf(CoachesListState.Loading) }
 

@@ -106,9 +106,11 @@ class AppScreen : AppCompatActivity() {
         }
 
         var sessionsFilter by remember { mutableStateOf(SessionsFilter.getNoFilterEntity()) }
-        val navigateHome = {
-            navController.navigate(Screens.HOME_SCREEN) {
-                popUpTo(Screens.HOME_SCREEN)
+        val navigateHome: () -> Unit = {
+            scope.launch {
+                navController.navigate(Screens.HOME_SCREEN) {
+                    popUpTo(Screens.HOME_SCREEN)
+                }
             }
         }
 
@@ -161,6 +163,7 @@ class AppScreen : AppCompatActivity() {
                     MySessionsListScreen.MySessionsListScreen(
                         lifecycle = lifecycle,
                         openDrawer = { openDrawer() },
+                        navigateHome = navigateHome
                     )
                 }
                 composable(
@@ -177,6 +180,7 @@ class AppScreen : AppCompatActivity() {
                                     .build()
                             navigateHome()
                         },
+                        navigateHome = navigateHome
                     )
                 }
                 composable(Screens.SESSION_TYPES_SCREEN) {
@@ -191,6 +195,7 @@ class AppScreen : AppCompatActivity() {
                                     .build()
                             navigateHome()
                         },
+                        navigateHome = navigateHome
                     )
                 }
                 composable(Screens.GYMS_SCREEN) {
@@ -205,6 +210,7 @@ class AppScreen : AppCompatActivity() {
                                     .build()
                             navigateHome()
                         },
+                        navigateHome = navigateHome
                     )
                 }
             }
