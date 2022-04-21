@@ -32,6 +32,13 @@ object TimeUtils {
         return calendar.time
     }
 
+    fun getStartOfNextDay(date: Date?): Date {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.DAY_OF_YEAR, 1)
+        return getStartOfDayDate(calendar.time)
+    }
+
     fun getStartOfDayDate(date: Date?): Date {
         if (date != null) {
             val calendar = Calendar.getInstance()

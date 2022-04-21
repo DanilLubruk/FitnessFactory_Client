@@ -55,6 +55,6 @@ object SessionsQueryFilter {
         endDate: Date
     ): Query =
         query
-            .whereGreaterThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getStartOfDayDate(startDate).time)
-            .whereLessThanOrEqualTo(Session.DATE_FIELD, TimeUtils.getEndOfDayDate(endDate).time)
+            .whereGreaterThanOrEqualTo(Session.START_TIME_FIELD, TimeUtils.getStartOfDayDate(startDate))
+            .whereLessThan(Session.START_TIME_FIELD, TimeUtils.getStartOfNextDay(endDate))
 }

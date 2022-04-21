@@ -16,8 +16,7 @@ import javax.inject.Inject
 class AuthScreenViewModel
 @Inject constructor(
     private val firebaseAuthManager: FirebaseAuthManager,
-    private val authManager: AuthManager,
-    private val usersRepository: UsersRepository
+    private val authManager: AuthManager
 ) : ViewModel() {
 
     private val registerUiStateChannel: Channel<RegisterUiState> = Channel()

@@ -171,7 +171,7 @@ object SessionsListView {
                     ) {
                         Text(
                             color = Color.Gray,
-                            text = TimeUtils.dateToLocaleStr(item.session.dateValue),
+                            text = item.session.dateString,
                             fontSize = 14.sp
                         )
                     }

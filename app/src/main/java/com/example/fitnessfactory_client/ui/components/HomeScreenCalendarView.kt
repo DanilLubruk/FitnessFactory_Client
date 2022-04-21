@@ -122,7 +122,7 @@ object HomeScreenCalendarView {
         dayState: DayState<DaySelectionState>
     ): Boolean {
         sessionsList.forEach { session ->
-            session.dateValue?.let {
+            session.date?.let {
                 val sessionDate: LocalDate = ConvertUtils.dateToLocalDate(it)
                 if (dayState.date.isEqual(sessionDate)) {
                     return true

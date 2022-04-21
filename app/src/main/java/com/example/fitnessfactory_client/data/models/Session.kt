@@ -8,7 +8,6 @@ class Session() {
 
     companion object {
         const val ID_FIELD = "id"
-        const val DATE_FIELD = "date"
         const val START_TIME_FIELD = "startTime"
         const val END_TIME_FIELD = "endTime"
         const val GYM_ID_FIELD = "gymId"
@@ -19,63 +18,45 @@ class Session() {
 
     lateinit var id: String
 
-    var dateValue: Date?
-        get() = Date(date)
+    var date: Date?
+        @Exclude
+        get() = startTime
+        @Exclude
         set(value) {
-            if (value != null) {
-                date = value.time
-            }
-            correctStartEndTimeDay()
+            startTime = TimeUtils.setDatesDay(example = value, subject = startTime)
+            endTime = TimeUtils.setDatesDay(example = value, subject = endTime)
         }
 
-    var date: Long = 0
-        get
-        set(value) {
-            field = value
-            correctStartEndTimeDay()
-        }
-
-    var dateString: String = ""
+    val dateString: String
+        @Exclude
         get() {
-            return TimeUtils.dateToLocaleStr(date = dateValue)
+            return TimeUtils.dateToLocaleStr(date = startTime)
         }
-        set
 
     var startTime: Date? = null
         get
         set(value) {
             field = value
-            correctStartEndTimeDay()
         }
-    var startTimeString: String = ""
+    val startTimeString: String
+        @Exclude
         get() {
             return TimeUtils.dateTo24HoursTime(date = startTime)
         }
-        set
 
     var endTime: Date? = null
         get
         set(value) {
             field = value
-            correctStartEndTimeDay()
         }
-    var endTimeString: String = ""
+    val endTimeString: String
+        @Exclude
         get() {
             return TimeUtils.dateTo24HoursTime(date = endTime)
         }
-        set
 
     lateinit var gymId: String
     lateinit var sessionTypeId: String
     var coachesEmails: List<String>? = null
     var clientsEmails: List<String>? = null
-
-    private fun correctStartEndTimeDay() {
-        if (!TimeUtils.isTheSameDay(dateValue, startTime)) {
-            startTime = TimeUtils.setDatesDay(dateValue, startTime)
-        }
-        if (!TimeUtils.isTheSameDay(dateValue, endTime)) {
-            endTime = TimeUtils.setDatesDay(dateValue, endTime)
-        }
-    }
 }
