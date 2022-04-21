@@ -36,6 +36,7 @@ import com.example.fitnessfactory_client.utils.DialogUtils
 import com.example.fitnessfactory_client.utils.GuiUtils
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -61,7 +62,11 @@ object AuthScreen {
     ) {
         val activity = (LocalContext.current as? Activity)
         BackHandler {
-            activity?.finish();
+            activity?.finish()
+        }
+        val systemUiController = rememberSystemUiController()
+        SideEffect {
+            systemUiController.isStatusBarVisible = false
         }
         val viewModel: AuthScreenViewModel = viewModel(factory = AuthScreenViewModelFactory())
         var text by rememberSaveable { mutableStateOf("") }

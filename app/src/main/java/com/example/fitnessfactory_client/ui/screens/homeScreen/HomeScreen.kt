@@ -43,6 +43,7 @@ import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.views.SessionView
 import com.example.fitnessfactory_client.ui.components.*
 import com.example.fitnessfactory_client.utils.DialogUtils.YesNoDialog
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 object HomeScreen {
@@ -64,6 +65,10 @@ object HomeScreen {
         var showLogoutDialog by remember { mutableStateOf(false) }
         BackHandler {
             showLogoutDialog = true
+        }
+        val systemUiController = rememberSystemUiController()
+        SideEffect {
+            systemUiController.isStatusBarVisible = true
         }
         if (showLogoutDialog) {
             YesNoDialog(

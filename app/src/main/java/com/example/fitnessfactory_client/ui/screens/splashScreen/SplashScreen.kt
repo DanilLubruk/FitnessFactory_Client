@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +21,7 @@ import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.ui.components.ListLoadingView
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object SplashScreen {
@@ -35,6 +37,10 @@ object SplashScreen {
         openAuthScreen: () -> Unit,
         openHomeScreen: () -> Unit
     ) {
+        val systemUiController = rememberSystemUiController()
+        SideEffect {
+            systemUiController.isStatusBarVisible = false
+        }
         val viewModel: SplashScreenViewModel = viewModel(factory = SplashScreenViewModelFactory())
 
         LaunchedEffect(key1 = Unit) {
