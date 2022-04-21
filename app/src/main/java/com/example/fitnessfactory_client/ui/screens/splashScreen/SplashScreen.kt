@@ -4,10 +4,13 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -58,15 +61,16 @@ object SplashScreen {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = ResUtils.getString(R.string.caption_greetings),
-                        style = MaterialTheme.typography.body1)
-                    Spacer(modifier = Modifier.height(5.dp))
-                    CircularProgressIndicator(
+                        text = ResUtils.getString(R.string.app_name),
+                        style = MaterialTheme.typography.h5)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Icon(
                         modifier = Modifier
-                            .height(32.dp)
-                            .width(32.dp),
-                        strokeWidth = 2.dp,
-                        color = colorResource(id = R.color.royalBlue)
+                            .height(80.dp)
+                            .width(80.dp),
+                        imageVector = Icons.Filled.FitnessCenter,
+                        contentDescription = "",
+                        tint = colorResource(id = R.color.royalBlue),
                     )
                 }
             }

@@ -13,6 +13,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -20,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -171,6 +175,17 @@ object AuthScreen {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(
+                    text = ResUtils.getString(R.string.app_name),
+                    style = MaterialTheme.typography.h5)
+                Spacer(modifier = Modifier.height(16.dp))
+                Icon(
+                    modifier = Modifier.height(80.dp).width(80.dp),
+                    imageVector = Icons.Filled.FitnessCenter,
+                    contentDescription = "",
+                    tint = colorResource(id = R.color.royalBlue),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
                 SignInButton(
                     captionText = signInCaption,
                     loadingText = signInProcessCaption,
@@ -225,7 +240,7 @@ object AuthScreen {
                 )
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Text(text = if (isLoading) loadingText else captionText)
+                Text(fontSize = 14.sp, text = if (isLoading) loadingText else captionText)
                 if (isLoading) {
                     Spacer(modifier = Modifier.width(16.dp))
                     CircularProgressIndicator(
