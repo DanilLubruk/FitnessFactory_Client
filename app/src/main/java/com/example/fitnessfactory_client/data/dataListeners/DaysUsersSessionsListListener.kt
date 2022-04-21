@@ -32,7 +32,6 @@ class DaysUsersSessionsListListener : BaseDataListener() {
                     endDate = endDate,
                     sessionsFilter = sessionsFilter
                 )
-                    .whereArrayContains(Session.CLIENTS_EMAILS_FIELD, usersEmail)
                     .addSnapshotListener { value, error ->
                         if (error != null) {
                             throw error
@@ -41,7 +40,9 @@ class DaysUsersSessionsListListener : BaseDataListener() {
                             throw Exception(ResUtils.getString(R.string.message_error_data_obtain))
                         }
 
-                        val sessions: List<Session> = value.toObjects(Session::class.java)
+                        val sessions = value.toObjects(Session::class.java).filter {
+                            it.clientsEmails?.contains(usersEmail) ?: false
+                        }
                         trySend(sessions)
                     }
 
