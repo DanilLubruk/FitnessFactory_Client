@@ -121,6 +121,7 @@ object GymsScreen {
                         GymSearchFieldState.GymNameFieldSearch
                     )
                 }
+                val keyboardController = LocalSoftwareKeyboardController.current
 
                 TopBar.TopBar(
                     title = DrawerScreens.Gyms.title,
@@ -134,10 +135,12 @@ object GymsScreen {
                         ) {
                             searchText = ""
                             showSearch = !showSearch
+                            if (!showSearch) {
+                                keyboardController?.hide()
+                            }
                         }
                     )
                 )
-                val keyboardController = LocalSoftwareKeyboardController.current
 
                 AnimatedVisibility(visible = showSearch) {
                     Row(

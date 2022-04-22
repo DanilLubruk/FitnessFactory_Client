@@ -102,7 +102,7 @@ object SessionTypesScreen {
             sheetState = modalBottomSheetState,
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-
+                val keyboardController = LocalSoftwareKeyboardController.current
                 var showSearch by rememberSaveable { mutableStateOf(false) }
                 var searchText by rememberSaveable { mutableStateOf("") }
 
@@ -118,11 +118,13 @@ object SessionTypesScreen {
                         ) {
                             searchText = ""
                             showSearch = !showSearch
+                            if (!showSearch) {
+                                keyboardController?.hide()
+                            }
                         }
                     )
                 )
 
-                val keyboardController = LocalSoftwareKeyboardController.current
                 AnimatedVisibility(visible = showSearch) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,

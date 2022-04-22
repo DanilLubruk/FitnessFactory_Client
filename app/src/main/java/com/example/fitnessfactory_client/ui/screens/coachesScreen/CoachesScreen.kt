@@ -118,6 +118,7 @@ object CoachesScreen {
             sheetState = modalBottomSheetState,
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
+                val keyboardController = LocalSoftwareKeyboardController.current
 
                 TopBar.TopBar(
                     title = DrawerScreens.Coaches.title,
@@ -131,10 +132,12 @@ object CoachesScreen {
                         ) {
                             searchText = ""
                             showSearch = !showSearch
+                            if (!showSearch) {
+                                keyboardController?.hide()
+                            }
                         }
                     )
                 )
-                val keyboardController = LocalSoftwareKeyboardController.current
 
                 AnimatedVisibility(visible = showSearch) {
                     Row(
