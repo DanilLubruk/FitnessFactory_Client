@@ -3,6 +3,7 @@ package com.example.fitnessfactory_client.data.system
 import android.content.Intent
 import android.util.Log
 import com.example.fitnessfactory_client.FFApp
+import com.example.fitnessfactory_client.data.AppPrefs
 import com.example.fitnessfactory_client.data.ObfuscateData
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -68,17 +69,17 @@ class FirebaseAuthManager(private val mAuth: FirebaseAuth = FirebaseAuth.getInst
     private fun isLoggedIn(): Boolean =
         mAuth.currentUser != null
 
-    fun signOutFlow(): Flow<Boolean> =
-        flow {
-            emit(signOut())
-        }
-
-    private suspend fun signOut(): Boolean {
+    suspend fun signOut(): Boolean {
         mAuth.signOut()
         val isFirebaseSignedOut = mAuth.currentUser == null
         val isGoogleSignedOut = signOutGoogle()
 
-        return isFirebaseSignedOut && isGoogleSignedOut
+        val isLoggedOut = isFirebaseSignedOut && isGoogleSignedOut
+        if (isLoggedOut) {
+            AppPrefs.currentUserEmail().value = ""
+        }
+
+        return isLoggedOut
     }
 
     private suspend fun signOutGoogle(): Boolean {

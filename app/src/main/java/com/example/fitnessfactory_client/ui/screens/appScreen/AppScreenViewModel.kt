@@ -13,6 +13,7 @@ import com.example.fitnessfactory_client.utils.ResUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 class AppScreenViewModel
@@ -24,22 +25,21 @@ class AppScreenViewModel
     val logoutState: SharedFlow<LogoutState> = mutableLogoutState
 
     fun logout() {
-        viewModelScope.launch {
-            firebaseAuthManager.signOutFlow()
-                .flowOn(Dispatchers.IO)
-                .catch { throwable ->
-                    throwable.printStackTrace()
-                    mutableLogoutState.emit(LogoutState.Failure(throwable.localizedMessage))
-                }
-                .collect { isLoggedOut ->
-                    val logoutState =
-                        if (isLoggedOut)
-                            LogoutState.Success()
-                        else
-                            LogoutState.Failure(ResUtils.getString(R.string.message_error_signout))
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val isLoggedOut = firebaseAuthManager.signOut()
 
-                    mutableLogoutState.emit(logoutState)
-                }
+                val logoutState =
+                    if (isLoggedOut)
+                        LogoutState.Success()
+                    else
+                        LogoutState.Failure(ResUtils.getString(R.string.message_error_signout))
+
+                mutableLogoutState.emit(logoutState)
+            } catch (throwable: Exception) {
+                throwable.printStackTrace()
+                mutableLogoutState.emit(LogoutState.Failure(throwable.localizedMessage))
+            }
         }
     }
 }

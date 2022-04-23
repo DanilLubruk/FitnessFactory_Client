@@ -2,6 +2,7 @@ package com.example.fitnessfactory_client.ui.screens.authScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fitnessfactory_client.data.AppPrefs
 import com.example.fitnessfactory_client.data.managers.AuthManager
 import com.example.fitnessfactory_client.data.repositories.UsersRepository
 import com.example.fitnessfactory_client.data.system.FirebaseAuthManager
@@ -49,6 +50,7 @@ class AuthScreenViewModel
                     registerUiStateChannel.send(RegisterUiState.Error(throwable))
                 }
                 .collect {
+                    AppPrefs.currentUserEmail().value = it.email
                     registerUiStateChannel.send(RegisterUiState.Success(usersEmail = it.email))
                 }
         }
@@ -70,10 +72,8 @@ class AuthScreenViewModel
     }
 
     fun signOut() {
-        viewModelScope.launch {
-            firebaseAuthManager.signOutFlow()
-                .flowOn(Dispatchers.IO)
-                .collect()
+        viewModelScope.launch(Dispatchers.IO) {
+            firebaseAuthManager.signOut()
         }
     }
 }

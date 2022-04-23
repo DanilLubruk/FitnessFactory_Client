@@ -15,4 +15,10 @@ object AppPrefs {
             .builder("currency_sign_pref")
             .setDefaultValue("₽")
             .build()
+
+    fun currentUserEmail(): StringPreference =
+        StringPreference
+            .builder("current_user_email")
+            .setDefaultValue("")
+            .build()
 }
