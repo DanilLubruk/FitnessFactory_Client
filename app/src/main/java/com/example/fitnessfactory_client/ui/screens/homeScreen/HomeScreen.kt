@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.homeScreen
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -38,6 +39,7 @@ import kotlin.collections.ArrayList
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.views.SessionView
@@ -55,13 +57,13 @@ object HomeScreen {
     @ExperimentalMaterialApi
     @Composable
     fun HomeScreen(
-        lifecycle: Lifecycle,
         sessionsFilter: SessionsFilter = SessionsFilter.getNoFilterEntity(),
         openDrawer: () -> Unit,
         setFilter: (SessionsFilter) -> Unit,
         clearFilter: () -> Unit,
         logout: () -> Unit,
     ) {
+        val lifecycle = LocalLifecycleOwner.current
         var showLogoutDialog by remember { mutableStateOf(false) }
         BackHandler {
             showLogoutDialog = true
@@ -91,16 +93,19 @@ object HomeScreen {
             if (!showSessionsList) {
                 showSessionsList = true
             }
+            Log.d("DEBUG_TAG", "showSessions: $showSessionsList listenerDate: $it")
             date = it
         }
 
         var calendarListenerPeriod by remember { mutableStateOf(PeriodObject()) }
         LaunchedEffect(calendarListenerPeriod, sessionsFilter) {
-            viewModel.startCalendarSessionsDataListener(
-                startDate = calendarListenerPeriod.startDate,
-                endDate = calendarListenerPeriod.endDate,
-                sessionsFilter = sessionsFilter
-            )
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.startCalendarSessionsDataListener(
+                    startDate = calendarListenerPeriod.startDate,
+                    endDate = calendarListenerPeriod.endDate,
+                    sessionsFilter = sessionsFilter
+                )
+            }
         }
 
         val setCalendarListenerDates: (Date, Date) -> Unit = { startDate, endDate ->
@@ -213,7 +218,6 @@ object HomeScreen {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         SessionsListView.SessionsListViewScreen(
-                            lifecycle = lifecycle,
                             date = date,
                             sessionsFilter = sessionsFilter,
                             listStateFlow = viewModel.sessionViewsListState,

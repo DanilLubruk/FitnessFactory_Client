@@ -6,6 +6,7 @@ import com.example.fitnessfactory_client.ui.screens.coachesScreen.CoachesScreenV
 import com.example.fitnessfactory_client.ui.screens.gymsScreen.GymsScreenViewModelFactory
 import com.example.fitnessfactory_client.ui.screens.homeScreen.HomeScreenViewModelFactory
 import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.MySessionsListScreenViewModelFactory
+import com.example.fitnessfactory_client.ui.screens.personalInfoScreen.PersonalInfoScreenViewModelFactory
 import com.example.fitnessfactory_client.ui.screens.sessionTypesScreen.SessionTypesScreenViewModelFactory
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModel
 import com.example.fitnessfactory_client.ui.screens.splashScreen.SplashScreenViewModelFactory
@@ -25,4 +26,5 @@ interface AppComponent {
     fun inject(coachesScreenViewModelFactory: CoachesScreenViewModelFactory)
     fun inject(sessionTypesScreenViewModelFactory: SessionTypesScreenViewModelFactory)
     fun inject(gymsScreenViewModelFactory: GymsScreenViewModelFactory)
+    fun inject(personalInfoScreenViewModelFactory: PersonalInfoScreenViewModelFactory)
 }

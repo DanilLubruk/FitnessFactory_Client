@@ -1,103 +1,147 @@
 package com.example.fitnessfactory_client.ui.screens.personalInfoScreen
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.TopBarAction
+import com.example.fitnessfactory_client.ui.components.TopBar
+import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
 import kotlinx.coroutines.launch
 
 object PersonalInfoScreen {
 
     @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
     @Composable
-    fun PersonalInfoScreen(modalBottomSheetState: ModalBottomSheetState) {
+    fun PersonalInfoScreen(navigateBack: () -> Unit) {
         val scope = rememberCoroutineScope()
         BackHandler {
-            scope.launch {
-                modalBottomSheetState.hide()
+            navigateBack()
+        }
+
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val viewModel: PersonalInfoScreenViewModel =
+            viewModel(factory = PersonalInfoScreenViewModelFactory())
+
+        var isLoading by remember { mutableStateOf(true) }
+        var name by rememberSaveable { mutableStateOf("") }
+        var email by rememberSaveable { mutableStateOf("") }
+        LaunchedEffect(key1 = Unit) {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.userInfoSharedFlow.collect(collector = { userInfo ->
+                    name = userInfo.name
+                    email = userInfo.email
+                    isLoading = false
+                })
             }
         }
 
+        LaunchedEffect(key1 = Unit) {
+            viewModel.fetchUserInfo()
+        }
+
         Column(modifier = Modifier.fillMaxSize()) {
-            var name by rememberSaveable { mutableStateOf("") }
-            var email by rememberSaveable { mutableStateOf("") }
+
+            TopBar.TopBar(
+                title = DrawerScreens.PersonalInfo.title,
+                buttonIcon = Icons.Filled.ArrowBack,
+                onButtonClicked = {
+                    navigateBack()
+                },
+                actions = listOf(
+                    TopBarAction(
+                        stringResource(id = R.string.caption_save),
+                        image = Icons.Filled.Save,
+                        imageTint = Color.White
+                    ) {
+                    }
+                )
+            )
+
             val keyboardController = LocalSoftwareKeyboardController.current
 
-            Column(modifier = Modifier.padding(16.dp)) {
+            if (isLoading) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            scope.launch {
-                                keyboardController?.hide()
-                                modalBottomSheetState.hide()
-                            }
-                        },
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Save,
-                        contentDescription = stringResource(id = R.string.caption_save),
-                        tint = colorResource(id = R.color.royalBlue)
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .height(16.dp)
+                            .width(16.dp),
+                        strokeWidth = 2.dp,
+                        color = colorResource(id = R.color.royalBlue)
                     )
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    value = name,
-                    maxLines = 1,
-                    onValueChange = {
-                        name = it
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    label = { Text(stringResource(id = R.string.caption_name)) },
-                    textStyle = MaterialTheme.typography.body1,
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = Color.Black,
-                        backgroundColor = Color.White
+            } else {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        value = name,
+                        maxLines = 1,
+                        onValueChange = {
+                            name = it
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        label = { Text(stringResource(id = R.string.caption_name)) },
+                        textStyle = MaterialTheme.typography.body1,
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = Color.Black,
+                            backgroundColor = Color.White
+                        )
                     )
-                )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                val keyboardController = LocalSoftwareKeyboardController.current
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    value = email,
-                    maxLines = 1,
-                    onValueChange = {
-                        email = it
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = { keyboardController?.hide() }
-                    ),
-                    label = { Text(stringResource(id = R.string.caption_email)) },
-                    textStyle = MaterialTheme.typography.body1,
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = Color.Black,
-                        backgroundColor = Color.White
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        value = email,
+                        maxLines = 1,
+                        onValueChange = {
+                            email = it
+                        },
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = { keyboardController?.hide() }
+                        ),
+                        label = { Text(stringResource(id = R.string.caption_email)) },
+                        textStyle = MaterialTheme.typography.body1,
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = Color.Black,
+                            backgroundColor = Color.White
+                        )
                     )
-                )
+                }
             }
         }
     }

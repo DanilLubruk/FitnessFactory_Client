@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
@@ -35,13 +36,20 @@ object HomeScreenCalendarView {
         setListenerDate: (Date) -> Unit,
         setCalendarListenerDates: (Date, Date) -> Unit
     ) {
-        val calendarState = rememberDaySelectionState(setListenerDate = setListenerDate)
+        val calendarState = rememberDaySelectionState()
 
-        Column(modifier =
-        Modifier
-            .verticalScroll(rememberScrollState())) {
+        Column(
+            modifier =
+            Modifier
+                .verticalScroll(rememberScrollState())
+        ) {
             Calendar(
-                dayContent = { dayState -> MyDay(sessionsList = sessionsList, state = dayState) },
+                dayContent = { dayState ->
+                    MyDay(
+                        sessionsList = sessionsList,
+                        state = dayState,
+                        onClick = { setListenerDate(ConvertUtils.localDateToDate(it)) })
+                },
                 calendarState = calendarState,
             )
         }
@@ -109,6 +117,7 @@ object HomeScreenCalendarView {
                 modifier = Modifier.clickable {
                     onClick(date)
                     selectionState.onDateSelected(date)
+                    Log.d("DEBUG_TAG", "date selected $date")
                 },
                 contentAlignment = Alignment.Center,
             ) {

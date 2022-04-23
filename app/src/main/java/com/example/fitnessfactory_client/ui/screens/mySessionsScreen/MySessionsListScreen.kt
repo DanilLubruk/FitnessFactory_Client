@@ -143,7 +143,6 @@ object MySessionsListScreen {
                 DatePickerView(startDate = startDate, endDate = endDate, setRange = setRange)
 
                 SessionsListView.SessionsListViewScreen(
-                    lifecycle = lifecycle,
                     startDate = startDate,
                     endDate = endDate,
                     sessionsFilter = sessionsFilter,

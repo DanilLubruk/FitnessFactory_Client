@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +36,6 @@ object SessionsListView {
     @ExperimentalMaterialApi
     @Composable
     fun SessionsListViewScreen(
-        lifecycle: Lifecycle,
         date: Date,
         sessionsFilter: SessionsFilter,
         listStateFlow: StateFlow<SessionViewsListState>,
@@ -44,7 +44,6 @@ object SessionsListView {
         coachUsersFlow: SharedFlow<UsersListState>,
         showBottomSheet: (SessionView, List<AppUser>) -> Unit,
     ) = SessionsListViewScreen(
-        lifecycle = lifecycle,
         startDate = date,
         endDate = date,
         sessionsFilter = sessionsFilter,
@@ -58,7 +57,6 @@ object SessionsListView {
     @ExperimentalMaterialApi
     @Composable
     fun SessionsListViewScreen(
-        lifecycle: Lifecycle,
         startDate: Date,
         endDate: Date,
         sessionsFilter: SessionsFilter,
@@ -68,6 +66,7 @@ object SessionsListView {
         coachUsersFlow: SharedFlow<UsersListState>,
         showBottomSheet: (SessionView, List<AppUser>) -> Unit,
     ) {
+        val lifecycle = LocalLifecycleOwner.current
         var sessionsList: List<SessionView> by remember { mutableStateOf(ArrayList()) }
 
         var listState: ListState by remember { mutableStateOf(ListState.Loading) }
@@ -101,7 +100,6 @@ object SessionsListView {
             is ListState.Loading -> ListLoadingView.ListLoadingView()
             is ListState.Empty -> ListEmptyView.ListEmptyView(stringResource(id = R.string.caption_no_sessions_for_date))
             is ListState.Loaded -> SessionsListView(
-                lifecycle = lifecycle,
                 sessionsList = sessionsList,
                 fetchCoachUsers = fetchCoachUsers,
                 coachUsersFlow = coachUsersFlow,
@@ -113,12 +111,12 @@ object SessionsListView {
     @ExperimentalMaterialApi
     @Composable
     private fun SessionsListView(
-        lifecycle: Lifecycle,
         sessionsList: List<SessionView>,
         fetchCoachUsers: (List<String>) -> Unit,
         coachUsersFlow: SharedFlow<UsersListState>,
         showBottomSheet: (SessionView, List<AppUser>) -> Unit,
     ) {
+        val lifecycle = LocalLifecycleOwner.current
         var sessionData: SessionView by remember { mutableStateOf(SessionView(Session())) }
 
         var coaches: List<AppUser> by remember { mutableStateOf(ArrayList()) }

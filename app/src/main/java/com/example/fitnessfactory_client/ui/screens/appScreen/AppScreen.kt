@@ -117,122 +117,110 @@ class AppScreen : AppCompatActivity() {
                 }
             }
         }
-        val modalBottomSheetState =
-            rememberModalBottomSheetState(
-                initialValue = ModalBottomSheetValue.Hidden,
-                skipHalfExpanded = false
-            )
+        val navigateBack: () -> Unit = {
+            scope.launch {
+                navController.popBackStack()
+            }
+        }
 
-        ModalBottomSheetLayout(
-            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            sheetContent = {
-                PersonalInfoScreen.PersonalInfoScreen(modalBottomSheetState = modalBottomSheetState)
-            },
-            sheetState = modalBottomSheetState,
-        ) {
-            ModalDrawer(
-                drawerState = drawerState,
-                gesturesEnabled = drawerState.isOpen,
-                drawerContent = {
-                    Drawer.Drawer(
-                        onDestinationClicked = { screen ->
-                            scope.launch {
-                                drawerState.close()
-                                if (screen is DrawerScreens.PersonalInfo) {
-                                    scope.launch {
-                                        modalBottomSheetState.show()
-                                    }
-                                } else {
-                                    navController.navigate(screen.navRoute)
-                                }
-                            }
-                        },
+        ModalDrawer(
+            drawerState = drawerState,
+            gesturesEnabled = drawerState.isOpen,
+            drawerContent = {
+                Drawer.Drawer(
+                    onDestinationClicked = { screen ->
+                        scope.launch {
+                            drawerState.close()
+                            navController.navigate(screen.navRoute)
+                        }
+                    },
+                    logout = { viewModel.logout() }
+                )
+            }) {
+            AnimatedNavHost(
+                navController = navController,
+                startDestination = Screens.SPLASH_SCREEN
+            ) {
+                composable(Screens.SPLASH_SCREEN) {
+                    SplashScreen.SplashScreen(
+                        lifecycle = lifecycle,
+                        openAuthScreen = { navController.navigate(Screens.AUTH_SCREEN) },
+                        openHomeScreen = { navigateHome() }
+                    )
+                }
+                composable(Screens.AUTH_SCREEN) {
+                    AuthScreen.AuthScreen(
+                        lifecycle = lifecycle,
+                        openHomeScreen = { navigateHome() }
+                    )
+                }
+                composable(
+                    Screens.HOME_SCREEN
+                ) {
+                    HomeScreen.HomeScreen(
+                        sessionsFilter = sessionsFilter,
+                        openDrawer = { openDrawer() },
+                        clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity() },
+                        setFilter = { sessionsFilter = it },
                         logout = { viewModel.logout() }
                     )
-                }) {
-                AnimatedNavHost(
-                    navController = navController,
-                    startDestination = Screens.SPLASH_SCREEN
+                }
+                composable(Screens.MY_SESSIONS_SCREEN) {
+                    MySessionsListScreen.MySessionsListScreen(
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() },
+                        navigateHome = navigateHome
+                    )
+                }
+                composable(
+                    Screens.COACHES_SCREEN
                 ) {
-                    composable(Screens.SPLASH_SCREEN) {
-                        SplashScreen.SplashScreen(
-                            lifecycle = lifecycle,
-                            openAuthScreen = { navController.navigate(Screens.AUTH_SCREEN) },
-                            openHomeScreen = { navigateHome() }
-                        )
-                    }
-                    composable(Screens.AUTH_SCREEN) {
-                        AuthScreen.AuthScreen(
-                            lifecycle = lifecycle,
-                            openHomeScreen = { navigateHome() }
-                        )
-                    }
-                    composable(
-                        Screens.HOME_SCREEN
-                    ) {
-                        HomeScreen.HomeScreen(
-                            lifecycle = lifecycle,
-                            sessionsFilter = sessionsFilter,
-                            openDrawer = { openDrawer() },
-                            clearFilter = { sessionsFilter = SessionsFilter.getNoFilterEntity() },
-                            setFilter = { sessionsFilter = it },
-                            logout = { viewModel.logout() }
-                        )
-                    }
-                    composable(Screens.MY_SESSIONS_SCREEN) {
-                        MySessionsListScreen.MySessionsListScreen(
-                            lifecycle = lifecycle,
-                            openDrawer = { openDrawer() },
-                            navigateHome = navigateHome
-                        )
-                    }
-                    composable(
-                        Screens.COACHES_SCREEN
-                    ) {
-                        CoachesScreen.CoachesScreen(
-                            lifecycle = lifecycle,
-                            openDrawer = { openDrawer() },
-                            showSessionsAction = { coachData ->
-                                sessionsFilter =
-                                    SessionsFilter
-                                        .builder()
-                                        .filterCoach(coachData = coachData)
-                                        .build()
-                                navigateHome()
-                            },
-                            navigateHome = navigateHome
-                        )
-                    }
-                    composable(Screens.SESSION_TYPES_SCREEN) {
-                        SessionTypesScreen.SessionTypesScreen(
-                            lifecycle = lifecycle,
-                            openDrawer = { openDrawer() },
-                            showSessionsAction = { sessionType ->
-                                sessionsFilter =
-                                    SessionsFilter
-                                        .builder()
-                                        .filterSessionType(sessionType = sessionType)
-                                        .build()
-                                navigateHome()
-                            },
-                            navigateHome = navigateHome
-                        )
-                    }
-                    composable(Screens.GYMS_SCREEN) {
-                        GymsScreen.GymsScreen(
-                            lifecycle = lifecycle,
-                            openDrawer = { openDrawer() },
-                            showSessionsAction = { gym ->
-                                sessionsFilter =
-                                    SessionsFilter
-                                        .builder()
-                                        .filterGym(gym = gym)
-                                        .build()
-                                navigateHome()
-                            },
-                            navigateHome = navigateHome
-                        )
-                    }
+                    CoachesScreen.CoachesScreen(
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() },
+                        showSessionsAction = { coachData ->
+                            sessionsFilter =
+                                SessionsFilter
+                                    .builder()
+                                    .filterCoach(coachData = coachData)
+                                    .build()
+                            navigateHome()
+                        },
+                        navigateHome = navigateHome
+                    )
+                }
+                composable(Screens.SESSION_TYPES_SCREEN) {
+                    SessionTypesScreen.SessionTypesScreen(
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() },
+                        showSessionsAction = { sessionType ->
+                            sessionsFilter =
+                                SessionsFilter
+                                    .builder()
+                                    .filterSessionType(sessionType = sessionType)
+                                    .build()
+                            navigateHome()
+                        },
+                        navigateHome = navigateHome
+                    )
+                }
+                composable(Screens.GYMS_SCREEN) {
+                    GymsScreen.GymsScreen(
+                        lifecycle = lifecycle,
+                        openDrawer = { openDrawer() },
+                        showSessionsAction = { gym ->
+                            sessionsFilter =
+                                SessionsFilter
+                                    .builder()
+                                    .filterGym(gym = gym)
+                                    .build()
+                            navigateHome()
+                        },
+                        navigateHome = navigateHome
+                    )
+                }
+                composable(Screens.PERSONAL_INFO_SCREEN) {
+                    PersonalInfoScreen.PersonalInfoScreen(navigateBack = navigateBack)
                 }
             }
         }
