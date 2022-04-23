@@ -223,8 +223,8 @@ object DialogUtils {
                     val startDateTabIndex = 0
                     val endDateTabIndex = 1
                     val tabData = listOf(
-                        "Start Date",
-                        "End Date",
+                        stringResource(id = R.string.caption_start_date),
+                        stringResource(id = R.string.caption_end_date),
                     )
 
                     val pagerState = rememberPagerState(
@@ -290,7 +290,7 @@ object DialogUtils {
                                                 )
                                             }
                                         },
-                                        okButtonText = "Next",
+                                        okButtonText = stringResource(id = R.string.caption_next),
                                         onDismissRequest = onDismissRequest
                                     )
                                 }

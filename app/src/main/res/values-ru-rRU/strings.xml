@@ -26,8 +26,8 @@
     <string name="message_subscribe_to_session">Подписаться на эту сессию</string>
     <string name="caption_subscribe">Подписаться</string>
     <string name="caption_unsubscribe">Отписаться</string>
-    <string name="caption_until">с</string>
-    <string name="caption_from">по</string>
+    <string name="caption_until">по</string>
+    <string name="caption_from">с</string>
     <string name="caption_start_time">Время начала</string>
     <string name="caption_end_time">Время конца</string>
     <string name="caption_gym">Тренажёрный зал</string>
@@ -52,4 +52,7 @@
     <string name="message_ask_logout">Выйти?</string>
     <string name="caption_personal_info">Мои данные</string>
     <string name="caption_save">Сохранить</string>
+    <string name="caption_next">Далее</string>
+    <string name="caption_start_date">Дата начала</string>
+    <string name="caption_end_date">Дата конца</string>
 </resources>

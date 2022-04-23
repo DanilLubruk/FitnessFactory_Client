@@ -51,4 +51,7 @@
     <string name="message_ask_logout">Logout?</string>
     <string name="caption_personal_info">My info</string>
     <string name="caption_save">Save</string>
+    <string name="caption_next">Next</string>
+    <string name="caption_start_date">Start date</string>
+    <string name="caption_end_date">End date</string>
 </resources>
