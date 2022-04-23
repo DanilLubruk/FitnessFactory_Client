@@ -55,4 +55,5 @@
     <string name="caption_next">Далее</string>
     <string name="caption_start_date">Дата начала</string>
     <string name="caption_end_date">Дата конца</string>
+    <string name="caption_close_and_discard">Закрыть без сохранения?</string>
 </resources>

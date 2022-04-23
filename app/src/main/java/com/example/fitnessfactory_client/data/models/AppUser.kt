@@ -6,6 +6,15 @@ class AppUser {
         const val ID_FIELD = "id"
         const val NAME_FIELD = "name"
         const val EMAIL_FIELD = "email"
+
+        fun newValue(id: String, name: String, email: String): AppUser {
+            val appUser = AppUser()
+            appUser.id = id
+            appUser.name = name
+            appUser.email = email
+
+            return appUser
+        }
     }
 
     var id: String = ""
@@ -14,4 +23,9 @@ class AppUser {
 
     override fun toString(): String =
         name
+
+    fun equals(appUser: AppUser): Boolean =
+        id.equals(appUser.id) &&
+                name.equals(appUser.name) &&
+                email.equals(appUser.email)
 }

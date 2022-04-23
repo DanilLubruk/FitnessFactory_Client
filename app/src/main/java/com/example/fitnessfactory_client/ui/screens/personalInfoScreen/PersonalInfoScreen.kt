@@ -2,10 +2,7 @@ package com.example.fitnessfactory_client.ui.screens.personalInfoScreen
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -33,8 +30,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.TopBarAction
+import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
+import com.example.fitnessfactory_client.utils.DialogUtils
 import kotlinx.coroutines.launch
 
 object PersonalInfoScreen {
@@ -43,20 +42,40 @@ object PersonalInfoScreen {
     @Composable
     fun PersonalInfoScreen(navigateBack: () -> Unit) {
         val scope = rememberCoroutineScope()
-        BackHandler {
-            navigateBack()
-        }
+
+        var id by rememberSaveable { mutableStateOf("") }
+        var name by rememberSaveable { mutableStateOf("") }
+        var email by rememberSaveable { mutableStateOf("") }
 
         val lifecycleOwner = LocalLifecycleOwner.current
         val viewModel: PersonalInfoScreenViewModel =
             viewModel(factory = PersonalInfoScreenViewModelFactory())
 
+        var showAskToCloseDialog by remember { mutableStateOf(false) }
+        BackHandler {
+            viewModel.fetchDbUser(id)
+        }
+
+        LaunchedEffect(key1 = Unit) {
+            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.dbUserSharedFlow.collect(collector = { dbUser ->
+                    val appUser = AppUser.newValue(id = id, name = name, email = email)
+                    val isModified = !appUser.equals(dbUser)
+                    if (isModified) {
+                        showAskToCloseDialog = true
+                    } else {
+                        navigateBack()
+                    }
+                })
+            }
+        }
+
         var isLoading by remember { mutableStateOf(true) }
-        var name by rememberSaveable { mutableStateOf("") }
-        var email by rememberSaveable { mutableStateOf("") }
+
         LaunchedEffect(key1 = Unit) {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.userInfoSharedFlow.collect(collector = { userInfo ->
+                    id = userInfo.id
                     name = userInfo.name
                     email = userInfo.email
                     isLoading = false
@@ -69,6 +88,21 @@ object PersonalInfoScreen {
         }
 
         Column(modifier = Modifier.fillMaxSize()) {
+
+            AnimatedVisibility(
+                visible = showAskToCloseDialog,
+                enter = slideInVertically(),
+                exit = slideOutVertically()
+            ) {
+                DialogUtils.YesNoDialog(
+                    onOkPress = {
+                        showAskToCloseDialog = false
+                        navigateBack()
+                    },
+                    onDismissRequest = { showAskToCloseDialog = false },
+                    questionText = stringResource(id = R.string.caption_close_and_discard)
+                )
+            }
 
             TopBar.TopBar(
                 title = DrawerScreens.PersonalInfo.title,

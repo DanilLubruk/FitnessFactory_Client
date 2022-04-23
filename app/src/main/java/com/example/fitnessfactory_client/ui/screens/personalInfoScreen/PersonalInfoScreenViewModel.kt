@@ -18,10 +18,20 @@ class PersonalInfoScreenViewModel @Inject constructor(private val usersRepositor
     private val mutableUserInfoSharedFlow: MutableSharedFlow<AppUser> = MutableSharedFlow()
     val userInfoSharedFlow: SharedFlow<AppUser> = mutableUserInfoSharedFlow.asSharedFlow()
 
+    private val mutableDbUserSharedFlow: MutableSharedFlow<AppUser> = MutableSharedFlow()
+    val dbUserSharedFlow: SharedFlow<AppUser> = mutableUserInfoSharedFlow.asSharedFlow()
+
     fun fetchUserInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             val appUser = usersRepository.getAppUserByEmail(AppPrefs.currentUserEmail().value)
             mutableUserInfoSharedFlow.emit(appUser)
+        }
+    }
+
+    fun fetchDbUser(userId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val appUser = usersRepository.getAppUserById(userId)
+            mutableDbUserSharedFlow.emit(appUser)
         }
     }
 }

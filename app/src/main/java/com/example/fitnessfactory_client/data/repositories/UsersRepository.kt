@@ -7,6 +7,7 @@ import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Personnel
 import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
@@ -15,6 +16,10 @@ class UsersRepository : BaseRepository() {
 
     override fun getRoot(): String =
         FirestoreCollections.getUsersCollection()
+
+    suspend fun getAppUserById(userId: String): AppUser =
+        (getCollection().document(userId).get().await()).toObject(AppUser::class.java) ?: AppUser()
+
 
     suspend fun getAppUserByEmail(usersEmail: String): AppUser {
         val usersList = getQuerySnapshot(
