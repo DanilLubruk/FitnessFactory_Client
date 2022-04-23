@@ -38,7 +38,7 @@ object Drawer {
     @Composable
     fun Drawer(
         modifier: Modifier = Modifier,
-        onDestinationClicked: (route: String) -> Unit,
+        onDestinationClicked: (route: DrawerScreens) -> Unit,
         logout: () -> Unit
     ) {
         Column(
@@ -71,7 +71,7 @@ object Drawer {
                             .fillMaxWidth()
                             .height(48.dp)
                             .clickable {
-                                onDestinationClicked(screen.navRoute)
+                                onDestinationClicked(screen)
                             },
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically

@@ -49,4 +49,6 @@
     <string name="caption_invited">Invitations</string>
     <string name="caption_people">people</string>
     <string name="message_ask_logout">Logout?</string>
+    <string name="caption_personal_info">My info</string>
+    <string name="caption_save">Save</string>
 </resources>

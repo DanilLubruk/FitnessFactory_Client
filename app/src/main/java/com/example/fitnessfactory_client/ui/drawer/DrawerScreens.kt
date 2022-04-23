@@ -1,6 +1,5 @@
 package com.example.fitnessfactory_client.ui.drawer
 
-import android.graphics.drawable.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,20 +39,18 @@ sealed class DrawerScreens(val icon: ImageVector, val title: String, val navRout
         Screens.GYMS_SCREEN
     )
 
-    companion object {
-        fun getDrawerScreens(): List<DrawerScreens> =
-            listOf(
-                Home,
-                MySessions,
-                Coaches,
-                SessionTypes,
-                Gyms
-            )
+    object PersonalInfo : DrawerScreens(
+        Icons.Filled.Info,
+        ResUtils.getString(R.string.caption_personal_info),
+        Screens.PERSONAL_INFO_SCREEN
+    )
 
+    companion object {
         fun getDrawerScreensGrouped(): List<List<DrawerScreens>> = listOf(
             listOf(Home),
             listOf(MySessions),
-            listOf(Coaches, Gyms, SessionTypes)
+            listOf(Coaches, Gyms, SessionTypes),
+            listOf(PersonalInfo)
         )
     }
 }

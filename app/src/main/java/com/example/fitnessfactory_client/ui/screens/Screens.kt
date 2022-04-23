@@ -8,4 +8,5 @@ object Screens {
     val SESSION_TYPES_SCREEN = "sessions_types"
     val AUTH_SCREEN = "auth"
     val GYMS_SCREEN = "gyms"
+    val PERSONAL_INFO_SCREEN = "personal_info";
 }
