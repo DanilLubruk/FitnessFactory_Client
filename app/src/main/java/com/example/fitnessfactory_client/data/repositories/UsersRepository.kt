@@ -80,6 +80,11 @@ class UsersRepository : BaseRepository() {
         documentReference.set(appUser).await()
     }
 
+    suspend fun updateUserData(appUser: AppUser): Boolean {
+        getCollection().document(appUser.id).set(appUser).await()
+        return true
+    }
+
     private inner class QueryBuilder {
 
         private var query: Query = getCollection()

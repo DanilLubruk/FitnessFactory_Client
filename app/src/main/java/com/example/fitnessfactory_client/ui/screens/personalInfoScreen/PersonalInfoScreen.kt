@@ -2,6 +2,7 @@ package com.example.fitnessfactory_client.ui.screens.personalInfoScreen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -113,7 +115,11 @@ object PersonalInfoScreen {
                         image = Icons.Filled.Save,
                         imageTint = Color.White
                     ) {
-
+                        scope.launch(Dispatchers.IO) {
+                            if (viewModel.save(userId = id, userName = name, userEmail = email)) {
+                                navigateBack()
+                            }
+                        }
                     }
                 )
             )
@@ -154,25 +160,37 @@ object PersonalInfoScreen {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        value = email,
-                        maxLines = 1,
-                        onValueChange = {
-                            email = it
-                        },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(
-                            onDone = { keyboardController?.hide() }
-                        ),
-                        label = { Text(stringResource(id = R.string.caption_email)) },
-                        textStyle = MaterialTheme.typography.body1,
-                        colors = TextFieldDefaults.textFieldColors(
-                            textColor = Color.Black,
-                            backgroundColor = Color.White
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            value = email,
+                            maxLines = 1,
+                            onValueChange = {
+                                email = it
+                            },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardActions = KeyboardActions(
+                                onDone = { keyboardController?.hide() }
+                            ),
+                            label = { Text(stringResource(id = R.string.caption_email)) },
+                            textStyle = MaterialTheme.typography.body1,
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = Color.Black,
+                                backgroundColor = Color.White
+                            )
                         )
-                    )
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .alpha(0f)
+                                .clickable(onClick = {})
+                        )
+                    }
                 }
             }
         }

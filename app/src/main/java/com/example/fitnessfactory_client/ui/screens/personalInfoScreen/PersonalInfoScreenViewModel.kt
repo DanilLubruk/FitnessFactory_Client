@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.fitnessfactory_client.data.AppPrefs
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.repositories.UsersRepository
+import com.example.fitnessfactory_client.utils.GuiUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,5 +31,15 @@ class PersonalInfoScreenViewModel @Inject constructor(private val usersRepositor
         val dbUser = usersRepository.getAppUserById(userId)
 
         return !appUser.equals(dbUser)
+    }
+
+    suspend fun save(userId: String, userName: String, userEmail: String): Boolean {
+        return try {
+            usersRepository.updateUserData(AppUser.newValue(id = userId, name = userName, email = userEmail))
+        } catch (throwable: Exception) {
+            throwable.printStackTrace()
+            GuiUtils.showMessage(throwable.localizedMessage)
+            false;
+        }
     }
 }
