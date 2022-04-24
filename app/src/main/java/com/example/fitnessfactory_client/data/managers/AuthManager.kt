@@ -47,7 +47,7 @@ class AuthManager @Inject constructor(
             val appUser = firebaseAuthManager.handleSignIn(googleSignInAccount)
             usersRepository.registerUserAsync(appUser = appUser)
 
-            emit(appUser)
+            emit(usersRepository.getAppUserByEmail(appUser.email))
         }
 
     fun getAuthOwnersData(userId: String): Flow<OwnersData> =

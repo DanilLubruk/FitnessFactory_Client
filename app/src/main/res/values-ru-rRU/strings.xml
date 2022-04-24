@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FitnessFactory</string>
+    <string name="app_name">FitnessClient</string>
     <string name="message_error_sign_in_failed">Неуспнешная гугл авторизация...</string>
     <string name="caption_sing_in_button">Войти</string>
     <string name="caption_sign_in_process">Авторизация...</string>
