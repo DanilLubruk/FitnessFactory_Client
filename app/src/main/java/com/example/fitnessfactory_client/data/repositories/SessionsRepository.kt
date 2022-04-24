@@ -9,20 +9,20 @@ class SessionsRepository: BaseRepository() {
     override fun getRoot(): String =
         FirestoreCollections.getSessionsCollection()
 
-    suspend fun getRemoveClientBatch(sessionId: String, clientEmail: String) =
+    suspend fun getRemoveClientBatch(sessionId: String, clientId: String) =
         getFirestore()
             .batch()
             .update(
                 getCollection().document(sessionId),
-                Session.CLIENTS_EMAILS_FIELD,
-                FieldValue.arrayRemove(clientEmail))
+                Session.CLIENTS_IDS_FIELD,
+                FieldValue.arrayRemove(clientId))
 
-    suspend fun getAddClientBatch(sessionId: String, clientEmail: String) =
+    suspend fun getAddClientBatch(sessionId: String, clientId: String) =
         getFirestore()
             .batch()
             .update(getCollection().document(sessionId),
-                Session.CLIENTS_EMAILS_FIELD,
-                FieldValue.arrayUnion(clientEmail))
+                Session.CLIENTS_IDS_FIELD,
+                FieldValue.arrayUnion(clientId))
 
 
 }

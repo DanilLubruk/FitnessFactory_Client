@@ -11,28 +11,28 @@ class ClientsAccessRepository : BaseRepository() {
     override fun getRoot(): String =
         FirestoreCollections.getClientsAccessCollection()
 
-    suspend fun addClient(ownerId: String, usersEmail: String) {
-        val documentReference = getCollection().document()
+    suspend fun addClient(ownerId: String, userId: String) {
+        val documentReference = getCollection().document(userId)
         val accessEntry = AccessEntry()
         accessEntry.ownerId = ownerId
-        accessEntry.usersEmail = usersEmail
+        accessEntry.usersId = userId
         documentReference.set(accessEntry).await()
     }
 
-    suspend fun isClientAccessEntity(ownerId: String, usersEmail: String): Boolean {
+    suspend fun hasClientAccessEntity(ownerId: String, userId: String): Boolean {
         val entitiesAmount =
             getEntitiesAmount(
             getCollection().whereEqualTo(AccessEntry.OWNER_ID_FIELD, ownerId)
-                .whereEqualTo(AccessEntry.USERS_EMAIL_FIELD, usersEmail)
+                .whereEqualTo(AccessEntry.USERS_ID_FIELD, userId)
         )
 
         return entitiesAmount > 0
     }
 
-    suspend fun getInvitedOwnersIds(usersEmail: String): List<String> {
+    suspend fun getInvitedOwnersIds(userId: String): List<String> {
         val ownersIds: ArrayList<String> = ArrayList()
 
-        getQuerySnapshot(QueryBuilder().whereUsersEmailEquals(usersEmail = usersEmail).build())
+        getQuerySnapshot(QueryBuilder().whereUserIdEquals(userId = userId).build())
             .toObjects(UsersAccessEntry::class.java)
             .forEach {
                 ownersIds.add(it.ownerId)
@@ -45,8 +45,8 @@ class ClientsAccessRepository : BaseRepository() {
 
         private var query: Query = getCollection()
 
-        fun whereUsersEmailEquals(usersEmail: String): QueryBuilder {
-            query = query.whereEqualTo(UsersAccessEntry.USER_EMAIL_FIELD, usersEmail)
+        fun whereUserIdEquals(userId: String): QueryBuilder {
+            query = query.whereEqualTo(UsersAccessEntry.USER_ID_FIELD, userId)
             return this
         }
 

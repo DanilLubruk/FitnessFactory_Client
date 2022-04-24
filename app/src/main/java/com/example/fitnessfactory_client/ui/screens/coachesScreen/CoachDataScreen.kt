@@ -49,7 +49,7 @@ object CoachDataScreen {
                             backgroundColor = colorResource(id = R.color.royalBlue)
                         ),
                         onClick = {
-                            showSessionsAction(coach.email)
+                            showSessionsAction(coach.id)
                         }) {
                         Text(
                             text = stringResource(id = R.string.caption_show_sessions),

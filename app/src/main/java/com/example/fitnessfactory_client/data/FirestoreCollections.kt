@@ -6,6 +6,8 @@ object FirestoreCollections {
     const val appDataCollectionValue: String = "appData"
     private const val usersCollection: String = "users"
     private const val clientsAccessCollection: String = "clientsAccess"
+    private const val adminsAccessCollection: String = "adminsAccess"
+    private const val coachesAccessCollection: String = "coachesAccess"
     private const val ownersCollection: String = "owners"
     private const val sessionsCollection: String = "sessions"
     private const val sessionTypesCollection: String = "sessionTypes"
@@ -36,6 +38,20 @@ object FirestoreCollections {
                 clientsAccessCollection +
                 "/" +
                 clientsAccessCollection
+
+    fun getAdminsAccessCollection(): String =
+        appDataCollectionValue +
+                "/" +
+                adminsAccessCollection +
+                "/" +
+                adminsAccessCollection
+
+    fun getCoachesAccessCollection(): String =
+        appDataCollectionValue +
+                "/" +
+                coachesAccessCollection +
+                "/" +
+                coachesAccessCollection
 
     fun getSessionsCollection(): String =
         getBaseCollection() +

@@ -32,7 +32,7 @@ object SessionsQueryFilter {
 
     private fun whereSessionHasCoach(query: Query, coachData: CoachData): Query =
         if (coachData.doFilter)
-            query.whereArrayContains(Session.COACHES_EMAILS_FIELD, coachData.coachUser.email)
+            query.whereArrayContains(Session.COACHES_IDS_FIELD, coachData.coachUser.id)
         else
             query
 

@@ -227,9 +227,9 @@ object HomeScreen {
                                     sessionsFilter = sessionsFilter
                                 )
                             },
-                            fetchCoachUsers = { coachesEmails ->
+                            fetchCoachUsers = { coachesUsersIds ->
                                 viewModel.fetchCoachUsers(
-                                    coachesEmails = coachesEmails
+                                    coachesUsersIds = coachesUsersIds
                                 )
                             },
                             coachUsersFlow = viewModel.coachesListState,

@@ -88,7 +88,7 @@ object AuthScreen {
                 viewModel.getRegisterUiState().collect { uiState ->
                     when (uiState) {
                         is RegisterUiState.Success ->
-                            viewModel.getOwnersData(uiState.usersEmail)
+                            viewModel.getOwnersData(uiState.userId)
                         is RegisterUiState.Error -> {
                             text = signInFailed
                             isLoading = false

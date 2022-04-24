@@ -68,13 +68,15 @@ class AppModule {
         firebaseAuthManager: FirebaseAuthManager,
         ownerClientRepository: OwnerClientRepository,
         sessionsRepository: SessionsRepository,
-        clientSessionsRepository: ClientSessionsRepository
+        clientSessionsRepository: ClientSessionsRepository,
+        usersRepository: UsersRepository
     ) =
         SessionsDataManager(
             firebaseAuthManager = firebaseAuthManager,
             ownerClientRepository = ownerClientRepository,
             sessionsRepository = sessionsRepository,
-            clientSessionsRepository = clientSessionsRepository
+            clientSessionsRepository = clientSessionsRepository,
+            usersRepository = usersRepository,
         )
 
     @AppScope

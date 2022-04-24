@@ -23,11 +23,11 @@ open class SessionsListViewModel
     private val mutableCoachesListState = MutableSharedFlow<UsersListState>()
     val coachesListState: SharedFlow<UsersListState> = mutableCoachesListState
 
-    fun fetchCoachUsers(coachesEmails: List<String>) {
+    fun fetchCoachUsers(coachesUsersIds: List<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val coaches =
-                    coachesAccessManager.getCoachesUsersByEmails(coachesEmails = coachesEmails)
+                    coachesAccessManager.getCoachesUsersByEmails(coachesUsersIds = coachesUsersIds)
                 mutableCoachesListState.emit(UsersListState.Loaded(coaches))
             } catch (throwable: Exception) {
                 throwable.printStackTrace()

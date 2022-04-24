@@ -11,6 +11,6 @@ class CoachesAccessManager
     private val usersRepository: UsersRepository
 ) {
 
-    suspend fun getCoachesUsersByEmails(coachesEmails: List<String>): List<AppUser> =
-        usersRepository.getAppUsersByEmails(coachesEmails)
+    suspend fun getCoachesUsersByEmails(coachesUsersIds: List<String>): List<AppUser> =
+        usersRepository.getAppUsersByIds(coachesUsersIds)
 }

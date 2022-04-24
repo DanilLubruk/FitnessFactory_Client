@@ -109,9 +109,9 @@ object CoachesScreen {
                 CoachDataScreen.CoachDataScreen(
                     coach = coach,
                     gymsList = gymsList,
-                    showSessionsAction = { coachEmail ->
+                    showSessionsAction = { coachUserId ->
                         viewModel.fetchCoachForFilter(
-                            coachEmail
+                            coachUserId
                         )
                     })
             },
@@ -202,7 +202,7 @@ object CoachesScreen {
                                 coachesList = coachesList,
                                 fetchGyms = { selectedCoach ->
                                     coach = selectedCoach
-                                    viewModel.fetchGymsList(selectedCoach.email)
+                                    viewModel.fetchGymsList(selectedCoach.id)
                                 },
                             )
                         } else {

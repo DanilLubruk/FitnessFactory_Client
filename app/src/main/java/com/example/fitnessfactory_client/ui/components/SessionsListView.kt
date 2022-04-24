@@ -25,7 +25,6 @@ import com.example.fitnessfactory_client.ui.screens.mySessionsScreen.SessionView
 import com.example.fitnessfactory_client.ui.uiState.ListState
 import com.example.fitnessfactory_client.ui.uiState.UsersListState
 import com.example.fitnessfactory_client.utils.ResUtils
-import com.example.fitnessfactory_client.utils.TimeUtils
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.*
@@ -152,10 +151,10 @@ object SessionsListView {
                             onLongPress = { },
                             onTap = {
                                 sessionData = item
-                                if (item.session.coachesEmails == null) {
+                                if (item.session.coachesIds == null) {
                                     fetchCoachUsers(ArrayList<String>())
                                 } else {
-                                    fetchCoachUsers(item.session.coachesEmails!!)
+                                    fetchCoachUsers(item.session.coachesIds!!)
                                 }
                             }
                         )

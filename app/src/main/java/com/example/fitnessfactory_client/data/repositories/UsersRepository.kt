@@ -1,14 +1,9 @@
 package com.example.fitnessfactory_client.data.repositories
 
-import androidx.compose.ui.res.stringResource
-import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Personnel
-import com.example.fitnessfactory_client.utils.ResUtils
 import com.example.fitnessfactory_client.utils.StringUtils
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 
@@ -19,7 +14,6 @@ class UsersRepository : BaseRepository() {
 
     suspend fun getAppUserById(userId: String): AppUser =
         (getCollection().document(userId).get().await()).toObject(AppUser::class.java) ?: AppUser()
-
 
     suspend fun getAppUserByEmail(usersEmail: String): AppUser {
         val usersList = getQuerySnapshot(
@@ -38,25 +32,26 @@ class UsersRepository : BaseRepository() {
 
 
     suspend fun getAppUsersByPersonnel(personnelList: List<Personnel>): List<AppUser> {
-        val personnelEmails = ArrayList<String>()
+        val personnelIds = ArrayList<String>()
 
         personnelList.forEach { personnel ->
-            personnelEmails.add(personnel.userEmail)
+            personnelIds.add(personnel.userId)
         }
 
-        return getAppUsersByEmails(usersEmails = personnelEmails)
+        return getAppUsersByIds(usersIds = personnelIds)
     }
 
-    suspend fun getAppUsersByEmails(usersEmails: List<String>): List<AppUser> {
-        if (usersEmails.isEmpty()) {
+    suspend fun getAppUsersByIds(usersIds: List<String>): List<AppUser> {
+        if (usersIds.isEmpty()) {
             return ArrayList()
         }
 
-        val appUsers = getQuerySnapshot(
-            getCollection()
-                .whereIn(AppUser.EMAIL_FIELD, usersEmails)
-        )
-            .toObjects(AppUser::class.java)
+        val appUsers: ArrayList<AppUser> = ArrayList()
+        getCollection().get().await().toObjects(AppUser::class.java).forEach {
+            if (usersIds.contains(it.id)) {
+                appUsers.add(it)
+            }
+        }
 
         appUsers.sortBy { it.email }
 

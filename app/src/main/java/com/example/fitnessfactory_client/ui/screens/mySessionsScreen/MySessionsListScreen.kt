@@ -152,7 +152,7 @@ object MySessionsListScreen {
                             selectedStartDate, selectedEndDate, newSessionsFilter
                         )
                     },
-                    fetchCoachUsers = { coachesEmails -> viewModel.fetchCoachUsers(coachesEmails = coachesEmails) },
+                    fetchCoachUsers = { coachesUsersIds -> viewModel.fetchCoachUsers(coachesUsersIds = coachesUsersIds) },
                     coachUsersFlow = viewModel.coachesListState,
                     showBottomSheet = showBottomSheet,
                 )

@@ -13,17 +13,16 @@ class OwnerClientRepository : OwnerPersonnelRepository() {
     override fun getNotUniqueEmailMessage(): String =
         StringUtils.getMessageErrorClientsSameEmail()
 
-    suspend fun addClient(usersEmail: String) {
-        val documentReference = getCollection().document()
+    suspend fun addClient(userId: String) {
+        val documentReference = getCollection().document(userId)
         val personnel = Personnel()
-        personnel.id = documentReference.id
-        personnel.userEmail = usersEmail
+        personnel.userId = userId
         documentReference.set(personnel).await()
     }
 
-    suspend fun isOwnerClientEntity(usersEmail: String): Boolean {
+    suspend fun isOwnerClientEntity(userId: String): Boolean {
         val entitiesAmount =
-            getEntitiesAmount(getCollection().whereEqualTo(Personnel.USER_EMAIL_FIELD, usersEmail))
+            getEntitiesAmount(getCollection().whereEqualTo(Personnel.USER_ID_FIELD, userId))
 
         return entitiesAmount > 0
     }

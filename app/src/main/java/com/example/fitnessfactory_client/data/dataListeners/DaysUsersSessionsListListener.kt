@@ -1,12 +1,10 @@
 package com.example.fitnessfactory_client.data.dataListeners
 
-import android.util.Log
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.beans.SessionsFilter
 import com.example.fitnessfactory_client.data.models.Session
 import com.example.fitnessfactory_client.utils.ResUtils
-import com.example.fitnessfactory_client.utils.TimeUtils
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -22,7 +20,7 @@ class DaysUsersSessionsListListener : BaseDataListener() {
         sessionsFilter: SessionsFilter,
         startDate: Date,
         endDate: Date,
-        usersEmail: String
+        userId: String
     ): Flow<List<Session>> =
         callbackFlow {
             listenerRegistration =
@@ -41,7 +39,7 @@ class DaysUsersSessionsListListener : BaseDataListener() {
                         }
 
                         val sessions = value.toObjects(Session::class.java).filter {
-                            it.clientsEmails?.contains(usersEmail) ?: false
+                            it.clientsIds?.contains(userId) ?: false
                         }
                         trySend(sessions)
                     }

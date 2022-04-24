@@ -5,6 +5,7 @@ import com.example.fitnessfactory_client.data.models.Gym
 import com.example.fitnessfactory_client.data.models.Personnel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 class OwnerGymsRepository : BaseRepository() {
 
@@ -16,13 +17,16 @@ class OwnerGymsRepository : BaseRepository() {
             emit(getGyms())
         }
 
-    suspend fun getCoachGyms(coach: Personnel): List<Gym> =
-        getQuerySnapshot(
-            getCollection().whereIn(
-                Gym.ID_FIELD,
-                coach.gymsIds
-            )
-        ).toObjects(Gym::class.java)
+    suspend fun getCoachGyms(coach: Personnel): List<Gym>  {
+        val gyms = ArrayList<Gym>()
+        getCollection().get().await().toObjects(Gym::class.java).forEach {
+            if (coach.gymsIds?.contains(it.id) == true) {
+                gyms.add(it)
+            }
+        }
+
+        return gyms
+    }
 
 
     suspend fun getGyms(): List<Gym> =

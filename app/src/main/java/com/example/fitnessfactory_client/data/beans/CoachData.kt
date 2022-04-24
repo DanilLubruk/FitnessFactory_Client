@@ -21,7 +21,7 @@ class CoachData(var coachUser: AppUser, private var coach: Personnel, doFilter: 
 
     var id: String = ""
     private set
-    get() = coach.id
+    get() = coach.userId
 
     var name: String = ""
     private set

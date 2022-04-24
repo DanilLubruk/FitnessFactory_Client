@@ -51,14 +51,14 @@ class AuthScreenViewModel
                 }
                 .collect {
                     AppPrefs.currentUserEmail().value = it.email
-                    registerUiStateChannel.send(RegisterUiState.Success(usersEmail = it.email))
+                    registerUiStateChannel.send(RegisterUiState.Success(userId = it.id))
                 }
         }
     }
 
-    fun getOwnersData(usersEmail: String) {
+    fun getOwnersData(userId: String) {
         viewModelScope.launch {
-           authManager.getAuthOwnersData(usersEmail = usersEmail)
+           authManager.getAuthOwnersData(userId = userId)
                .flowOn(Dispatchers.IO)
                .catch { throwable ->
                    throwable.printStackTrace()

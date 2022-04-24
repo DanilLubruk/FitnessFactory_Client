@@ -1,6 +1,5 @@
 package com.example.fitnessfactory_client.ui.screens.personalInfoScreen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fitnessfactory_client.data.AppPrefs
@@ -13,13 +12,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class PersonalInfoScreenViewModel @Inject constructor(private val usersRepository: UsersRepository) : ViewModel() {
+class PersonalInfoScreenViewModel @Inject constructor(private val usersRepository: UsersRepository) :
+    ViewModel() {
 
     private val mutableUserInfoSharedFlow: MutableSharedFlow<AppUser> = MutableSharedFlow()
     val userInfoSharedFlow: SharedFlow<AppUser> = mutableUserInfoSharedFlow.asSharedFlow()
-
-    private val mutableDbUserSharedFlow: MutableSharedFlow<AppUser> = MutableSharedFlow()
-    val dbUserSharedFlow: SharedFlow<AppUser> = mutableUserInfoSharedFlow.asSharedFlow()
 
     fun fetchUserInfo() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -28,10 +25,10 @@ class PersonalInfoScreenViewModel @Inject constructor(private val usersRepositor
         }
     }
 
-    fun fetchDbUser(userId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val appUser = usersRepository.getAppUserById(userId)
-            mutableDbUserSharedFlow.emit(appUser)
-        }
+    suspend fun isModified(userId: String, userName: String, userEmail: String): Boolean {
+        val appUser = AppUser.newValue(id = userId, name = userName, email = userEmail)
+        val dbUser = usersRepository.getAppUserById(userId)
+
+        return !appUser.equals(dbUser)
     }
 }

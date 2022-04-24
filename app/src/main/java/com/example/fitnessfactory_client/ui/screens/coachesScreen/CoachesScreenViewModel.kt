@@ -2,15 +2,12 @@ package com.example.fitnessfactory_client.ui.screens.coachesScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.data.beans.CoachData
 import com.example.fitnessfactory_client.data.dataListeners.CoachesListListener
 import com.example.fitnessfactory_client.data.managers.GymsChainDataManager
 import com.example.fitnessfactory_client.data.models.Gym
-import com.example.fitnessfactory_client.data.models.Personnel
 import com.example.fitnessfactory_client.data.repositories.OwnerCoachRepository
 import com.example.fitnessfactory_client.data.repositories.OwnerGymsRepository
-import com.example.fitnessfactory_client.data.repositories.OwnerPersonnelRepository
 import com.example.fitnessfactory_client.data.repositories.UsersRepository
 import com.example.fitnessfactory_client.utils.GuiUtils
 import kotlinx.coroutines.Dispatchers
@@ -52,10 +49,10 @@ class CoachesScreenViewModel
         }
     }
 
-    fun fetchGymsList(coachEmail: String) {
+    fun fetchGymsList(coachUserId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val coach = ownerPersonnelRepository.getPersonnelByEmail(coachEmail)
+                val coach = ownerPersonnelRepository.getPersonnelById(coachUserId)
                 val gyms = gymsRepository.getCoachGyms(coach = coach)
                 mutableGymsList.emit(ArrayList(gyms))
             } catch (throwable: Exception) {
@@ -65,9 +62,9 @@ class CoachesScreenViewModel
         }
     }
 
-    fun fetchCoachForFilter(coachEmail: String) {
+    fun fetchCoachForFilter(coachUserId: String) {
         viewModelScope.launch {
-            gymsChainDataManager.getCoachDataByEmail(coachEmail = coachEmail)
+            gymsChainDataManager.getCoachDataById(coachUserId = coachUserId)
                 .flowOn(Dispatchers.IO)
                 .catch { throwable ->
                     throwable.printStackTrace()

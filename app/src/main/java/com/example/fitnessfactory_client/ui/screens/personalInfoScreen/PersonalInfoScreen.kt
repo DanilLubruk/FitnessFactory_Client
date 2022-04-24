@@ -1,18 +1,14 @@
 package com.example.fitnessfactory_client.ui.screens.personalInfoScreen
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -30,10 +26,10 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
 import com.example.fitnessfactory_client.data.beans.TopBarAction
-import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.ui.components.TopBar
 import com.example.fitnessfactory_client.ui.drawer.DrawerScreens
 import com.example.fitnessfactory_client.utils.DialogUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 object PersonalInfoScreen {
@@ -51,26 +47,27 @@ object PersonalInfoScreen {
         val viewModel: PersonalInfoScreenViewModel =
             viewModel(factory = PersonalInfoScreenViewModelFactory())
 
-        var showAskToCloseDialog by remember { mutableStateOf(false) }
-        BackHandler {
-            viewModel.fetchDbUser(id)
-        }
+        var isLoading by remember { mutableStateOf(true) }
 
-        LaunchedEffect(key1 = Unit) {
-            lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.dbUserSharedFlow.collect(collector = { dbUser ->
-                    val appUser = AppUser.newValue(id = id, name = name, email = email)
-                    val isModified = !appUser.equals(dbUser)
+        var showAskToCloseDialog by remember { mutableStateOf(false) }
+        val tryToClose: () -> Unit = {
+            if (!isLoading) {
+                scope.launch(Dispatchers.IO) {
+                    val isModified =
+                        viewModel.isModified(userId = id, userName = name, userEmail = email)
+
                     if (isModified) {
                         showAskToCloseDialog = true
                     } else {
                         navigateBack()
                     }
-                })
+                }
             }
         }
 
-        var isLoading by remember { mutableStateOf(true) }
+        BackHandler {
+            tryToClose()
+        }
 
         LaunchedEffect(key1 = Unit) {
             lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -108,7 +105,7 @@ object PersonalInfoScreen {
                 title = DrawerScreens.PersonalInfo.title,
                 buttonIcon = Icons.Filled.ArrowBack,
                 onButtonClicked = {
-                    navigateBack()
+                    tryToClose()
                 },
                 actions = listOf(
                     TopBarAction(
@@ -116,6 +113,7 @@ object PersonalInfoScreen {
                         image = Icons.Filled.Save,
                         imageTint = Color.White
                     ) {
+
                     }
                 )
             )

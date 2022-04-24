@@ -23,18 +23,19 @@ class AuthManager @Inject constructor(
     fun registerClient(ownerId: String): Flow<Unit> =
         flow {
             firebaseAuthManager.getCurrentUserEmail()?.let { usersEmail ->
-                val isClientAccessEntry = clientsAccessRepository.isClientAccessEntity(
+                val appUser = usersRepository.getAppUserByEmail(usersEmail = usersEmail)
+                val isClientAccessEntry = clientsAccessRepository.hasClientAccessEntity(
                     ownerId = ownerId,
-                    usersEmail = usersEmail
+                    userId = appUser.id
                 )
                 if (!isClientAccessEntry) {
-                    clientsAccessRepository.addClient(ownerId = ownerId, usersEmail = usersEmail)
+                    clientsAccessRepository.addClient(ownerId = ownerId, userId = appUser.id)
                 }
 
                 val isOwnerClientEntry =
-                    ownerClientRepository.isOwnerClientEntity(usersEmail = usersEmail)
+                    ownerClientRepository.isOwnerClientEntity(userId = appUser.id)
                 if (!isOwnerClientEntry) {
-                    ownerClientRepository.addClient(usersEmail = usersEmail)
+                    ownerClientRepository.addClient(userId = appUser.id)
                 }
             }
 
@@ -49,12 +50,12 @@ class AuthManager @Inject constructor(
             emit(appUser)
         }
 
-    fun getAuthOwnersData(usersEmail: String): Flow<OwnersData> =
+    fun getAuthOwnersData(userId: String): Flow<OwnersData> =
         flow {
             val ownersData = OwnersData()
 
             ownersData.allOwnersList = ownersRepository.getAllOwners()
-            val ownersIds = clientsAccessRepository.getInvitedOwnersIds(usersEmail = usersEmail)
+            val ownersIds = clientsAccessRepository.getInvitedOwnersIds(userId = userId)
             ownersData.invitedOwnersList = ownersRepository.getOwnersByIds(ownersIds = ownersIds)
 
             emit(ownersData)
