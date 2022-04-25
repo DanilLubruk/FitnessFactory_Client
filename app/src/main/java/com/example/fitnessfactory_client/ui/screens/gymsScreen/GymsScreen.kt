@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.gymsScreen
 
+import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -35,6 +36,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessfactory_client.R
+import com.example.fitnessfactory_client.data.beans.OwnersData
 import com.example.fitnessfactory_client.data.beans.TopBarAction
 import com.example.fitnessfactory_client.data.models.AppUser
 import com.example.fitnessfactory_client.data.models.Gym
@@ -116,11 +118,16 @@ object GymsScreen {
 
                 var showSearch by rememberSaveable { mutableStateOf(false) }
                 var searchText by rememberSaveable { mutableStateOf("") }
+                val savedState by rememberSaveable { mutableStateOf(Bundle()) }
                 var searchFieldState: GymSearchFieldState by remember {
                     mutableStateOf(
-                        GymSearchFieldState.GymNameFieldSearch
+                        GymSearchFieldState.restoreState(savedState)
                     )
                 }
+                LaunchedEffect(searchFieldState) {
+                    searchFieldState.saveState(savedState = savedState)
+                }
+
                 val keyboardController = LocalSoftwareKeyboardController.current
 
                 TopBar.TopBar(

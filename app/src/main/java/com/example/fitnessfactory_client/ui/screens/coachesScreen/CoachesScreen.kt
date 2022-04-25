@@ -1,5 +1,6 @@
 package com.example.fitnessfactory_client.ui.screens.coachesScreen
 
+import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
@@ -101,7 +102,15 @@ object CoachesScreen {
 
         var showSearch by rememberSaveable { mutableStateOf(false) }
         var searchText by rememberSaveable { mutableStateOf("") }
-        var searchFieldState: CoachSearchFieldState by remember { mutableStateOf(CoachSearchFieldState.CoachNameFieldSearch) }
+        val savedState by rememberSaveable { mutableStateOf(Bundle()) }
+        var searchFieldState: CoachSearchFieldState by remember {
+            mutableStateOf(
+                CoachSearchFieldState.restoreState(savedState)
+            )
+        }
+        LaunchedEffect(searchFieldState) {
+            searchFieldState.saveState(savedState = savedState)
+        }
 
         ModalBottomSheetLayout(
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
@@ -153,7 +162,7 @@ object CoachesScreen {
                             maxLines = 1,
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                             keyboardActions = KeyboardActions(
-                                onDone = {keyboardController?.hide()}
+                                onDone = { keyboardController?.hide() }
                             ),
                             onValueChange = {
                                 searchText = it
