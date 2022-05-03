@@ -148,7 +148,10 @@ object SessionTypesScreen {
                             textStyle = MaterialTheme.typography.body1,
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.White
+                                backgroundColor = Color.White,
+                                focusedIndicatorColor = colorResource(id = R.color.gold),
+                                focusedLabelColor = colorResource(id = R.color.gold),
+                                cursorColor = colorResource(id = R.color.gold),
                             )
                         )
                     }
