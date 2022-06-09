@@ -3,6 +3,7 @@ package com.example.fitnessfactory_client.data.repositories
 import com.example.fitnessfactory_client.data.FirestoreCollections
 import com.example.fitnessfactory_client.data.models.Session
 import com.google.firebase.firestore.FieldValue
+import kotlinx.coroutines.tasks.await
 
 class SessionsRepository: BaseRepository() {
 
@@ -24,5 +25,5 @@ class SessionsRepository: BaseRepository() {
                 Session.CLIENTS_IDS_FIELD,
                 FieldValue.arrayUnion(clientId))
 
-
+    suspend fun getSession(sessionId: String) = getCollection().document(sessionId).get().await().toObject(Session::class.java);
 }
