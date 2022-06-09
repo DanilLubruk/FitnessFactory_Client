@@ -76,7 +76,7 @@ object SplashScreen {
                             .width(80.dp),
                         imageVector = Icons.Filled.FitnessCenter,
                         contentDescription = "",
-                        tint = colorResource(id = R.color.royalBlue),
+                        tint = colorResource(id = R.color.gold),
                     )
                 }
             }

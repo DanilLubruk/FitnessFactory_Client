@@ -44,25 +44,32 @@ object Drawer {
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .background(color = colorResource(id = R.color.royalBlue))
-                .padding(top = 16.dp),
+                .background(color = Color.White),
         ) {
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(color = colorResource(id = R.color.royalBlue))
+            ) {
                 Icon(
+                    modifier = Modifier.padding(top = 16.dp),
                     imageVector = Icons.Filled.FitnessCenter,
                     contentDescription = "",
                     tint = Color.White,
                 )
                 Text(
-                    modifier = Modifier.padding(start = 16.dp),
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp),
                     text = ResUtils.getString(R.string.app_name),
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
                     color = Color.White
                 )
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
+            
+            Spacer(modifier = Modifier.height(8.dp))
 
             DrawerScreens.getDrawerScreensGrouped().forEach { group ->
                 group.forEach { screen ->
@@ -80,17 +87,22 @@ object Drawer {
                             modifier = Modifier.padding(start = 16.dp),
                             imageVector = screen.icon,
                             contentDescription = screen.title,
-                            tint = Color.White,
+                            tint = Color.Black,
                         )
                         Text(
                             modifier = Modifier.padding(start = 16.dp),
                             text = screen.title,
                             fontSize = 16.sp,
-                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
                         )
                     }
                 }
-                Divider(color = Color.White, thickness = 1.dp, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
+                Divider(
+                    color = Color.Black,
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 8.dp)
+                )
             }
 
             Column(
@@ -99,7 +111,7 @@ object Drawer {
                 horizontalAlignment = Alignment.Start
             ) {
                 IconButton(onClick = { logout() }) {
-                    Icon(Icons.Sharp.Logout, contentDescription = "", tint = Color.White)
+                    Icon(Icons.Sharp.Logout, contentDescription = "", tint = Color.Black)
                 }
             }
         }

@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.fitnessfactory_client.data.beans.OwnersData
 import com.example.fitnessfactory_client.data.models.Owner
@@ -163,6 +164,13 @@ object DialogUtils {
         OutlinedTextField(
             singleLine = true,
             value = text,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = Color.Black,
+                backgroundColor = Color.White,
+                focusedIndicatorColor = colorResource(id = R.color.gold),
+                focusedLabelColor = colorResource(id = R.color.gold),
+                cursorColor = colorResource(id = R.color.gold),
+            ),
             onValueChange = { value ->
                 run {
                     text = value
@@ -214,7 +222,7 @@ object DialogUtils {
                     .defaultMinSize(minHeight = 72.dp)
                     .fillMaxWidth()
                     .background(
-                        color = colorResource(id = R.color.royalBlue),
+                        color = Color.White,
                         shape = RoundedCornerShape(16.dp)
                     )
                     .padding(16.dp)
@@ -237,8 +245,8 @@ object DialogUtils {
 
                     TabRow(
                         selectedTabIndex = tabIndex,
-                        backgroundColor = colorResource(id = R.color.royalBlue),
-                        contentColor = Color.White,
+                        backgroundColor = Color.White,
+                        contentColor = Color.Black,
                         modifier = Modifier.height(48.dp),
                     ) {
                         tabData.forEachIndexed { index, text ->
@@ -372,14 +380,14 @@ object DialogUtils {
             modifier = Modifier
                 .wrapContentSize()
                 .background(
-                    color = colorResource(id = R.color.royalBlue),
+                    color = Color.White,
                 )
         ) {
 
             Text(
                 text = TimeUtils.dateToLocaleStr(selectedDate),
                 style = MaterialTheme.typography.h4,
-                color = MaterialTheme.colors.onPrimary
+                color = Color.Black
             )
 
             Spacer(modifier = Modifier.size(16.dp))
@@ -398,7 +406,7 @@ object DialogUtils {
                 ) {
                     Text(
                         text = ResUtils.getString(R.string.caption_cancel),
-                        color = Color.White
+                        color = Color.Black
                     )
                 }
 
@@ -409,7 +417,7 @@ object DialogUtils {
                 ) {
                     Text(
                         text = okButtonText,
-                        color = Color.White
+                        color = Color.Black
                     )
                 }
             }
@@ -460,7 +468,8 @@ object DialogUtils {
                             color = Color.White,
                             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                         )
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = questionText,
@@ -480,7 +489,7 @@ object DialogUtils {
                     ) {
                         Text(
                             text = ResUtils.getString(R.string.caption_cancel),
-                            style = MaterialTheme.typography.button
+                            style = TextStyle(color = Color.Black)
                         )
                     }
 
@@ -492,7 +501,7 @@ object DialogUtils {
                     ) {
                         Text(
                             text = ResUtils.getString(R.string.caption_ok),
-                            style = MaterialTheme.typography.button
+                            style = TextStyle(color = Color.Black)
                         )
                     }
 
