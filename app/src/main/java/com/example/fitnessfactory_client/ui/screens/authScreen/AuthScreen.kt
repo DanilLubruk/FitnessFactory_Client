@@ -188,7 +188,7 @@ object AuthScreen {
                     modifier = Modifier.height(80.dp).width(80.dp),
                     imageVector = Icons.Filled.FitnessCenter,
                     contentDescription = "",
-                    tint = colorResource(id = R.color.gold),
+                    tint = colorResource(id = R.color.royalBlue),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SignInButton(
@@ -218,7 +218,7 @@ object AuthScreen {
         isLoading: Boolean = false,
         borderColor: Color = Color.LightGray,
         backgroundColor: Color = MaterialTheme.colors.surface,
-        progressIndicatorColor: Color = colorResource(id = R.color.gold),
+        progressIndicatorColor: Color = MaterialTheme.colors.primary,
         onClick: () -> Unit
     ) {
         Surface(

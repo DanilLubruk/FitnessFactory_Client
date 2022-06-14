@@ -21,7 +21,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.intl.Locale
@@ -172,10 +171,7 @@ object CoachesScreen {
                             textStyle = MaterialTheme.typography.body1,
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = Color.Black,
-                                backgroundColor = Color.White,
-                                focusedIndicatorColor = colorResource(id = R.color.gold),
-                                focusedLabelColor = colorResource(id = R.color.gold),
-                                cursorColor = colorResource(id = R.color.gold),
+                                backgroundColor = Color.White
                             )
                         )
 
